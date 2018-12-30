@@ -9,7 +9,9 @@ class Session{
 		this.id_user = id;
 		this.dataPoints = [];
 		this.startTime = startTime;
+		// increments in 1 by each time tick
 		this.timeCounter = 0;
+		// this means that the session is running. If changed it stops the runStep() function.
 		this.status = "running";
 	}
 
@@ -53,13 +55,13 @@ class Session{
 	@param {Number} travelTime Time ahead from the current time in seconds
 	*/
 	runStep(route, speed, travelTime){
-		if (this.status = "running"){
+		if (this.status == "running"){
 			//1- Determine the current position on a route. That is retrieved from the latest recorded dataPoint
 			let currentPosition = this.dataPoints[this.dataPoints.length-1].position;
 			//2- Calculate the distance traveled based on speed and step time
 			let distanceTraveled = speed * travelTime;
 			//3- Locate the corresponding position on the route for the distance traveled
-			let tmpPosition = route.getPosition2(distanceTraveled, currentPosition);
+			let tmpPosition = route.getPosition(currentPosition, distanceTraveled);
 
 			if (tmpPosition instanceof Position){
 				//  create the new dataPoint

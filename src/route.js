@@ -46,10 +46,10 @@ class Route {
 	/**
 	* Calculates the position on route for a traveled distance starting from a given position.
 	Process: to DETERMINE TRAVELED DISTANCE the idea is to get the distance to the current point and then add the step distance
-	* @param {number} distance the distance traveled. Usually the distance traveled in a sample rate step
-	* @param {position} position
+	* @param {Number} stepLength The distance traveled for the duration of a sample rate at a given speed. It is defined in meters.
+	* @param {Position} position The insertion position on the route
 	*/
-	getPosition2 (stepLength, position){
+	getPosition (position, stepLength){
 		// Validate if the position is on the route path
 		if (this.validatePosition(position)){
 			// get the index of the closest segment to position
@@ -322,7 +322,7 @@ class Route {
 
 		this.segments =  this.makeSegments();
 
-		console.log("Route/initialized " + this.routePoints.length + " route points");
+		console.log("Route/initialized. " + this.routePoints.length + " route points. " + this.segments.length + " segments. Loop:" + this.loop);
 	}
 
 	/**
@@ -355,12 +355,10 @@ class Route {
 			segments.push(new Segment(this.routePoints[this.routePoints.length-1],this.routePoints[0]));
 
 		}
-
-		for (let s of segments) {
-
-			console.log("segment length: " + s.length);
-
-		}
+		// Show segements on console
+		// for (let s of segments) {
+		// 	console.log("segment length: " + s.length);
+		// }
 
 		return segments;
 	}
