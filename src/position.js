@@ -5,11 +5,11 @@
 */
 class Position{
   constructor(lat, lon){
-    this.lat = lat;
-    this.lon = lon;
+    this.lat = Number.parseFloat(lat);
+    this.lon = Number.parseFloat(lon);
     /* The coordiantes are geodesic is they are expressed in latitute and longitude.
     Else are polar if they are expressed in radians */
-    this.positionFormat = "geodesic";
+    //this.positionFormat = "geodesic";
   }
 
   /**
@@ -32,6 +32,6 @@ class Position{
   convertRadToCoords(){
     this.lat = (this.lat * 180)/Math.PI;
     this.lon = (this.lon * 180)/Math.PI;
-    this.positionFormat = "radians";
+    //this.positionFormat = "radians";
   }
 }

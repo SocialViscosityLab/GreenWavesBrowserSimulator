@@ -9,7 +9,7 @@ let speedRate;
 let clicker;
 
 	/**
-	setup
+	Setups the variables
 	*/
 	function setup(){
 		ellapsedTime = document.getElementById("ellapsedTime");
@@ -18,7 +18,9 @@ let clicker;
 		document.getElementById("activateJourney").onclick = activateJourney;
 		// Instantiate and initialize the map
 		currentMap = new Cartography();
-		new Communication();
+		//new Communication();
+		this.setupRoute();
+		this.activateJourney();
 	}
 
 	/**
@@ -33,14 +35,24 @@ let clicker;
 		let totalRoutePoints = 5;
 		// initialize route
 		currentRoute.initiateRoutePoints(totalRoutePoints);
-		// calculate distances for each route segment
-		currentRoute.calcDistances(true);
 
 		/**** Visualization  of route on Map *****/
 		// add route to map
 		currentMap.setupRoute(currentRoute);
 		// plot route path on map
 		currentMap.plotRoutes();
+
+		//workbench();
+	}
+
+	function workbench(){
+
+		let tmpPos = new Position(40.10343, -88.2384);
+
+		let rtn = currentRoute.getClosestSegmentToPosition(tmpPos);
+
+		console.log ("segment " + rtn);
+
 	}
 
 	/**
@@ -60,24 +72,27 @@ let clicker;
 			journey.addNewSession();
 			// set Ghost session dataPoints
 			journey.setupGhost();
-			// execute this function at the frequency of the sampleRate
-		//	clicker = setInterval(run, (1000*sampleRate));
+			// Execute the run function at the frequency of the sampleRate
+			clicker = setInterval(run, (1000*sampleRate));
 
 			/**** Visualization  of journey on map *****/
 			// add journey to map
 			currentMap.setupJourney(journey);
 
 			// **** generate all session points
-			journey.setGhostSessionPoints(speedRate, sampleRate);
+			//journey.setGhostSessionPoints(speedRate, sampleRate);
 			// **** display all session points
-			currentMap.displaySessionMarkers(0,0);
+			//currentMap.displaySessionMarkers(0,0);
 
 			// ******* Add session to journey ******
 			currentMap.map.on('click', function(e) {
-				// add session
-				 journey.addNewSession();
+				// create a session
+				let tmpSession = new Session("tst", new Date());
 				// set session origin
-				 journey.getLastSession().setOrigin(currentRoute, new Position(e.latlng.lat,e.latlng.lng), 3, 10);
+				tmpSession.setOrigin(currentRoute, new Position(e.latlng.lat,e.latlng.lng), 3, 0);
+				// add session to journey
+				 journey.addNewSession(tmpSession);
+				 //run();
 				 // update mapJourneys
 				 currentMap.updateJourney();
 			});
@@ -96,8 +111,9 @@ let clicker;
 			alert("Route finalized");
 		}
 		//run ghost
-		journey.runGhost(speedRate, sampleRate);
-		//journey.runSessions(speedRate, sampleRate);
+		//journey.runGhost(speedRate, sampleRate);
+		journey.runSessions(speedRate, sampleRate);
+			//journey.runSession(1,speedRate, sampleRate);
 		//plot all journeys
 		currentMap.plotJourneys();
 		//plot dataPoints

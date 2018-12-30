@@ -16,10 +16,35 @@ class Journey{
 
 	/**
 	* Adds a new session to the journey. The session ID is the position in the collection
+	*@param {Session} session The session to be added. If omited, the sessions length
+	is used as index for a new session
 	*/
-	addNewSession(){
-		this.sessions.push(new Session(this.sessions.length,new Date()));
-		console.log("New session id: " + (this.sessions.length - 1) + " added to journey "+ this.id);
+	addNewSession(session){
+
+		if (session){
+			// verify that there is no session with the same id
+			if (this.getSession(session.id_user) == undefined){
+
+				this.sessions.push(session);
+
+				console.log("New session id: " + this.getLastSession().id_user + " added to journey "+ this.id);
+
+			}else{
+				window.alert("Session ID conflict " + session.id_user + "No session added");
+			}
+
+		}else{
+			// verify that there is no session with the same id
+			if (this.getSession(this.sessions.length) == undefined){
+
+				this.sessions.push(new Session(this.sessions.length,new Date()));
+
+				console.log("New session id: " + this.getLastSession().id_user + " added to journey "+ this.id);
+
+			}else{
+				window.alert("Session ID conflict " + this.getLastSession().id_user + "No session added" );
+			}
+		}
 	}
 
 	/**
@@ -32,6 +57,7 @@ class Journey{
 				return ssn;
 			}
 		}
+		return undefined;
 	}
 
 	/**
@@ -64,37 +90,33 @@ class Journey{
 	*@param {number} sampleRate Integer value with sampling rate in seconds
 	*/
 	runGhost(speed, sampleRate){
-		this.sessions[0].runSession (this.referenceRoute, speed, sampleRate); //runSession (route, speed, sampleRate in milliseconds){
-	}
-
-	setGhostSessionPoints(speed, sampleRate){
-		this.sessions[0].setSessionPoints(this.referenceRoute, speed, sampleRate);//route, speed, sampleRate
-	}
-
-	/**
-	* Executes all the sessions in this journey
-	*@param {number} speed The cyclists speed in meters per second. WARNING It applies to ALL cyclists
-	*@param {number} sampleRate Integer value with sampling rate in seconds
-	*/
-	runSessions(speed, sampleRate){
-		// for (let ssn of this.sessions) {
-		// 	ssn.runSession (this.referenceRoute, speed, sampleRate); //runSession (route, speed, sampleRate in milliseconds){
-		// }
-
-		for (var i = 0; i < this.sessions.length; i++) {
-			this.sessions[i].runSession (this.referenceRoute, speed, sampleRate);
+		this.sessions[0].runStep (this.referenceRoute, speed, sampleRate); //runSession (route, speed, sampleRate in milliseconds){
 		}
-	}
 
-	/**
-	* Executes the especified session
-	*@param {string} id The cyclists ID
-	*@param {number} speed The cyclists speed in meters per second
-	*@param {number} sampleRate Integer value with sampling rate in seconds
-	*/
-	runSession(id, speed, sampleRate){
-		if (this.sessions[id] != undefined){
-			this.sessions[id].runSession (this.referenceRoute, speed, sampleRate); //runSession (route, speed, sampleRate in milliseconds){
+		setGhostSessionPoints(speed, sampleRate){
+			this.sessions[0].setSessionPoints(this.referenceRoute, speed, sampleRate);//route, speed, sampleRate
 		}
-	}
-}
+
+		/**
+		* Executes all the sessions in this journey
+		*@param {number} speed The cyclists speed in meters per second. WARNING It applies to ALL cyclists
+		*@param {number} sampleRate Integer value with sampling rate in seconds
+		*/
+		runSessions(speed, sampleRate){
+			for (var i = 0; i < this.sessions.length; i++) {
+				this.sessions[i].runStep (this.referenceRoute, speed, sampleRate);
+			}
+		}
+
+		/**
+		* Executes the especified session
+		*@param {string} id The cyclists ID
+		*@param {number} speed The cyclists speed in meters per second
+		*@param {number} sampleRate Integer value with sampling rate in seconds
+		*/
+		runSession(id, speed, sampleRate){
+			if (this.sessions[id] != undefined){
+				this.sessions[id].runStep (this.referenceRoute, speed, sampleRate); //runSession (route, speed, sampleRate in milliseconds){
+				}
+			}
+		}

@@ -10,14 +10,15 @@ class Session{
 		this.dataPoints = [];
 		this.startTime = startTime;
 		this.timeCounter = 0;
+		this.status = "running";
 	}
 
 	/**
-	* Sets the origin of a route
+	* Sets the origin of a session. The origin is the starting position of the session on a route.
 	* @ param {Route} route The route on which the session runs
 	* @ param {Position} position The origin location
 	* @ param {number} speed The speed at the moment of joining the journey in meters per second
-	* @ param {number} ellapsedTime The route time at which the origin is set. This time is counted based on the Ghost's timeCounter.
+	* @ param {number} ellapsedTime The route time at which the origin is set. This time is counted based on the global (Journey) timeCounter.
 	*/
 	setOrigin(route, position, speed, ellapsedTime){
 
@@ -28,19 +29,12 @@ class Session{
 
 				let tmp;
 
-				// if the current position is at the start point of the route:
-				if (this.id_user == 0){//} && getDistance(route.routePoints[0], position) < 5 ){ // 5 meters
-					// create a dataPoint
-					tmp = new DataPoint(0, route.routePoints[0], speed, 0);
+				// calculate acceleration
+				let acc = "SessionError"; //calculateAcceleration (speed, this.dataPoints[this.dataPoints.length -1].speed, ellapsedTime - this.dataPoints[this.dataPoints.length -1].time);
 
-				}else {
+				// create a dataPoint
+				tmp = new DataPoint(acc, position, speed, ellapsedTime);
 
-					// calculate acceleration
-					let acc = "SessionError"; //calculateAcceleration (speed, this.dataPoints[this.dataPoints.length -1].speed, ellapsedTime - this.dataPoints[this.dataPoints.length -1].time);
-
-					// create a dataPoint
-					tmp = new DataPoint(acc, position, speed, ellapsedTime);
-				}
 				// add the datapoint
 				this.dataPoints.push(tmp);
 			}
@@ -48,18 +42,42 @@ class Session{
 	}
 
 	/**
-	* Runs the cyclists session on the given parameters
-	* @param {Route} route The route on which the session runs
-	* @param {number} speed The speed in meters per second
-	* @param {number} sampleRate The sample rate in seconds
+	*The concept here is to calculate where a vehicle will be located after running at a given speed for a given time.
+	The process is as follows:
+	1- Determine the current position on a route. That is retrieved from the latest recorded dataPoint
+	2- Calculate the distance traveled based on speed and step time
+	3- Locate the corresponding position on the route for the distance traveled. For this step of the process
+	we need to ask the route where on the path is located the traveled distance.
+	@param {Route} route The route
+	@param {Number} speed Travelling speed in m/s
+	@param {Number} travelTime Time ahead from the current time in seconds
 	*/
-	runSession (route, speed, sampleRate){
-		let timeOnRoute = sampleRate * this.timeCounter;
-		let tmpPosition = route.calculatePositionOnRoute (speed, timeOnRoute, this.dataPoints[0].position); // startPosiiotn ignored by now, Everyone starts at the route origin
-		let tmpDataP= new DataPoint(1000, tmpPosition, speed, timeOnRoute);
-		this.dataPoints.push(tmpDataP);//acc, pos, speed, time
-		this.timeCounter ++; // increases in one unit every sampleRate
+	runStep(route, speed, travelTime){
+		if (this.status = "running"){
+			//1- Determine the current position on a route. That is retrieved from the latest recorded dataPoint
+			let currentPosition = this.dataPoints[this.dataPoints.length-1].position;
+			//2- Calculate the distance traveled based on speed and step time
+			let distanceTraveled = speed * travelTime;
+			//3- Locate the corresponding position on the route for the distance traveled
+			let tmpPosition = route.getPosition2(distanceTraveled, currentPosition);
+
+			if (tmpPosition instanceof Position){
+				//  create the new dataPoint
+				let lastTime = this.dataPoints[this.dataPoints.length-1].time;
+
+				let tmpDataP = new DataPoint(1000, tmpPosition, speed, Number(lastTime) + Number(travelTime) );// Number(lastTime) + Number(travelTime)
+
+				this.dataPoints.push(tmpDataP);
+
+				this.timeCounter ++;
+
+			} else {
+				this.status = "completed";
+				console.log("Session completed for vehicle: " + this.id_user);
+			}
+		}
 	}
+
 
 	/**
 	* returns true if the any point of the route is whithin the subscritpionRange radius from the currentLocation.
@@ -144,9 +162,9 @@ class Session{
 		return rtn;
 	}
 
-/**
-* Exports the session path in GeoJSON format TO BE IMPLEMENTED
-*/
+	/**
+	* Exports the session path in GeoJSON format TO BE IMPLEMENTED
+	*/
 	saveRouteGeoJSON (){
 		console.log("SEE INSTRUCTIONS AT: https://eligrey.com/demos/FileSaver.js/");
 	}

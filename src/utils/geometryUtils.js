@@ -6,6 +6,15 @@ class GeometryUtils{
   }
 
 /**
+Forecasts all the vehicle's datapoints on route from a start to an end point. Each position is estimated based on the given
+speed and sample rate. Since the speed is constant, the acceleration value of each datapoint is 0. The lastTimeStamp parameter
+serves to set the initial datapoints counter. Such counter marks each datapoint with a sequenced value of time in
+the same units as sampleRate.
+@param {Position} startCoords start position on route
+@param {Position} endCoords final position on route
+@param {number} speed constant speed travelling on route
+@param {number} sampleRate rate of data sampling in seconds
+@param {number} lastTimeStamp timeStamp at the begining of the forecasted travel
 */
   static calculateStepsBetweenPositions(startCoords, endCoords, speed, sampleRate, lastTimeStamp){
     let rtn = [];
@@ -43,6 +52,12 @@ class GeometryUtils{
   }
 
 /**
+Calculates the position bewteen two points at a given ellapsed time
+@param {Position} startCoords start position on route
+@param {Position} endCoords final position on route
+@param {number} speed constant speed travelling on route
+@param {number} ellapsedTime rate of data sampling in seconds
+@return {Position} the estimated position bewteen two points at a given ellapsed time
 */
   static calculateCurrentPosition(startCoords, endCoords, speed, ellapsedTime) {
 
@@ -84,7 +99,7 @@ Gets the geodesic distance between two points
 
     let d = R * c;
 
-    return Number(d)
+    return Number.parseFloat(d);
   }
 
 /**
@@ -129,7 +144,6 @@ Gets the point between two coordinates at a given fraction of the straight traje
   @param {number} totalDistance
   @return {number} a value greater than 0. If it is greater than 1 it means that the traveled distance
   is gerater that the distance to be traveled
-
   */
   static getTrajectoryFraction(ellapsedTime, speed, totalDistance){
 
@@ -178,12 +192,12 @@ Gets the point between two coordinates at a given fraction of the straight traje
   @return {number} The closest distance
   */
   static euclideanDistToSegment(p, v, w) {
-    // console.log ("p ");
-    // console.log (p);
-    // console.log ("v ");
-    // console.log (v);
-    // console.log ("w ");
-    // console.log (w);
+     // console.log ("p ");
+     // console.log (p);
+     // console.log ("v ");
+     // console.log (v);
+     // console.log ("w ");
+     // console.log (w);
     return Math.sqrt(this.distToSegmentSquared(p, v, w));
   }
 
