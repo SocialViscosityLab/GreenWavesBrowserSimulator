@@ -46,6 +46,9 @@
 <!--script src="https://www.gstatic.com/firebasejs/5.7.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/5.7.0/firebase-firestore.js"></script-->
 
+<!--- Directory access -->
+<script src="src/utils/directoryReader.js" type="text/javascript"></script>
+
 </head>
 
 
@@ -77,56 +80,29 @@
     <hr>
     <div class = "row">
 
-      <div class= "col-sm-5">
-        <h4> Route builder</h4>
-        Origin:<br>
-        Lat
-        <input id = "coordPointLat0" type="number" step="0.0001" value= "40.10146">
-        Lon
-        <input id = "coordPointLon0" type="number" step="0.0001" value= "-88.23445">
-        <br><br>
-        Next point:<br>
-        Lat
-        <input id = "coordPointLat1" type="number" step="0.0001" value= "40.10143">
-        Lon
-        <input id = "coordPointLon1" type="number" step="0.0001" value= "-88.23860">
-        <br><br>
+      <div class= "col-sm-4">
+        <h4> Route Settings</h4>
 
-        Next point:<br>
-        Lat
-        <input id = "coordPointLat2" type="number" step="0.0001" value= "40.10409">
-        Lon
-        <input id = "coordPointLon2" type="number" step="0.0001" value= "-88.23863">
-        <br><br>
-
-        Next point:<br>
-        Lat
-        <input id = "coordPointLat3" type="number" step="0.0001" value= "40.10409">
-        Lon
-        <input id = "coordPointLon3" type="number" step="0.0001" value= "-88.23345">
-        <br><br>
-
-        Next point:<br>
-        Lat
-        <input id = "coordPointLat4" type="number" step="0.0001" value= "40.10146">
-        Lon
-        <input id = "coordPointLon4" type="number" step="0.0001" value= "-88.233385">
-        <br><br>
-
-        <button id = "routeButton" type = "button">Setup route</button>
+        <!--- reading the directory for routes -->
+        <input type="file" id="files" name="files[]" multiple />
         <br>
+        <!--- Directory access
+        <script src="src/utils/directoryReader.js" type="text/javascript"></script>-->
+
+        <button id = "routeButton" type = "button">Setup</button>
+        <button id = "loopButton" type = "button">Loop disabled</button>
         <br>
-        <div><p id="p1"><b>--</b></p></div>
+        <output id="list"></output>
 
       </div><!-- Close column -->
 
-      <div class= "col-sm-4">
+      <div class= "col-sm-5">
         <h4> Journey activation and ghost session setup</h4>
         Sample rate<br>
         <input id = "sampleRate" type = "number" name = "sampleRate" value = "1" min = "0"> secs.
         <br><br>
         Speed:<br>
-        <input id = "speedRate" type="number" name="speedRate" value = "30" min = "0">m/s.
+        <input id = "speedRate" type="number" name="speedRate" value = "15" min = "0">m/s.
         <br><br>
         <button id = "activateJourney" type="submit"> Activate Journey</button>
         <button id = "exportJSON" type = "button">Export to JSON</button>

@@ -15,8 +15,11 @@ segment index calculation, as well as relative and absolute distance calculation
 */
 class Route {
 	constructor(id){
+		/** The route ID. Ideally it should be labeled with the name of the roads on which the route runs */
 		this.id = id;
+		/** The corner points of the route */
 		this.routePoints = [];
+		/** True is the route is active */
 		this.status = false;
 		/** The segments of the route*/
 		this.segments = [];
@@ -39,6 +42,11 @@ class Route {
 
 	disable(){
 		this.status = false;
+	}
+
+	update(){
+		this.makeSegments();
+		console.log("Route updated.  Route points: " + this.routePoints.length + ", segments: " + this.segments.length +  ", loop: " + this.loop);
 	}
 
 	/********* GETTERS *********/
@@ -300,29 +308,47 @@ class Route {
 	}
 
 	/******** PRIVATE ********
+
 	/**
-	* Calculate distances between the corner points of a map
+	* Creates the list of corner points in a route from the values input in the GUI
+	* @param {number} totalRoutePoints
 	*/
+	initiateRouteFromGeoJSON(object){
+		let positions = object.geometry.coordinates;
+		this.id = object.properties.name;
+		// iterate over the objects
+		for (var i = 0; i < positions.length; i++) {
+		// create the positions
+			let tmpPos = new Position(Number(positions[i][0]), Number(positions[i][1]));
+			// add them to the collection
+			this.routePoints.push(tmpPos);
+		}
+		// create the segments
+		this.segments =  this.makeSegments();
+		// message
+		console.log("Route " + this.id + " initialized.  Route points: " + this.routePoints.length + ", segments: " + this.segments.length +  ", loop: " + this.loop);
+	}
 
 
 	/**
 	* Creates the list of corner points in a route from the values input in the GUI
 	* @param {number} totalRoutePoints
 	*/
-	initiateRoutePoints(totalRoutePoints){
-		this.routePoints = [];
-		for (var i = 0; i < totalRoutePoints; i++) {
-			let idLat = 'coordPointLat' + i;
-			let idLon = 'coordPointLon' + i;
-			let tmpLat = document.getElementById(idLat);
-			let tmpLon = document.getElementById(idLon);
-			let tmpPos = new Position(Number(tmpLat.value), Number(tmpLon.value));
-			this.routePoints.push(tmpPos);
+	initiateRoutePoints(points){
+
+		if(points){
+			this.routePoints = [];
+
+			for (let i = 0; i < points.length; i++) {
+				let pos = points[i];
+				let tmpPos = new Position(Number(pos[0]), Number(pos[1]));
+				this.routePoints.push(tmpPos);
+			}
 		}
 
 		this.segments =  this.makeSegments();
 
-		console.log("Route/initialized. " + this.routePoints.length + " route points. " + this.segments.length + " segments. Loop:" + this.loop);
+		console.log("Route initialized.  Route points: " + this.routePoints.length + ", segments: " + this.segments.length +  ", loop: " + this.loop);
 	}
 
 	/**

@@ -63,13 +63,35 @@ class Cartography{
 	*/
 	setupMap(){
 		let mapHTML = document.getElementById('mapid');
+
+		let tiles;
+
 		this.map = L.map(mapHTML).setView([40.10250,-88.23425], 17);
-		L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
-			attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-			maxZoom: 20,
-			id: 'mapbox.streets',
-			accessToken: 'sk.eyJ1IjoianNhbGFtIiwiYSI6ImNqcDI3eG9yaDAyYzMzcXJ0ZWd3d3g3bTcifQ.o2q4YfWOqzAg9rak5ua-MA'
-		}).addTo(this.map);
+
+		// HILDA
+		tiles = L.tileLayer('https://{s}.tile.openstreetmap.se/hydda/full/{z}/{x}/{y}.png', {
+			maxZoom: 18,
+			attribution: 'Tiles courtesy of <a href="http://openstreetmap.se/" target="_blank">OpenStreetMap Sweden</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+		});
+
+		// OpenStreetMap
+		// tiles = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png',{ attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'});
+
+		// KRONA B&W
+		// tiles = L.tileLayer('https://korona.geog.uni-heidelberg.de/tiles/roadsg/x={x}&y={y}&z={z}', {
+		// 	maxZoom: 20,
+		// 	attribution: 'Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @ University of Heidelberg</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+		// });
+
+		// MAPBOX COLOR
+		// tiles = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+		// 	attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+		// 	maxZoom: 20,
+		// 	id: 'mapbox.streets',
+		// 	accessToken: 'sk.eyJ1IjoianNhbGFtIiwiYSI6ImNqcDI3eG9yaDAyYzMzcXJ0ZWd3d3g3bTcifQ.o2q4YfWOqzAg9rak5ua-MA'
+		// });
+
+		tiles.addTo(this.map)
 	}
 
 	/**
@@ -114,6 +136,12 @@ class Cartography{
 	plotRoutes(){
 		for (let r of this.mapRoutes) {
 			r.plotPath(this.map);
+		}
+	}
+
+	plotRoutesCornerPoints(){
+		for (let r of this.mapRoutes) {
+			r.plotRouteCornerPoints(this.map);
 		}
 	}
 }
