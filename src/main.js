@@ -1,12 +1,21 @@
 
+/** The collection of journeys in thjis simulation*/
 let journeys = [];
+/** The collection of routes in this simulation*/
 let currentRoutes = [];
+/** The instance of Cartography displayed in browser*/
 let currentMap;
+/***/
 let ellapsedTime;
+/***/
 let speed;
+/** The period of time used to trigger each step of the simulator and record data from vehicles*/
 let sampleRate;
+/***/
 let speedRate;
+/** The interval object controlling the simuation internal clock*/
 let clicker;
+/***/
 let directory;
 
 /**
