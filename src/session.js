@@ -53,8 +53,10 @@ class Session{
 	@param {Route} route The route
 	@param {Number} speed Travelling speed in m/s
 	@param {Number} travelTime Time ahead from the current time in seconds
+	@return {Position} the latest estimated position
 	*/
 	runStep(route, speed, travelTime){
+		let tmpDataP;
 		if (this.status == "running"){
 			//1- Determine the current position on a route. That is retrieved from the latest recorded dataPoint
 			let currentPosition = this.dataPoints[this.dataPoints.length-1].position;
@@ -67,7 +69,7 @@ class Session{
 				//  create the new dataPoint
 				let lastTime = this.dataPoints[this.dataPoints.length-1].time;
 
-				let tmpDataP = new DataPoint(1000, tmpPosition, speed, Number(lastTime) + Number(travelTime) );// Number(lastTime) + Number(travelTime)
+				tmpDataP = new DataPoint(1000, tmpPosition, speed, Number(lastTime) + Number(travelTime) );// Number(lastTime) + Number(travelTime)
 
 				this.dataPoints.push(tmpDataP);
 
@@ -78,6 +80,7 @@ class Session{
 				console.log("Session completed for vehicle: " + this.id_user);
 			}
 		}
+		return tmpDataP;
 	}
 
 
@@ -158,10 +161,31 @@ class Session{
 	*/
 	getSessionLatLongs(){
 		var rtn = [];
+
 		for (let dp of this.dataPoints) {
+
 			rtn.push([dp.position.lat, dp.position.lon]);
+
 		}
 		return rtn;
+	}
+
+	/**
+	*Returns a collection of the latest datapoints of this session. The number of datapoints is defined by the parameter 'ticks'.
+	*If you multipluy tge number of ticks by the sampleRate, tyen you get the latest datapoints for that period of time
+	*@param {Number} ticks the number of latest positions to be retrieved from the datapoints collection
+	*@return collection of dataPoints
+	*/
+	getLatestDataPoints(ticks){
+
+		if (ticks > this.dataPoints.length){
+
+			return this.dataPoints;
+
+		}else{
+
+			return this.dataPoints.slice(this.dataPoints.length - ticks, this.dataPoints.length);
+		}
 	}
 
 	/**

@@ -6,8 +6,11 @@ to visualize its complementary class named without the prefix (e.g., Journey)
 */
 class Cartography{
 	constructor(){
+		/** The Leaflet instance */
 		this.map;
+		/** All the routes associates to this map */
 		this.mapRoutes = [];
+		/** All the journeys running on the routes associates to this map */
 		this.mapJourneys = [];
 		this.setup();
 	}
@@ -142,6 +145,36 @@ class Cartography{
 	plotRoutesCornerPoints(){
 		for (let r of this.mapRoutes) {
 			r.plotRouteCornerPoints(this.map);
+		}
+	}
+
+	/**
+	* Plot journeys green wave. If no parameter is given all the journeys are plotted
+	@param {Number} start The index of the first journey to be plotted
+	@param {Number} amount The size of the range of journeys to be plotted
+	*/
+	plotGreenWaves(start,amount){
+		if (start != undefined){
+			if (start > this.mapJourneys.length -1){
+				console.log("Error. Index larger than array length");
+				return undefined;
+			}else{
+				if (amount != undefined){
+					//plot the range
+					let n = start+amount;
+					if (n > this.mapJourneys.length){ n = this.mapJourneys.length;}
+					for (var i = start; i < n; i++) {
+						this.mapJourneys[i].plotGreenWave(this.map);
+					}
+				} else {
+					// plot the journey in the start position
+					this.mapJourneys[start].plotGreenWave(this.map);
+				}
+			}
+		} else {
+			for (let j of this.mapJourneys) {
+				j.plotGreenWave(this.map);
+			}
 		}
 	}
 }

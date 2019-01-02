@@ -25,7 +25,7 @@ class MapRoute{
 
           let label = "point"+i;
 
-          this.routeMarkers[i].bindPopup(label).openPopup();
+        //  this.routeMarkers[i].bindPopup(label).openPopup();
 
         } else {
 

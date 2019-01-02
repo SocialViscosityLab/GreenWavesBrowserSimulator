@@ -12,6 +12,9 @@ class Journey{
 		this.referenceRoute = route;
 		this.sessions = [];
 		console.log("Journey " + this.id + " initialized" );
+		// The green wave scope in number of datapoints.
+		this.greenWaveScope = 15;
+		this.greenWaveDataPoints = [];
 	}
 
 	/**
@@ -81,7 +84,13 @@ class Journey{
 	*/
 	setupGhost(){
 		this.sessions[0].setOrigin(this.referenceRoute, this.referenceRoute.routePoints[0], 5, 0); //route, position, speed, ellapsedTime
-		console.log("Ghost in journey "+ this.id+ " initialized");
+		// set all greenwave datapoints to the origin
+		for (var i = 0; i < this.greenWaveScope; i++) {
+
+			this.greenWaveDataPoints.push(this.sessions[0].dataPoints[0]);
+		}
+
+		console.log("Ghost in journey "+ this.id+ " initialized. Green wave datapoint collection initialized: " + this.greenWaveDataPoints.length + " dataPoints");
 	}
 
 	/**
@@ -90,33 +99,54 @@ class Journey{
 	*@param {number} sampleRate Integer value with sampling rate in seconds
 	*/
 	runGhost(speed, sampleRate){
-		this.sessions[0].runStep (this.referenceRoute, speed, sampleRate); //runSession (route, speed, sampleRate in milliseconds){
+		let tmp = this.sessions[0].runStep (this.referenceRoute, speed, sampleRate); //runSession (route, speed, sampleRate in milliseconds)
+		// add the latest dataPoint to the tail of the green wave
+		if (tmp != undefined){
+			this.greenWaveDataPoints.push(tmp);
 		}
+		// remove the first datapoint
+		this.greenWaveDataPoints.shift();
+	}
 
-		setGhostSessionPoints(speed, sampleRate){
-			this.sessions[0].setSessionPoints(this.referenceRoute, speed, sampleRate);//route, speed, sampleRate
+	setGhostSessionPoints(speed, sampleRate){
+		this.sessions[0].setSessionPoints(this.referenceRoute, speed, sampleRate);//route, speed, sampleRate
+	}
+
+	/**
+	* Executes all the sessions in this journey
+	*@param {number} speed The cyclists speed in meters per second. WARNING It applies to ALL cyclists
+	*@param {number} sampleRate Integer value with sampling rate in seconds
+	*/
+	runSessions(speed, sampleRate){
+		// run ghost session
+		this.runGhost(speed, sampleRate);
+		// run all other sessions
+		for (var i = 1; i < this.sessions.length; i++) {
+			this.sessions[i].runStep (this.referenceRoute, speed, sampleRate);
 		}
+	}
 
-		/**
-		* Executes all the sessions in this journey
-		*@param {number} speed The cyclists speed in meters per second. WARNING It applies to ALL cyclists
-		*@param {number} sampleRate Integer value with sampling rate in seconds
-		*/
-		runSessions(speed, sampleRate){
-			for (var i = 0; i < this.sessions.length; i++) {
-				this.sessions[i].runStep (this.referenceRoute, speed, sampleRate);
+	/**
+	* Executes the especified session
+	*@param {string} id The cyclists ID
+	*@param {number} speed The cyclists speed in meters per second
+	*@param {number} sampleRate Integer value with sampling rate in seconds
+	*/
+	runSession(id, speed, sampleRate){
+		if (this.sessions[id] != undefined){
+			if (id == 0){
+				this.runGhost();
+			}else {
+				this.sessions[id].runStep (this.referenceRoute, speed, sampleRate); //runSession (route, speed, sampleRate in milliseconds)
 			}
 		}
+	}
 
-		/**
-		* Executes the especified session
-		*@param {string} id The cyclists ID
-		*@param {number} speed The cyclists speed in meters per second
-		*@param {number} sampleRate Integer value with sampling rate in seconds
-		*/
-		runSession(id, speed, sampleRate){
-			if (this.sessions[id] != undefined){
-				this.sessions[id].runStep (this.referenceRoute, speed, sampleRate); //runSession (route, speed, sampleRate in milliseconds){
-				}
-			}
-		}
+	/**
+	* Sets the green wave scope in number of datapoints. Usually the green wave scope is defined in ticks, which can be converted to time by
+	multiplying them by the duration of the sample rate, or into distance by multiplying ellapsed time by the speed
+	*/
+	setGreenWaveScope(val){
+		this.greenWaveScope = val;
+	}
+}

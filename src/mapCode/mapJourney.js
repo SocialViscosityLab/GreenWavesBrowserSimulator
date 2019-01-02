@@ -8,6 +8,7 @@ class MapJourney{
     /**The visualization of this mapJourney's sessions*/
     this.mapSessions = [];
     this.setup();
+    this.greenWavePolyline;
   }
 
   /**
@@ -41,6 +42,32 @@ class MapJourney{
       ssn.markSessionCurrentPoint(theMap);
       // plot session path
       ssn.plotPath(theMap);
+    }
+  }
+
+
+  /**
+  * Plots the ghost/leader's green wave on the map
+  * @param {Cartography} theMap An instance of Cartography that contauins the Leaflet map
+  */
+  plotGreenWave(theMap){
+    // retrieve the journey's green wave dataPoints
+    let gwDataPoints = this.journey.greenWaveDataPoints;
+    let latlons = [];
+    // convert them to getRouteLatLongs
+    for (let i = 0; i < gwDataPoints.length; i++) {
+      latlons[i] = gwDataPoints[i].getLatLon();
+    }
+
+    if (this.greenWavePolyline == undefined){
+
+      this.greenWavePolyline = L.polyline(latlons, {color: '#00FF00', weight:10,  opacity: 0.6}).addTo(theMap);
+
+    } else{
+      // remove the current pathPolyline
+      theMap.removeLayer(this.greenWavePolyline);
+      // add a new one
+      this.greenWavePolyline = L.polyline(latlons, {color: '#00FF00', weight:10, opacity: 0.6}).addTo(theMap);
     }
   }
 }

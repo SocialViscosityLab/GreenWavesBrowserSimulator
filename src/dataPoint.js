@@ -39,4 +39,8 @@ class DataPoint{
     this.position.lon = (this.position.lon * 180)/Math.PI;
     this.positionFormat = "radians";
   }
+
+  getLatLon(){
+    return [this.position.lat,this.position.lon];
+  }
 }

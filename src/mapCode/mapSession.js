@@ -19,10 +19,11 @@ class MapSession{
 * @param {Cartography} theMap An instance of Cartography that contauins the Leaflet map
 */
   plotPath(theMap){
-    let counter = 0
   //  theMap.plotPath(this.session.getSessionLatLongs(), '#0088cc', 2 , 0.1);
     if (this.pathPolyline == undefined){
+
       this.pathPolyline = L.polyline(this.session.getSessionLatLongs(), {color: '#00FFFF', weight:2,  opacity: 0.2}).addTo(theMap.map);
+
     } else {
       // remove the current pathPolyline
       theMap.map.removeLayer(this.pathPolyline);
@@ -43,7 +44,7 @@ class MapSession{
 
         let label =  this.sessionID + ": " + this.session.dataPoints[i].time + " s";
 
-        this.sessionMarkers[i].bindPopup(label).openPopup();
+      //  this.sessionMarkers[i].bindPopup(label).openPopup();
       }else{
 
         let newLatLng = new L.LatLng(this.session.dataPoints[i].position.lat , this.session.dataPoints[i].position.lon);
@@ -75,7 +76,7 @@ class MapSession{
     // Update marker label
     let label =  "ID: " + this.session.id_user + " Tick: " + last.time ;
 
-    this.sessionMarkers[0].bindPopup(label).openPopup();
+    // this.sessionMarkers[0].bindPopup(label).openPopup();
 
   }
 }

@@ -2,7 +2,7 @@
 var jsonObjects = [];
 
 /**
-* Reads user selected json files and save them as objects in a global variable.
+* Reads user selected json files and save them as objects in the global variable jsonObjects.
 * Adapted from: https://www.html5rocks.com/en/tutorials/file/dndfiles/
 */
 class DirectoryReader{
@@ -54,7 +54,6 @@ class DirectoryReader{
     }
     // GUI
     document.getElementById('list').innerHTML = '<ul>' + htmlOutput.join('') + '</ul>';
-
   }
 
   /**
