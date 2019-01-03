@@ -27,6 +27,13 @@ class Position{
   }
 
   /**
+  * Returns an object with the current latlon in radians
+  */
+  getLatLonRad(){
+    return {"lat":this.getLatRad(), "lon":this.getLonRad()}
+  }
+
+  /**
   * Converts the current position from radians to cartesian lat lng
   */
   convertRadToCoords(){
@@ -34,4 +41,5 @@ class Position{
     this.lon = (this.lon * 180)/Math.PI;
     //this.positionFormat = "radians";
   }
+
 }

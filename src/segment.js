@@ -8,6 +8,7 @@ class Segment{
     this.start = startPosition;
     this.end = endPosition;
     this.length = GeometryUtils.getDistance(this.start, this.end).toPrecision(4);
+    this.bearing = GeometryUtils.getBearing(this.start, this.end); // in radians (bteween -pi and pi)
   }
 
   /**
@@ -51,5 +52,26 @@ class Segment{
     return GeometryUtils.getDistance(this.start, position).toPrecision(4);
   }
 
-
+  /**
+  * Determines if the bearing of two positions is aligned with the bearing of the current segment.
+    It is useful to know if the cyclist rides aligned to the segment direction
+  * @param {Position} startPos
+  * @param {Position} endPos
+  * @param {Number} range In radians. Half the range of elignment evaluation. Could be omited. It should not be greater than PI/2.
+  * By default it is PI/2, meaning that the range of evaluation if the segment bearing +/- 90 degrees.
+  */
+  isBearingAligned(startPos, endPos, angle){
+    let range = Math.PI/2;
+    if (angle != undefined && angle < Math.PI/2){
+      range = angle;
+    }
+    let tmpBearing = GeometryUtils.getBearing(startPos, endPos);
+    let angleBetweenBearings = GeometryUtils.relativeBearing(this.bearing, tmpBearing);
+    console.log(angleBetweenBearings + " "+ range);
+    if (Math.abs(angleBetweenBearings) <= range){
+      return true;
+    } else {
+      return false;
+    }
+  }
 }

@@ -40,19 +40,21 @@ function setup(){
 */
 function setupRoute(){
 	let routes = directory.getJsonObjects();
-	for (let points of routes){
+	//*********for (let points of routes){
 		// Instantiate objects
 		let routeTmp = new Route();
-		// The route points
-		// let points = [[40.10146, -88.23445],[40.10143,-88.23860],[40.10409,-88.23863],[40.10409,-88.23345],[40.10146,-88.233385]];
-		// initialize route
-		//currentRoute.initiateRoutePoints(points);
-		routeTmp.initiateRouteFromGeoJSON (points);
+		//********* COMMENT FROM HERE
+					// The route points
+					 let points = [[40.10146, -88.23445],[40.10143,-88.23860],[40.10409,-88.23863],[40.10409,-88.23345],[40.10146,-88.233385]];
+					// initialize route
+					routeTmp.initiateRoutePoints(points);
+		//********* UNTIL HERE
+		//*********routeTmp.initiateRouteFromGeoJSON (points);
 		// add route to map
 		currentMap.setupRoute(routeTmp);
 		// store route
 		currentRoutes.push(routeTmp);
-	}
+	//*********}
 
 	/**** Visualization  of route on Map *****/
 	// plot route path on map
@@ -129,10 +131,12 @@ function activateJourney(){
 
 			// ******* Add session to journey ******
 			currentMap.map.on('click', function(e) {
+				// create a cyclists
+				let cyclistTmp = new Cyclist("tst", new Position(e.latlng.lat,e.latlng.lng), 3);
 				// create a session
-				let tmpSession = new Session("tst", new Date());
+				let tmpSession = new Session(cyclistTmp.id, new Date());
 				// set session origin
-				tmpSession.setOrigin(routeTmp, new Position(e.latlng.lat,e.latlng.lng), 3, 0);
+				tmpSession.setOrigin(routeTmp, 0, cyclistTmp);
 				// add session to journey
 				journeyTmp.addNewSession(tmpSession);
 				//run();

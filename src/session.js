@@ -7,6 +7,7 @@
 class Session{
 	constructor(id, startTime){
 		this.id_user = id;
+		this.cyclist;
 		this.dataPoints = [];
 		this.startTime = startTime;
 		// increments in 1 by each time tick
@@ -18,25 +19,21 @@ class Session{
 	/**
 	* Sets the origin of a session. The origin is the starting position of the session on a route.
 	* @ param {Route} route The route on which the session runs
-	* @ param {Position} position The origin location
-	* @ param {number} speed The speed at the moment of joining the journey in meters per second
 	* @ param {number} ellapsedTime The route time at which the origin is set. This time is counted based on the global (Journey) timeCounter.
+	* @ param {Cyclist} cyclist The cyclist with origin location and speed
 	*/
-	setOrigin(route, position, speed, ellapsedTime){
+	setOrigin(route, ellapsedTime, cyclist){
 
 		// if the current position is at the start point of the route:
-		if (position != undefined){
+		if (cyclist.position != undefined){
 
-			if (this.validateSubscription(route, position)){
+			if (this.validateSubscription(route, cyclist.position)){
 
 				let tmp;
-
 				// calculate acceleration
 				let acc = "SessionError"; //calculateAcceleration (speed, this.dataPoints[this.dataPoints.length -1].speed, ellapsedTime - this.dataPoints[this.dataPoints.length -1].time);
-
 				// create a dataPoint
-				tmp = new DataPoint(acc, position, speed, ellapsedTime);
-
+				tmp = new DataPoint(acc, cyclist.position, cyclist.speed, ellapsedTime);
 				// add the datapoint
 				this.dataPoints.push(tmp);
 			}

@@ -83,7 +83,8 @@ class Journey{
 	* Initializes the Ghost leader
 	*/
 	setupGhost(){
-		this.sessions[0].setOrigin(this.referenceRoute, this.referenceRoute.routePoints[0], 5, 0); //route, position, speed, ellapsedTime
+		let ghostCyclist = new Cyclist(0, this.referenceRoute.routePoints[0], 5); // id, position, speed
+		this.sessions[0].setOrigin(this.referenceRoute, 0, ghostCyclist); //route, ellapsedTime, cyclist
 		// set all greenwave datapoints to the origin
 		for (var i = 0; i < this.greenWaveScope; i++) {
 
