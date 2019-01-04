@@ -61,7 +61,7 @@ class Route {
 		// Validate if the position is on the route path
 		if (this.validatePosition(position)){
 			// get the index of the closest segment to position
-			let index = this.getIndexOfClosestSegmentToPosition(position);
+			let index = this.getIndexAndProximityToClosestSegmentTo(position).index;
 			//console.log("index: " + index);
 			// retrieve the segemnt for that index
 			let currentSegment = this.segments[index];
@@ -135,7 +135,7 @@ class Route {
 			let traveledDistance = distanceToCorner + stepLength;
 			//console.log("traveled distance: " + traveledDistance);
 			// evalute the distance traveled against the route length
-			if (traveledDistance <= this.getTotalDistance()){
+			if (traveledDistance <= this.getTotalLength()){
 				// still on route
 				return true;
 			}else{
@@ -157,7 +157,7 @@ class Route {
 	getTraveledDistanceToSegmentStart(position){
 		if (position instanceof Position){
 			// Detect the closest route segment
-			let segmentIndex = this.getIndexOfClosestSegmentToPosition(position);
+			let segmentIndex = this.getIndexAndProximityToClosestSegmentTo(position);
 			// console.log("segmentIndex "+ segmentIndex);
 			// Calculate the distance from origin to begining of segment
 			let distanceTraveled = 0;
@@ -189,26 +189,26 @@ class Route {
 	}
 
 	/**
-	* Calculates the accumulated distance of all the segment distances in a route
+	* Calculates the accumulated distance of all the segment length in a route
 	*/
-	getTotalDistance(){
+	getTotalLength(){
 
-		let totalDistance = 0;
+		let totalLength = 0;
 
 		for (let leg of this.segments) {
 
-			totalDistance = totalDistance + Number(leg.length);
+			totalLength = totalLength + Number(leg.length);
 		}
 
-		return totalDistance;
+		return totalLength;
 	}
 
 	/**
 	Find the closest segment index to a position
 	@param {Position} position The position in space
-	@return {number} Index of the segment origin in the segments or getRouteLatLongs() collections
+	@return {Object} {index,proximity} to the closest segment of this route
 	*/
-	getIndexOfClosestSegmentToPosition(position){
+	getIndexAndProximityToClosestSegmentTo(position){
 		if (position instanceof Position){
 			// get all segments
 			// store the distance to the first segment
@@ -231,7 +231,7 @@ class Route {
 				}
 			}
 			// Return the id of the closest segment
-			return rtn;
+			return {index:rtn, proximity:currentD};
 		}else{
 			console.log("The parameter entered to this function is not an instance of Position")
 		}

@@ -17,6 +17,10 @@ class Cyclist{
     /** The rider and her attributes such as weight, fitness, power*/
     this.rider = new Rider(); // here add atributes of rider
 
+    // Subscription true by default because the cyclists is an instance only if it is subscribed
+    this.stauts = "subscribed";
+    this.myRoute;
+
     // Kinematic Variables
     this.id = id;
     this.position = position;
@@ -33,10 +37,10 @@ class Cyclist{
     this.lastAccelerationPlatoon = 0;// Last acceleration calculated with CACC
     this.isLeader = true;
     this.greenWave = false;
-    this.nearestFrontCyclist = null; // nearest Cyclist ahead
-    this.leaderCyclist = null; // leader  Cyclist
+    this.nearestFrontCyclist ; // nearest Cyclist ahead
+    this.leaderCyclist ; // leader  Cyclist
 
-    // 2 . Platoon's parameters (CACC)
+    // 2 . Platooning parameters (CACC)
     this.alpha1 = 0.5;
     this.alpha2 = 0.5;
     this.alpha3 = 0.3;
@@ -49,6 +53,7 @@ class Cyclist{
     this.designKSimple = 0.02;// the lower the value, the slower the
     this.designKAdaptive = 0.1;
   }
+
   /**
   * Sets the leader to this cyclist
   @param {Session} leader The leader
@@ -60,11 +65,85 @@ class Cyclist{
     }
   }
 
+  /**
+  * Simple Cruise Control Algorithm. This control algorithm simply
+  * accelerates the node until it reaches the target speed. It lacks of any
+  * form of adaptation
+  *
+  * @return
+  */
+  simpleCC() {
+    this.myAcceleration = -this.designKSimple * (this.mySpeed - this.targetSpeed);
+    return this.myAcceleration;
+  }
+
+  /**
+	* Get data from all the the other agents and act based on data from the
+	* nearestFrontNode
+	*
+	* @param leader
+	*/
+	getStep(nearestCyclistAhead, sampleRate) {
+    let step;
+		// If leader, accelerate with simpleCruiseControl
+		if (isLeader) {
+      // simple acceleration
+			simpleCC();
+      // for all other cyclsist
+		} else {
+      // get the gap to the preceding cyclsist
+      let gap = GeometryUtils.getDistance(nearestCyclistAhead.position , this.position);
+      // console.log(gap)
+      /* NOTE: Ideally this should be just collaborativeACC() without any condition, but I am testng it as it was coded in java
+      * The issue is that CACC does not account for situations in which a follower overpasses the preceding vehicle
+      */
+			if (gap > this.desirdIVSpacing) {
+        // apply acceleration algortithm
+				collaborativeACC();
+			} else {
+				// display negative acceleration
+				this.myAcceleration = Utilities.map(gap, 0, this.desirdIVSpacing, -0.01, -0.035);
+			}
+		}
+    // Get the step length for that speed
+    // x = Vi*t + (at2)/2, where time(t) is = 1
+    step = (this.mySpeed * sampleRate) + (((this.myAcceleration * Math.pow(sampleRate, 2))) / 2);
+
+		return step;
+	}
+
+  move(nearestCyclistAhead, sampleRate){
+    // get the stepLength
+    let step = this.getStep(nearestCyclistAhead, sampleRate);
+    // Ask the route for the location of the step
+    let tmpPosition = this.myRoute.getPosition(this.position, step);
+
+    if (tmpPosition instanceof Position){
+
+      this.position = tmpPosition;
+
+      // push datapoint to cyclsist's Session
+
+      //tmpDataP = new DataPoint(1000, tmpPosition, speed, Number(lastTime) + Number(sampleRate));
+
+      //this.dataPoints.push(tmpDataP);
+
+    } else {
+      this.status = "unsubscribed";
+      console.log("Session completed for cyclist: " + this.id +" Status: unsubscribed");
+    }
+
+
+
+    // update speed
+    this.mySpeed = step * sampleRate;
+
+  }
 
     /**
   	* Determine which node is in front
   	*
-  	* @param nodes
+  	* @param {Journey} the journey to which this cyclist belongs
   	*/
   	// getFrontCyclist(journey) {
     //   // If I am not the leader
@@ -78,10 +157,8 @@ class Cyclist{
     //     let route = journey.referenceRoute;
     //     // Get the distance to the leader, which is the farthest cyclist
     //   	let	distanceToFront = GeometryUtils.getDistance(cyclists[0].position, this.position);
-    //     //
-    // 		for (let i = 0; i < followers.length; i++) {
-    //
-    // 			let temp = followers[i];
+    //     // get cyclists in order
+    //     for (let temp of followers) {
     // 			// If temp is not myself
     // 			if (temp.id != this.id) {
     // 				// If temp is ahead
@@ -103,17 +180,7 @@ class Cyclist{
     //   }
   	// }
 
-  /**
-	* Simple Cruise Control Algorithm. This control algorithm simply
-	* accelerates the node until it reaches the target speed. It lacks of any
-	* form of adaptation
-	*
-	* @return
-	*/
-	simpleCC() {
-		let acceleration = -this.designKSimple * (this.mySpeed - this.targetSpeed);
-		return acceleration;
-	}
+
 
   /**
 	* Collaborative Adaptive Cruise Control.
@@ -168,43 +235,5 @@ class Cyclist{
 	// 	return a_des_lag;
 	// }
 
-  /**
-	* Get data from all the the other agents and act based on data from the
-	* nearestFrontNode
-	*
-	* @param nodes
-	*/
-	// move(leader, followers) {
-	// 	this.setLeader(leader);
-	// 	// if leader
-	// 	let time = 1;
-	// 	// If leader accelerate with simpleCruiseControl
-	// 	if (isLeader) {
-	// 		myAcceleration = simpleCC();
-	// 		targetSpeed = PApplet.map(app.mouseX, 0, app.width, 0.0f, topSpeed);
-	// 		// x = Vi*t + (at2)/2, where time(t) is = 1
-	// 		step = (mySpeed * time) + (((myAcceleration * (float) Math.pow(time, 2f))) / 2);
-	// 		mySpeed = step;
-	// 	} else {
-  //     this.getFrontCycist(followers);
-	// 		if (nearestFrontNode.pos.x - pos.x > desirdIVSpacing) {
-	// 			// if (pos.x.dist(nearestFrontNode.pos.x) > desirdIVSpacing) {
-	// 			// myAcceleration = adaptiveCC();
-	// 			// System.out.println(pos.dist(nearestFrontNode.pos));
-	// 			myAcceleration = collaborativeACC();
-	// 		} else {
-	// 			// reverse acceleration
-	// 			// myAcceleration = PApplet.map(pos.dist(nearestFrontNode.pos),
-	// 			// 0, desirdIVSpacing, -0.01f, -0.035f);
-	// 			myAcceleration = PApplet.map(nearestFrontNode.pos.x - pos.x, 0, desirdIVSpacing, -0.01f, -0.035f);
-	// 		}
-	// 		// x = Vi*t + (at2)/2, where time(t) is = 1
-	// 		step = (mySpeed * time) + (((myAcceleration * (float) Math.pow(time, 2f))) / 2);
-	// 		mySpeed = step;
-	// 	}
-  //
-	// 	// change position
-	// 	pos.x += step;
-	// 	distance += step;
-	// }
+
 }

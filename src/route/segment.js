@@ -44,7 +44,7 @@ class Segment{
   }
 
   /**
-  Returns the distance from the segment start to the position
+  Returns the distance from the segment start to the position. It assumes that the vehicle is subscribed to to route
   @param {Position} The position between the start and end of this segment
   @return {Number} distance Distance in meters
   */
@@ -53,22 +53,25 @@ class Segment{
   }
 
   /**
-  * Determines if the bearing of two positions is aligned with the bearing of the current segment.
+  * Determines if the bearing of a vector defined by two positions is aligned with the bearing of the current segment.
     It is useful to know if the cyclist rides aligned to the segment direction
   * @param {Position} startPos
   * @param {Position} endPos
   * @param {Number} range In radians. Half the range of elignment evaluation. Could be omited. It should not be greater than PI/2.
   * By default it is PI/2, meaning that the range of evaluation if the segment bearing +/- 90 degrees.
   */
-  isBearingAligned(startPos, endPos, angle){
-    let range = Math.PI/2;
-    if (angle != undefined && angle < Math.PI/2){
-      range = angle;
+  isBearingAligned(startPos, endPos, range){
+    let range2 = Math.PI/2;
+    // replace with new range
+    if (range != undefined && range < Math.PI/2){
+      range2 = range;
     }
+    // get bearing of two points
     let tmpBearing = GeometryUtils.getBearing(startPos, endPos);
+    // get angle between bearings
     let angleBetweenBearings = GeometryUtils.relativeBearing(this.bearing, tmpBearing);
-    console.log(angleBetweenBearings + " "+ range);
-    if (Math.abs(angleBetweenBearings) <= range){
+    //console.log(angleBetweenBearings + " "+ range2);
+    if (Math.abs(angleBetweenBearings) <= range2){
       return true;
     } else {
       return false;

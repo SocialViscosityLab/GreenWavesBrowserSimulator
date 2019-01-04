@@ -5,68 +5,57 @@
 * the cyclist joins the journey. It is equivalent to the ghost's server time).
 */
 class Session{
-	constructor(id, startTime){
-		this.id_user = id;
-		this.cyclist;
+	constructor(cyclist){
+		this.id_user = cyclist.id;
+		this.cyclist = cyclist;
 		this.dataPoints = [];
-		this.startTime = startTime;
+		this.startTime = new Date();
 		// increments in 1 by each time tick
 		this.timeCounter = 0;
+		// The first datapoint of this session
+		this.setCyclist();
 		// this means that the session is running. If changed it stops the runStep() function.
 		this.status = "running";
 	}
 
 	/**
-	* Sets the origin of a session. The origin is the starting position of the session on a route.
-	* @ param {Route} route The route on which the session runs
+	* Private Sets the origin of a session defined by the location at which a cyclist joins the journey. The origin is the starting position of the session on a route.
 	* @ param {number} ellapsedTime The route time at which the origin is set. This time is counted based on the global (Journey) timeCounter.
-	* @ param {Cyclist} cyclist The cyclist with origin location and speed
 	*/
-	setOrigin(route, ellapsedTime, cyclist){
-
-		// if the current position is at the start point of the route:
-		if (cyclist.position != undefined){
-
-			if (this.validateSubscription(route, cyclist.position)){
-
-				let tmp;
-				// calculate acceleration
-				let acc = "SessionError"; //calculateAcceleration (speed, this.dataPoints[this.dataPoints.length -1].speed, ellapsedTime - this.dataPoints[this.dataPoints.length -1].time);
-				// create a dataPoint
-				tmp = new DataPoint(acc, cyclist.position, cyclist.speed, ellapsedTime);
-				// add the datapoint
-				this.dataPoints.push(tmp);
-			}
-		}
-	}
+	setCyclist(){
+		// create a dataPoint
+		let tmp = new DataPoint(0, this.cyclist.position, this.cyclist.speed, this.timeCounter);
+		// add the datapoint
+		this.dataPoints.push(tmp);
+		this.timeCounter ++;
+}
 
 	/**
 	*The concept here is to calculate where a vehicle will be located after running at a given speed for a given time.
 	The process is as follows:
-	1- Determine the current position on a route. That is retrieved from the latest recorded dataPoint
+	1- Determine the current position on a route. That is retrieved from the latest recorded dataPoint or the ciclysts position
 	2- Calculate the distance traveled based on speed and step time
 	3- Locate the corresponding position on the route for the distance traveled. For this step of the process
 	we need to ask the route where on the path is located the traveled distance.
 	@param {Route} route The route
-	@param {Number} speed Travelling speed in m/s
-	@param {Number} travelTime Time ahead from the current time in seconds
+	@param {Number} frameRate Time glogal frameRate. It is also the time ahead from the current time in seconds
 	@return {Position} the latest estimated position
 	*/
-	runStep(route, speed, travelTime){
+	runStep(route, frameRate){
 		let tmpDataP;
 		if (this.status == "running"){
 			//1- Determine the current position on a route. That is retrieved from the latest recorded dataPoint
-			let currentPosition = this.dataPoints[this.dataPoints.length-1].position;
+			let currentPosition = this.cyclist.position; //this.dataPoints[this.dataPoints.length-1].position;
 			//2- Calculate the distance traveled based on speed and step time
-			let distanceTraveled = speed * travelTime;
+			let distanceTraveled = this.cyclist.mySpeed * frameRate;
 			//3- Locate the corresponding position on the route for the distance traveled
 			let tmpPosition = route.getPosition(currentPosition, distanceTraveled);
 
+			this.cyclist.position = tmpPosition;
+
 			if (tmpPosition instanceof Position){
 				//  create the new dataPoint
-				let lastTime = this.dataPoints[this.dataPoints.length-1].time;
-
-				tmpDataP = new DataPoint(1000, tmpPosition, speed, Number(lastTime) + Number(travelTime) );// Number(lastTime) + Number(travelTime)
+				tmpDataP = new DataPoint(this.cyclist.myAcceleration, tmpPosition, this.cyclist.speed, this.timeCounter + frameRate);
 
 				this.dataPoints.push(tmpDataP);
 
@@ -80,19 +69,6 @@ class Session{
 		return tmpDataP;
 	}
 
-
-	/**
-	* returns true if the any point of the route is whithin the subscritpionRange radius from the currentLocation.
-	* The subscription range radius is a property of the route
-	* @param {Route} route The route on which the session runs
-	* @param {Position} currentLocation The location to be validated
-	*/
-	validateSubscription (route, currentLocation){
-
-		return true; // rewrite this function
-
-	}
-
 	/**
 	* Sets all the datapoints on a route based on a given speed and sampleRate. If the route is a loop
 	it add points to the segment bewteen the last and the fisrt corner point
@@ -100,7 +76,7 @@ class Session{
 	* @param {number} speed The speed at the moment of joining the journey in meters per second
 	* @param {number} sampleRate Integer number in seconds
 	*/
-	setSessionPoints (route, speed, sampleRate){
+	setSessionPoints (route, sampleRate){
 
 		let lastTimeStamp;
 
@@ -122,7 +98,7 @@ class Session{
 			}
 
 			// add cornerPoint
-			let tmpDataPoints =  GeometryUtils.calculateStepsBetweenPositions(startCoords, endCoords, speed, sampleRate, lastTimeStamp);
+			let tmpDataPoints =  GeometryUtils.calculateStepsBetweenPositions(startCoords, endCoords, this.cyclist.speed, sampleRate, lastTimeStamp);
 
 			this.dataPoints.push.apply(this.dataPoints,tmpDataPoints);
 
@@ -137,7 +113,7 @@ class Session{
 			lastTimeStamp = this.dataPoints[this.dataPoints.length-1].time + +sampleRate;
 
 			// Using utils/geometryUtils.js
-			let tmpDataPoints =  GeometryUtils.calculateStepsBetweenPositions(startCoords, endCoords, speed, sampleRate, lastTimeStamp);
+			let tmpDataPoints =  GeometryUtils.calculateStepsBetweenPositions(startCoords, endCoords, this.cyclist.speed, sampleRate, lastTimeStamp);
 
 			this.dataPoints.push.apply(this.dataPoints,tmpDataPoints);
 

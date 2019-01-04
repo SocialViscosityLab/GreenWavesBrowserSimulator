@@ -82,9 +82,10 @@ class Journey{
 	/**
 	* Initializes the Ghost leader
 	*/
-	setupGhost(){
-		let ghostCyclist = new Cyclist(0, this.referenceRoute.routePoints[0], 5); // id, position, speed
-		this.sessions[0].setOrigin(this.referenceRoute, 0, ghostCyclist); //route, ellapsedTime, cyclist
+	setupGhost(speed){
+		let ghostCyclist = new Cyclist("Ghost_"+this.id, this.referenceRoute.routePoints[0], speed); // id, position, speed
+		this.sessions.push(new Session(ghostCyclist));
+		//this.sessions[0].setCyclist(this.referenceRoute, 0, ghostCyclist); //route, ellapsedTime, cyclist
 		// set all greenwave datapoints to the origin
 		for (var i = 0; i < this.greenWaveScope; i++) {
 
@@ -99,8 +100,8 @@ class Journey{
 	*@param {number} speed The leading cyclists speed in meters per second
 	*@param {number} sampleRate Integer value with sampling rate in seconds
 	*/
-	runGhost(speed, sampleRate){
-		let tmp = this.sessions[0].runStep (this.referenceRoute, speed, sampleRate); //runSession (route, speed, sampleRate in milliseconds)
+	runGhost(sampleRate){
+		let tmp = this.sessions[0].runStep (this.referenceRoute, sampleRate); //runSession (route, speed, sampleRate in milliseconds)
 		// add the latest dataPoint to the tail of the green wave
 		if (tmp != undefined){
 			this.greenWaveDataPoints.push(tmp);
@@ -118,12 +119,12 @@ class Journey{
 	*@param {number} speed The cyclists speed in meters per second. WARNING It applies to ALL cyclists
 	*@param {number} sampleRate Integer value with sampling rate in seconds
 	*/
-	runSessions(speed, sampleRate){
+	runSessions(sampleRate){
 		// run ghost session
-		this.runGhost(speed, sampleRate);
+		this.runGhost(sampleRate);
 		// run all other sessions
 		for (var i = 1; i < this.sessions.length; i++) {
-			this.sessions[i].runStep (this.referenceRoute, speed, sampleRate);
+			this.sessions[i].runStep (this.referenceRoute, sampleRate);
 		}
 	}
 
@@ -133,12 +134,12 @@ class Journey{
 	*@param {number} speed The cyclists speed in meters per second
 	*@param {number} sampleRate Integer value with sampling rate in seconds
 	*/
-	runSession(id, speed, sampleRate){
+	runSession(id,sampleRate){
 		if (this.sessions[id] != undefined){
 			if (id == 0){
 				this.runGhost();
 			}else {
-				this.sessions[id].runStep (this.referenceRoute, speed, sampleRate); //runSession (route, speed, sampleRate in milliseconds)
+				this.sessions[id].runStep (this.referenceRoute, sampleRate); //runSession (route, speed, sampleRate in milliseconds)
 			}
 		}
 	}
@@ -149,5 +150,16 @@ class Journey{
 	*/
 	setGreenWaveScope(val){
 		this.greenWaveScope = val;
+	}
+
+	/**
+	* returns true if the any point of the route is whithin the subscritpionRange radius from the currentLocation.
+	* The subscription range radius is a property of the route
+	* @param {Position} currentLocation The location to be validated
+	*/
+	validateSubscription (currentLocation){
+
+		return true; // rewrite this function
+
 	}
 }
