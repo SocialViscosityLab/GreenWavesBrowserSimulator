@@ -5,17 +5,17 @@ class GeometryUtils{
   constructor(){
   }
 
-/**
-Forecasts all the vehicle's datapoints on route from a start to an end point. Each position is estimated based on the given
-speed and sample rate. Since the speed is constant, the acceleration value of each datapoint is 0. The lastTimeStamp parameter
-serves to set the initial datapoints counter. Such counter marks each datapoint with a sequenced value of time in
-the same units as sampleRate.
-@param {Position} startCoords start position on route
-@param {Position} endCoords final position on route
-@param {number} speed constant speed travelling on route
-@param {number} sampleRate rate of data sampling in seconds
-@param {number} lastTimeStamp timeStamp at the begining of the forecasted travel
-*/
+  /**
+  Forecasts all the vehicle's datapoints on route from a start to an end point. Each position is estimated based on the given
+  speed and sample rate. Since the speed is constant, the acceleration value of each datapoint is 0. The lastTimeStamp parameter
+  serves to set the initial datapoints counter. Such counter marks each datapoint with a sequenced value of time in
+  the same units as sampleRate.
+  @param {Position} startCoords start position on route
+  @param {Position} endCoords final position on route
+  @param {number} speed constant speed travelling on route
+  @param {number} sampleRate rate of data sampling in seconds
+  @param {number} lastTimeStamp timeStamp at the begining of the forecasted travel
+  */
   static calculateStepsBetweenPositions(startCoords, endCoords, speed, sampleRate, lastTimeStamp){
     let rtn = [];
     // 0 add the corner point
@@ -51,14 +51,14 @@ the same units as sampleRate.
     return rtn;
   }
 
-/**
-Calculates the position bewteen two points at a given ellapsed time
-@param {Position} startCoords start position on route
-@param {Position} endCoords final position on route
-@param {number} speed constant speed travelling on route
-@param {number} ellapsedTime rate of data sampling in seconds
-@return {Position} the estimated position bewteen two points at a given ellapsed time
-*/
+  /**
+  Calculates the position bewteen two points at a given ellapsed time
+  @param {Position} startCoords start position on route
+  @param {Position} endCoords final position on route
+  @param {number} speed constant speed travelling on route
+  @param {number} ellapsedTime rate of data sampling in seconds
+  @return {Position} the estimated position bewteen two points at a given ellapsed time
+  */
   static calculateCurrentPosition(startCoords, endCoords, speed, ellapsedTime) {
 
     let distance = this.getDistance(startCoords, endCoords); //
@@ -68,12 +68,12 @@ Calculates the position bewteen two points at a given ellapsed time
     return this.getIntermediatePoint(startCoords, endCoords, fraction);
   }
 
-/**
-Gets the geodesic distance between two points
-@param {Position} startCoords
-@param {Position} endCoords
-@return {number} The distance between the two points in meters
-*/
+  /**
+  Gets the geodesic distance between two points
+  @param {Position} startCoords
+  @param {Position} endCoords
+  @return {number} The distance between the two points in meters
+  */
   static getDistance(startCoords, endCoords){
     //Distance code taken from: https://www.movable-type.co.uk/scripts/latlong.html
 
@@ -102,13 +102,13 @@ Gets the geodesic distance between two points
     return Number.parseFloat(d);
   }
 
-/**
-Gets the point between two coordinates at a given fraction of the straight trajectory
-@param {Position} startCoords
-@param {Position} endCoords
-@param {number} fraction A value between 0 and 1
-@return {Position} A point between the two source points
-*/
+  /**
+  Gets the point between two coordinates at a given fraction of the straight trajectory
+  @param {Position} startCoords
+  @param {Position} endCoords
+  @param {number} fraction A value between 0 and 1
+  @return {Position} A point between the two source points
+  */
   static getIntermediatePoint(startCoords, endCoords, fraction){
 
     let lat1 = startCoords.getLatRad();
@@ -192,14 +192,49 @@ Gets the point between two coordinates at a given fraction of the straight traje
   @return {number} The closest distance
   */
   static euclideanDistToSegment(p, v, w) {
-     // console.log ("p ");
-     // console.log (p);
-     // console.log ("v ");
-     // console.log (v);
-     // console.log ("w ");
-     // console.log (w);
+    // console.log ("p ");
+    // console.log (p);
+    // console.log ("v ");
+    // console.log (v);
+    // console.log ("w ");
+    // console.log (w);
     return Math.sqrt(this.distToSegmentSquared(p, v, w));
   }
 
+  /**
+  * Calculates bearing between two points. Source: https://www.movable-type.co.uk/scripts/latlong.html
+  * Computations made in polar coordinates
+  * @param {Position} startPoint
+  * @param {Position} endPoint
+  * @return {Number} the bearing in radians
+  */
+  static getBearing(startPoint, endPoint){
+    let start = startPoint.getLatLonRad();
+    let end = endPoint.getLatLonRad();
+    // new lat
+    let y = Math.sin(end.lon-start.lon) * Math.cos(end.lat);
+    // new lon
+    let x = Math.cos(start.lat)*Math.sin(end.lat) -
+    Math.sin(start.lat)*Math.cos(end.lat)*Math.cos(end.lon-start.lon);
+    //
+    let brng = Math.atan2(y, x);
+    return brng;
+  }
+
+/**
+* Gets the angle between two bearings
+* https://rosettacode.org/wiki/Angle_difference_between_two_bearings
+*/
+  static relativeBearing(b1Rad, b2Rad){
+      	let b1y = Math.cos(b1Rad);
+      	let b1x = Math.sin(b1Rad);
+      	let b2y = Math.cos(b2Rad);
+      	let b2x = Math.sin(b2Rad);
+      	let crossp = b1y * b2x - b2y * b1x;
+      	let dotp = b1x * b2x + b1y * b2y;
+      	if(crossp > 0.)
+      		return Math.acos(dotp);
+      	return -Math.acos(dotp);
+      }
 
 }
