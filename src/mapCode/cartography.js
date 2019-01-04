@@ -6,7 +6,7 @@ to visualize its complementary class named without the prefix (e.g., Journey)
 */
 class Cartography{
 	constructor(){
-		/** The Leaflet instance */
+		// The Leaflet instance
 		this.map;
 		/** All the routes associates to this map */
 		this.mapRoutes = [];

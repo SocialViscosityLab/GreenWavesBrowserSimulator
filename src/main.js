@@ -1,21 +1,21 @@
 
-/** The journey manager in this simulation*/
+// The journey manager in this simulation
 let journeyM;
-/** The routes manager in this simulation*/
+// The routes manager in this simulation
 let routeM;
-/** The instance of Cartography displayed in browser*/
+// The instance of Cartography displayed in browser/
 let currentMap;
-/** The period of time used to trigger each step of the simulator and record data from vehicles*/
+// The period of time used to trigger each step of the simulator and record data from vehicles
 let sampleRate;
-/** The interval object controlling the simuation internal clock*/
+// The interval object controlling the simuation internal clock
 let clicker;
-/***/
+// The instance that reads files from the hard drive
 let directory;
 //  temporal to simulate new cyclists id_user
 let appID = 0;
 
 /**
-Setups the variables
+P5.js Setup. It setups variables and initializes instances
 */
 function setup(){
 	document.getElementById("routeButton").onclick = setupRoutes;
@@ -39,6 +39,7 @@ function setup(){
 * On HTML button click event it create the route markers of the cornerpoints on the map
 */
 function setupRoutes(){
+	// Get routes from directory and set them up.
 	routeM.setupRoutes(directory, currentMap);
 	/**** Visualization  of route on Map *****/
 	// plot route path on map

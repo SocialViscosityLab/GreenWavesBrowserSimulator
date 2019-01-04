@@ -2,12 +2,14 @@
 /**
 * This class defines a hybrid unit composed by one rider and one bicycle.
 *
-* DEFINITIONS (Reference book: Vehicle Dynamics and Control, Rajamani)
-* SPACING ERROR: the actual spacing from the preceding vehicle and the desired inter-vehicle spacing.
+* DEFINITIONS <br> (Reference book: Vehicle Dynamics and Control, Rajamani, First Edition) <br><br>
+* SPACING ERROR: the actual spacing from the preceding vehicle and the desired inter-vehicle spacing. <br>
 * DESIRED INTER-VEHICLE SPACING: the desired distance between the current vehicle and the one in front including the length of the vehicle ahead.It could be chosen as a function of vehicle speed.
 *
-* @author jsalam
-* Initial version developed in JAVA / Processing 3
+* Initial version developed in JAVA / Processing 3 by jsalam
+* @param {String} id cyclist ID
+* @param {Position} position Insertion position
+* @param {Number} speed insertion speed
 *
 */
 class Cyclist{
@@ -145,7 +147,7 @@ class Cyclist{
   	*
   	* @param {Journey} the journey to which this cyclist belongs
   	*/
-  	// getFrontCyclist(journey) {
+  	 getFrontCyclist(journey) {
     //   // If I am not the leader
     //   if (!this.isLeader){
     //     // get all the cyclists
@@ -178,7 +180,7 @@ class Cyclist{
     // 			}
     // 		}
     //   }
-  	// }
+  	 }
 
 
 
@@ -191,7 +193,7 @@ class Cyclist{
 	*
 	* @return
 	*/
-	// collaborativeACC() {
+	 collaborativeACC() {
   //
 	// 	// a. Get information from the nearest node in the front
 	// 	let rel_speed_front;
@@ -233,7 +235,7 @@ class Cyclist{
 	// 	this.lastAccelerationPlatoon = a_des_lag;
   //
 	// 	return a_des_lag;
-	// }
+	 }
 
 
 }

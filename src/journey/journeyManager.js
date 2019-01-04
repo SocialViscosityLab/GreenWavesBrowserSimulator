@@ -5,6 +5,8 @@ class JourneyManager{
   constructor(){
     /** The collection of journeys in thjis simulation*/
     this.journeys = [];
+    /** The coleection of cyclsist*/
+    this.cyclists = [];
   }
 
   /**
