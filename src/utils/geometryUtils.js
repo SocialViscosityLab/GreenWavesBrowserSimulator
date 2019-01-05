@@ -82,7 +82,7 @@ class GeometryUtils{
     let lat2 = endCoords.lat;
     let lon2 = endCoords.lon;
 
-    let R = 6371e3; // meters
+    const R = 6371e3; // meters
 
     //Converting latitud and longitude to radians
     //let fi1 = Math.sin((lat1 * Math.PI) / 180);
@@ -151,20 +151,20 @@ class GeometryUtils{
 
   }
 
-  /*
-  Private function to be used by dist2()
-  src: https://stackoverflow.com/questions/849211/shortest-distance-between-a-point-and-a-line-segment
-  */
-  static sqr(x) {
-    return x * x
-  }
+  // /*
+  // Private function to be used by dist2()
+  // src: https://stackoverflow.com/questions/849211/shortest-distance-between-a-point-and-a-line-segment
+  // */
+  // static sqr(x) {
+  //   return x * x
+  // }
 
   /*
   Private function to be used by distToSegmentSquared()
   src: https://stackoverflow.com/questions/849211/shortest-distance-between-a-point-and-a-line-segment
   */
   static dist2(v, w) {
-    return this.sqr(v.lon - w.lon) + this.sqr(v.lat - w.lat)
+    return Math.sqrt(v.lon - w.lon) + Math.sqrt(v.lat - w.lat);
   }
 
   /**
@@ -192,13 +192,58 @@ class GeometryUtils{
   @return {number} The closest distance
   */
   static euclideanDistToSegment(p, v, w) {
-    // console.log ("p ");
-    // console.log (p);
-    // console.log ("v ");
-    // console.log (v);
-    // console.log ("w ");
-    // console.log (w);
     return Math.sqrt(this.distToSegmentSquared(p, v, w));
+  }
+
+  /**
+  * Calculates distance of a position to a segment using vector projection on a plane.
+  * WARNING: it is only valid for short distances beacuse it asumes a planar 2D surface instead of a spheric surface
+  * Source: https://stackoverflow.com/questions/849211/shortest-distance-between-a-point-and-a-line-segment
+  * @param {Position} p The position
+  * @param {Position} v Segment origin
+  * @param {Position} w Segment end
+  * @return {number} The closest distance in meters
+  */
+  static distToSegment(p, v, w){
+    // let's call our point p0 and the points that define the line as p1 and p2.
+    let x = p.lon;
+    let y = p.lat;
+    let startX = v.lon;
+    let startY = v.lat;
+    let endX = w.lon;
+    let endY = w.lat;
+    // Then you get the vectors A = p0 - p1 and B = p2 - p1.
+    let A = x - startX;
+    let B = y - startY;
+    let C = endX - startX;
+    let D = endY - startY;
+    let dot = A * C + B * D;
+    let len_sq = C * C + D * D;
+    // Param is the scalar value that when multiplied to B gives you the point on the line closest to p0.
+    let param = -1;
+    //in case of 0 length line
+    if (len_sq != 0)
+      param = dot / len_sq;
+    // XX and YY is then the closest point on the line segment
+    let xx, yy;
+    // If param <= 0, the closest point is p1.
+    if (param < 0) {
+      xx = startX;
+      yy = startY;
+      //If param >= 1, the closest point is p1.
+    } else if (param > 1) {
+      xx = endX;
+      yy = endY;
+      //If it's between 0 and 1, it's somewhere between p1 and p2 so we interpolate.
+    } else {
+      xx = startX + param * C;
+      yy = startY + param * D;
+    }
+    // dx/dy is the vector from p0 to that point,
+    let dx = x - xx;
+    let dy = y - yy;
+    //and finally we return the length that vector
+    return this.getDistance(p,new Position(yy,xx));
   }
 
   /**
@@ -221,20 +266,20 @@ class GeometryUtils{
     return brng;
   }
 
-/**
-* Gets the angle between two bearings
-* https://rosettacode.org/wiki/Angle_difference_between_two_bearings
-*/
+  /**
+  * Gets the angle between two bearings
+  * https://rosettacode.org/wiki/Angle_difference_between_two_bearings
+  */
   static relativeBearing(b1Rad, b2Rad){
-      	let b1y = Math.cos(b1Rad);
-      	let b1x = Math.sin(b1Rad);
-      	let b2y = Math.cos(b2Rad);
-      	let b2x = Math.sin(b2Rad);
-      	let crossp = b1y * b2x - b2y * b1x;
-      	let dotp = b1x * b2x + b1y * b2y;
-      	if(crossp > 0.)
-      		return Math.acos(dotp);
-      	return -Math.acos(dotp);
-      }
+    let b1y = Math.cos(b1Rad);
+    let b1x = Math.sin(b1Rad);
+    let b2y = Math.cos(b2Rad);
+    let b2x = Math.sin(b2Rad);
+    let crossp = b1y * b2x - b2y * b1x;
+    let dotp = b1x * b2x + b1y * b2y;
+    if(crossp > 0.)
+    return Math.acos(dotp);
+    return -Math.acos(dotp);
+  }
 
 }

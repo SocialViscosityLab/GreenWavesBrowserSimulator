@@ -15,7 +15,7 @@ class RouteManager{
   	let jSONroutes = directory.getJsonObjects();
   //	for (let points of jSONroutes){
   	// Instantiate objects
-  	let routeTmp = new Route();
+  	let routeTmp = new Route("Pilot route");
   	//********* COMMENT FROM HERE
   	// The route points
   	let points = [[40.10146, -88.23445],[40.10143,-88.23860],[40.10409,-88.23863],[40.10409,-88.23345],[40.10146,-88.233385]];

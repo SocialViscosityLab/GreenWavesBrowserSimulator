@@ -1,4 +1,4 @@
-
+/** GLOBAL VARIABLE  at DirectoryReader class. It stores the objects read from the hard drive */
 var jsonObjects = [];
 
 /**
@@ -8,8 +8,6 @@ var jsonObjects = [];
 class DirectoryReader{
 
   constructor(){
-    /** The json object read from the files*/
-    //var jsonObjects = [];
     // Validate the browser compatibility
     if (window.File && window.FileReader && window.FileList && window.Blob) {
       console.log(" Great success! All the File APIs are supported.")

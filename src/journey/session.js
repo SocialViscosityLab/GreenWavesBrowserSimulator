@@ -1,34 +1,22 @@
 /**
 * A session is an instance of a cyclist running on a Journey.
 * @param {string} id The user id session identifier
-* @param {number} startTime The start time of the session which corresponds to the moment
-* the cyclist joins the journey. It is equivalent to the ghost's server time).
 */
 class Session{
-	constructor(cyclist){
-		this.id_user = cyclist.id;
-		this.cyclist = cyclist;
+	constructor(id){
+		this.id_user = id;
 		this.dataPoints = [];
 		this.startTime = new Date();
-		// increments in 1 by each time tick
-		this.timeCounter = 0;
-		// The first datapoint of this session
-		this.setCyclist();
-		// this means that the session is running. If changed it stops the runStep() function.
-		this.status = "running";
 	}
 
 	/**
-	* Private Sets the origin of a session defined by the location at which a cyclist joins the journey. The origin is the starting position of the session on a route.
-	* @ param {number} ellapsedTime The route time at which the origin is set. This time is counted based on the global (Journey) timeCounter.
+	* The observer notify() function. Instances of this class observe an instance of Cyclist class
 	*/
-	setCyclist(){
-		// create a dataPoint
-		let tmp = new DataPoint(0, this.cyclist.position, this.cyclist.speed, this.timeCounter);
+	notify(data){
 		// add the datapoint
-		this.dataPoints.push(tmp);
-		this.timeCounter ++;
-}
+		this.dataPoints.push(data);
+	}
+
 
 	/**
 	*The concept here is to calculate where a vehicle will be located after running at a given speed for a given time.
@@ -40,7 +28,7 @@ class Session{
 	@param {Route} route The route
 	@param {Number} frameRate Time glogal frameRate. It is also the time ahead from the current time in seconds
 	@return {Position} the latest estimated position
-	*/
+
 	runStep(route, frameRate){
 		let tmpDataP;
 		if (this.status == "running"){
@@ -63,22 +51,26 @@ class Session{
 
 			} else {
 				this.status = "completed";
-				console.log("Session completed for vehicle: " + this.id_user);
+				console.log("Session completed for vehicle: " , this.id_user);
 			}
 		}
 		return tmpDataP;
 	}
+	*/
 
 	/**
-	* Sets all the datapoints on a route based on a given speed and sampleRate. If the route is a loop
+	* Static class. Sets all the datapoints on a route based on a given speed and sampleRate. If the route is a loop
 	it add points to the segment bewteen the last and the fisrt corner point
 	* @param {Route} route The route on which the session runs
 	* @param {number} speed The speed at the moment of joining the journey in meters per second
 	* @param {number} sampleRate Integer number in seconds
+	* @return {Array} a collection of datapoints
 	*/
-	setSessionPoints (route, sampleRate){
+	static setSessionPoints (route, speed, sampleRate){
 
 		let lastTimeStamp;
+
+		let dataPoints = [];
 
 		for (var i = 0; i < route.routePoints.length-1; i++) {
 
@@ -87,9 +79,9 @@ class Session{
 			let endCoords = new Position(route.routePoints[i+1].lat, route.routePoints[i+1].lon);
 
 
-			if (this.dataPoints.length > 0 ){
+			if (dataPoints.length > 0 ){
 
-				lastTimeStamp = this.dataPoints[this.dataPoints.length-1].time + +sampleRate;
+				lastTimeStamp = dataPoints[dataPoints.length-1].time + +sampleRate;
 
 			} else {
 
@@ -98,9 +90,9 @@ class Session{
 			}
 
 			// add cornerPoint
-			let tmpDataPoints =  GeometryUtils.calculateStepsBetweenPositions(startCoords, endCoords, this.cyclist.speed, sampleRate, lastTimeStamp);
+			let tmpDataPoints =  GeometryUtils.calculateStepsBetweenPositions(startCoords, endCoords, speed, sampleRate, lastTimeStamp);
 
-			this.dataPoints.push.apply(this.dataPoints,tmpDataPoints);
+			dataPoints.push.apply(dataPoints,tmpDataPoints);
 
 		}
 
@@ -110,22 +102,24 @@ class Session{
 
 			let endCoords = new Position(route.routePoints[0].lat, route.routePoints[0].lon);
 
-			lastTimeStamp = this.dataPoints[this.dataPoints.length-1].time + +sampleRate;
+			lastTimeStamp = dataPoints[dataPoints.length-1].time + +sampleRate;
 
 			// Using utils/geometryUtils.js
-			let tmpDataPoints =  GeometryUtils.calculateStepsBetweenPositions(startCoords, endCoords, this.cyclist.speed, sampleRate, lastTimeStamp);
+			let tmpDataPoints =  GeometryUtils.calculateStepsBetweenPositions(startCoords, endCoords, speed, sampleRate, lastTimeStamp);
 
-			this.dataPoints.push.apply(this.dataPoints,tmpDataPoints);
+			dataPoints.push.apply(dataPoints,tmpDataPoints);
 
 			// add last position point
-			lastTimeStamp = this.dataPoints[this.dataPoints.length-1].time + +sampleRate;
+			lastTimeStamp = dataPoints[dataPoints.length-1].time + +sampleRate;
 
 			let tmpDP = new DataPoint(0, endCoords, speed, lastTimeStamp);
 
-			this.dataPoints.push(tmpDP);
+			dataPoints.push(tmpDP);
 		}
 
-		console.log(this.dataPoints.length+ " dataPoints created in session " + this.id_user);
+		console.log(dataPoints.length+ " dataPoints created session");
+
+		return dataPoints;
 	}
 
 	/**
@@ -145,7 +139,7 @@ class Session{
 
 	/**
 	*Returns a collection of the latest datapoints of this session. The number of datapoints is defined by the parameter 'ticks'.
-	*If you multipluy tge number of ticks by the sampleRate, tyen you get the latest datapoints for that period of time
+	*If you multiply the number of ticks by the sampleRate, tyen you get the latest datapoints for that period of time
 	*@param {Number} ticks the number of latest positions to be retrieved from the datapoints collection
 	*@return collection of dataPoints
 	*/

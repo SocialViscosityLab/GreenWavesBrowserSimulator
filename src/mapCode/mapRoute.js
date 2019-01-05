@@ -41,13 +41,13 @@ class MapRoute{
     */
     plotPath(theMap){
       if (this.pathPolyline == undefined){
-        this.pathPolyline = L.polyline(this.route.getRouteLatLongs(), {color: '#FF69B4', weight:2}).addTo(theMap);
+        this.pathPolyline = L.polyline(this.route.getRouteLatLongs(), {color: '#FF69B4', weight:2, opacity: 0.3}).addTo(theMap);
       } else {
         // remove the current pathPolyline
         theMap.removeLayer(this.pathPolyline);
 
         // add a new one
-        this.pathPolyline = L.polyline(this.route.getRouteLatLongs(), {color: '#FF69B4', weight:2}).addTo(theMap);
+        this.pathPolyline = L.polyline(this.route.getRouteLatLongs(), {color: '#FF69B4', weight:2, opacity: 0.3}).addTo(theMap);
       }
     }
   }

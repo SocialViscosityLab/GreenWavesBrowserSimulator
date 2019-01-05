@@ -12,9 +12,6 @@ class Journey{
 		this.referenceRoute = route;
 		this.sessions = [];
 		console.log("Journey " + this.id + " initialized" );
-		// The green wave scope in number of datapoints.
-		this.greenWaveScope = 15;
-		this.greenWaveDataPoints = [];
 	}
 
 	/**
@@ -30,7 +27,7 @@ class Journey{
 
 				this.sessions.push(session);
 
-				console.log("New session id: " + this.getLastSession().id_user + " added to journey "+ this.id);
+				console.log("New session id: ", this.getLastSession().id_user, " added to journey "+ this.id);
 
 			}else{
 				window.alert("Session ID conflict " + session.id_user + "No session added");
@@ -80,22 +77,6 @@ class Journey{
 	}
 
 	/**
-	* Initializes the Ghost leader
-	*/
-	setupGhost(speed){
-		let ghostCyclist = new Cyclist("Ghost_"+this.id, this.referenceRoute.routePoints[0], speed); // id, position, speed
-		this.sessions.push(new Session(ghostCyclist));
-		//this.sessions[0].setCyclist(this.referenceRoute, 0, ghostCyclist); //route, ellapsedTime, cyclist
-		// set all greenwave datapoints to the origin
-		for (var i = 0; i < this.greenWaveScope; i++) {
-
-			this.greenWaveDataPoints.push(this.sessions[0].dataPoints[0]);
-		}
-
-		console.log("Ghost in journey "+ this.id+ " initialized. Green wave datapoint collection initialized: " + this.greenWaveDataPoints.length + " dataPoints");
-	}
-
-	/**
 	* Executes the leader/ghosts session
 	*@param {number} speed The leading cyclists speed in meters per second
 	*@param {number} sampleRate Integer value with sampling rate in seconds
@@ -142,14 +123,6 @@ class Journey{
 				this.sessions[id].runStep (this.referenceRoute, sampleRate); //runSession (route, speed, sampleRate in milliseconds)
 			}
 		}
-	}
-
-	/**
-	* Sets the green wave scope in number of datapoints. Usually the green wave scope is defined in ticks, which can be converted to time by
-	multiplying them by the duration of the sample rate, or into distance by multiplying ellapsed time by the speed
-	*/
-	setGreenWaveScope(val){
-		this.greenWaveScope = val;
 	}
 
 	/**

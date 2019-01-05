@@ -1,21 +1,20 @@
 
-/** The journey manager in this simulation*/
+// The journey manager in this simulation
 let journeyM;
-/** The routes manager in this simulation*/
+// The routes manager in this simulation
 let routeM;
-/** The instance of Cartography displayed in browser*/
+// The instance of Cartography displayed in browser/
 let currentMap;
-/** The period of time used to trigger each step of the simulator and record data from vehicles*/
+// The period of time used to trigger each step of the simulator and record data from vehicles
 let sampleRate;
-/** The interval object controlling the simuation internal clock*/
+// The interval object controlling the simuation internal clock
 let clicker;
-/***/
+// The instance that reads files from the hard drive
 let directory;
-//  temporal to simulate new cyclists id_user
-let appID = 0;
+
 
 /**
-Setups the variables
+P5.js Setup. It setups variables and initializes instances
 */
 function setup(){
 	document.getElementById("routeButton").onclick = setupRoutes;
@@ -39,6 +38,7 @@ function setup(){
 * On HTML button click event it create the route markers of the cornerpoints on the map
 */
 function setupRoutes(){
+	// Get routes from directory and set them up.
 	routeM.setupRoutes(directory, currentMap);
 	/**** Visualization  of route on Map *****/
 	// plot route path on map
@@ -78,19 +78,12 @@ function activateJourneys(){
 * Add session to journey with nearest route
 */
 function addCyclistListener(){
-	currentMap.map.on('click', function(e) {
-		let eventLocation = new Position (e.latlng.lat,e.latlng.lng);
-		// retrive the journey with the nearest route to event location
-		let journeyTmp = journeyM.getNearestTo(eventLocation); /*&^%$#@! DO this /*&^%$#@! /*&^%$#@! /*&^%$#@! /*&^%$#@! */
-		// create a cyclists
-		let cyclistTmp = new Cyclist("myAppID_"+appID, eventLocation, 3);
-		appID++;
-		// create a session for that cyclist
-		let tmpSession = new Session(cyclistTmp);
-		// add session to journey
-		journeyTmp.addNewSession(tmpSession);
-		// update mapJourneys
-		currentMap.updateJourney();
+	currentMap.map.on('click', function(event) {
+		// add ciclists
+		if (journeyM.addCyclist(event)){
+			// update mapJourneys
+			currentMap.updateJourney();
+		}
 	});
 }
 
@@ -105,12 +98,14 @@ function run(){
 			alert("Route finalized");
 		}
 	}
-	// Run sessions
-	journeyM.runSessions(sampleRate);
+	// Run cyclists
+	journeyM.runCyclists(sampleRate);
 	//plot all journeys
 	currentMap.plotJourneys();
 	//plot dataPoints
 	//currentMap.displaySessionMarker[0,0];
+	// plot cyclists
+	currentMap.plotCyclists();
 	// plot green waves
 	currentMap.plotGreenWaves();
 }
