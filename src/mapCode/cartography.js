@@ -12,6 +12,8 @@ class Cartography{
 		this.mapRoutes = [];
 		/** All the journeys running on the routes associates to this map */
 		this.mapJourneys = [];
+		/** All the cyclists running on the routes */
+		this.mapCyclists = [];
 		this.setup();
 	}
 
@@ -34,22 +36,29 @@ class Cartography{
 	/**
 	Sets the first journey to the map
 	*/
-	setupJourney(journey){
-		this.mapJourneys.push(new MapJourney(journey));
+	setupJourney(journey, greenWave){
+		this.mapJourneys.push(new MapJourney(journey, greenWave));
 	}
 
 	/**
 	Adds a route to the collection of routes of this map
 	*/
 	addRoute(route){
-		this.mapRoutes.push(new mapRoute(route));
+		this.mapRoutes.push(new MapRoute(route));
 	}
 
 	/**
 	Adds a journey to the collection of journeys of this map
 	*/
 	addJourney(journey){
-		this.mapJourneys.push(new mapJourney(journey));
+		this.mapJourneys.push(new MapJourney(journey));
+	}
+
+	/**
+	Adds a cyclist to the collection of cyclists of this map
+	*/
+	addCyclist(cyclist){
+		this.mapCyclists.push(new MapCyclist(cyclist));
 	}
 
 	/**
@@ -142,9 +151,21 @@ class Cartography{
 		}
 	}
 
+	/**
+	* Displays all the route cornerpoints on the map
+	*/
 	plotRoutesCornerPoints(){
 		for (let r of this.mapRoutes) {
 			r.plotRouteCornerPoints(this.map);
+		}
+	}
+
+	/**
+	* Displays all the cyclists on the map
+	*/
+	plotCyclists(){
+		for (let c of this.mapCyclists) {
+			c.plotMarker(this.map);
 		}
 	}
 

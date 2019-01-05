@@ -11,8 +11,7 @@ let sampleRate;
 let clicker;
 // The instance that reads files from the hard drive
 let directory;
-//  temporal to simulate new cyclists id_user
-let appID = 0;
+
 
 /**
 P5.js Setup. It setups variables and initializes instances
@@ -79,19 +78,12 @@ function activateJourneys(){
 * Add session to journey with nearest route
 */
 function addCyclistListener(){
-	currentMap.map.on('click', function(e) {
-		let eventLocation = new Position (e.latlng.lat,e.latlng.lng);
-		// retrive the journey with the nearest route to event location
-		let journeyTmp = journeyM.getNearestTo(eventLocation); /*&^%$#@! DO this /*&^%$#@! /*&^%$#@! /*&^%$#@! /*&^%$#@! */
-		// create a cyclists
-		let cyclistTmp = new Cyclist("myAppID_"+appID, eventLocation, 3);
-		appID++;
-		// create a session for that cyclist
-		let tmpSession = new Session(cyclistTmp);
-		// add session to journey
-		journeyTmp.addNewSession(tmpSession);
-		// update mapJourneys
-		currentMap.updateJourney();
+	currentMap.map.on('click', function(event) {
+		// add ciclists
+		if (journeyM.addCyclist(event)){
+			// update mapJourneys
+			currentMap.updateJourney();
+		}
 	});
 }
 
@@ -106,12 +98,14 @@ function run(){
 			alert("Route finalized");
 		}
 	}
-	// Run sessions
-	journeyM.runSessions(sampleRate);
+	// Run cyclists
+	journeyM.runCyclists(sampleRate);
 	//plot all journeys
 	currentMap.plotJourneys();
 	//plot dataPoints
 	//currentMap.displaySessionMarker[0,0];
+	// plot cyclists
+	currentMap.plotCyclists();
 	// plot green waves
 	currentMap.plotGreenWaves();
 }

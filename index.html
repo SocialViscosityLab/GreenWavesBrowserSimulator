@@ -18,27 +18,31 @@
   integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA=="
   crossorigin=""></script>
 
-  <!-- js codes -->
+  <!-- js main codes -->
   <script src = "libs/p5.js" type="text/javascript"></script>
   <script src = "src/main.js" type="text/javascript"></script>
+  <!-- js route codes -->
   <script src = "src/route/routeManager.js" type="text/javascript"></script>
   <script src = "src/route/position.js" type="text/javascript"></script>
   <script src = "src/route/route.js" type="text/javascript"></script>
   <script src = "src/route/segment.js" type="text/javascript"></script>
+  <!-- js journey codes -->
   <script src = "src/journey/journeyManager.js" type="text/javascript"></script>
   <script src = "src/journey/dataPoint.js" type="text/javascript"></script>
   <script src = "src/journey/journey.js" type="text/javascript"></script>
   <script src = "src/journey/session.js" type="text/javascript"></script>
-  <!-- cyclist js codes -->
+  <script src = "src/journey/greenWave.js" type="text/javascript"></script>
+  <!-- js cyclist codes -->
   <script src = "src/cyclist/bicycle.js" type="text/javascript"></script>
   <script src = "src/cyclist/rider.js" type="text/javascript"></script>
   <script src = "src/cyclist/cyclist.js" type="text/javascript"></script>
-  <!-- map js codes -->
+  <!-- js map  codes -->
   <script src = "src/mapCode/cartography.js" type="text/javascript"></script>
   <script src = "src/mapCode/mapRoute.js" type="text/javascript"></script>
   <script src = "src/mapCode/mapJourney.js" type="text/javascript"></script>
   <script src = "src/mapCode/mapSession.js" type="text/javascript"></script>
-  <!-- utils codes -->
+  <script src = "src/mapCode/mapCyclist.js" type="text/javascript"></script>
+  <!-- js utils codes -->
   <script src = "src/utils/geometryUtils.js" type="text/javascript"></script>
   <script src = "src/utils/motionUtils.js" type="text/javascript"></script>
   <script src = "src/utils/utilities.js" type="text/javascript"></script>
@@ -109,7 +113,7 @@
         <input id = "sampleRate" type = "number" name = "sampleRate" value = "1" min = "0"> secs.
         <br><br>
         Ghost speed:<br>
-        <input id = "speed" type="number" name="speed" value = "15" min = "0">m/s.
+        <input id = "speed" type="number" name="speed" value = "5" min = "0">m/s.
         <br><br>
         <button id = "activateJourney" type="submit"> Activate Journey</button>
         <button id = "exportJSON" type = "button">Export to JSON</button>

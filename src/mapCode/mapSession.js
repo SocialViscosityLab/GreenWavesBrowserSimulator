@@ -56,7 +56,7 @@ class MapSession{
 
   /**
   * Adds markers for the last datapoint of this
-  @param {Cartography} theMap An instance of Cartography that contauins the Leaflet map
+  @param {Cartography} theMap An instance of Cartography that contains the Leaflet map
   */
   markSessionCurrentPoint(theMap){
     // get the last dataPoint of the sessions

@@ -3,11 +3,12 @@ The visualization class of Journey class.
 @param {Journey} journey The journey associated to this class
 */
 class MapJourney{
-  constructor(journey){
+  constructor(journey, greenWave){
     this.journey = journey;
     /**The visualization of this mapJourney's sessions*/
     this.mapSessions = [];
     this.setup();
+    this.greenWavePositions = greenWave.greenWavePositions;
     this.greenWavePolyline;
   }
 
@@ -18,9 +19,10 @@ class MapJourney{
   setup(){
     for (let ssn of this.journey.sessions) {
       // check if the collection has that session
-      if (!this.mapSessions.includes(ssn)){
+      let tmp = new MapSession(ssn);
+      if (!this.mapSessions.includes(tmp)){
         // if not, add this session
-        this.mapSessions.push (new MapSession(ssn));
+        this.mapSessions.push (tmp);
       } else {
         console.log("Duplicated Session")
       }
@@ -39,7 +41,7 @@ class MapJourney{
   */
   plotSessions(theMap){
     for (let ssn of this.mapSessions){
-      ssn.markSessionCurrentPoint(theMap);
+      // ssn.markSessionCurrentPoint(theMap);
       // plot session path
       ssn.plotPath(theMap);
     }
@@ -52,11 +54,10 @@ class MapJourney{
   */
   plotGreenWave(theMap){
     // retrieve the journey's green wave dataPoints
-    let gwDataPoints = this.journey.greenWaveDataPoints;
     let latlons = [];
     // convert them to getRouteLatLongs
-    for (let i = 0; i < gwDataPoints.length; i++) {
-      latlons[i] = gwDataPoints[i].getLatLon();
+    for (let i = 0; i < this.greenWavePositions.length; i++) {
+      latlons[i] = [this.greenWavePositions[i].lat, this.greenWavePositions[i].lon];
     }
 
     if (this.greenWavePolyline == undefined){

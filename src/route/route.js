@@ -77,7 +77,7 @@ class Route {
 				return currentSegment.getIntermediatePointFromDistance(accumDistanceOnSegment);
 
 			} else {
-				console.log("-- NEXT SEGMENT ");
+				// console.log("-- NEXT SEGMENT ");
 				// Validate that traveled distance is less or equal to route's length
 				if (this.stillOnRoute(position,stepLength)){
 					//console.log ("Still on route... ");
@@ -93,7 +93,7 @@ class Route {
 							index = 0;
 						} else {
 							// Route completed
-							console.log("WARNING!!! Route completed");
+							// console.log("WARNING!!! Route completed");
 							return this.segments[this.segments.length-1].end;
 						}
 
@@ -133,7 +133,7 @@ class Route {
 			//console.log("distance to corner: " + distanceToCorner);
 			// accumulated traveled distance
 			let traveledDistance = distanceToCorner + stepLength;
-			//console.log("traveled distance: " + traveledDistance);
+			// console.log("stepLength: ", stepLength,", traveled distance: " + traveledDistance);
 			// evalute the distance traveled against the route length
 			if (traveledDistance <= this.getTotalLength()){
 				// still on route
@@ -212,14 +212,14 @@ class Route {
 		if (position instanceof Position){
 			// get all segments
 			// store the distance to the first segment
-			let currentD = GeometryUtils.euclideanDistToSegment(position,this.segments[0].start,this.segments[0].end);
+			let currentD = GeometryUtils.distToSegment(position,this.segments[0].start,this.segments[0].end);
 			//console.log("current "+ currentD);
 			// set return value
 			let rtn = 0;
 			// Go over all other the segments
 			for (var i = 1; i < this.segments.length; i++) {
 				// Calculate the distance to each one of them
-				let nextD = GeometryUtils.euclideanDistToSegment(position,this.segments[i].start,this.segments[i].end);
+				let nextD = GeometryUtils.distToSegment(position,this.segments[i].start,this.segments[i].end);
 				// console.log("segment id "+ i + ", of " +(this.segments.length-1));
 				// console.log("currentD "+ currentD);
 				// console.log("nextD "+ nextD);

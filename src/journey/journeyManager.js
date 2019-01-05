@@ -3,14 +3,20 @@
 */
 class JourneyManager{
   constructor(){
-    /** The collection of journeys in thjis simulation*/
+    /** The collection of journeys in this simulation*/
     this.journeys = [];
-    /** The coleection of cyclsist*/
-    this.cyclists = [];
+    /** The collection of leaders*/
+    this.leaders = [];
+    /** The collection of followers*/
+    this.followers = [];
+    /** The green waves*/
+    this.greenWaves = [];
+    //  temporal to simulate new cyclists id_user
+    this.appID = 0;
   }
 
   /**
-  * Activates the run() method in the function setInterval()
+  * Used in main class. It activates the run() method in the function setInterval()
   */
   activate(currentRoutes, ghostSpeed, sampleRate, currentMap){
     for (let routeTmp of currentRoutes){
@@ -19,16 +25,73 @@ class JourneyManager{
         let journeyTmp = new Journey(0, routeTmp);
         // make route active
         journeyTmp.activateRoute(true);
-        // set Ghost session dataPoints
-        journeyTmp.setupGhost(ghostSpeed);
+        // cyclist temp id
+        let idTmp = {id:this.appID, journey:journeyTmp.id, route:routeTmp.id};
+        // ghost cyclist
+        let ghostCyclist = new Cyclist(idTmp, journeyTmp.referenceRoute ,journeyTmp.referenceRoute.routePoints[0], ghostSpeed);
+        // increase id for next cyclist
+        this.appID++;
+        // Create a session for this cyclist
+        let tmpS = new Session(ghostCyclist.id);
+    		// Insert the session at the begining of journey sessions
+    		journeyTmp.sessions.unshift(tmpS);
+        // Create a green wave for this ghost
+        let tmpGW = new GreenWave(journeyTmp);
+        // Subscribe the session as observer to the cyclists
+        ghostCyclist.subscribe(tmpS);
+        // Subscribe the green wave as observer to the cyclists
+        ghostCyclist.subscribe(tmpGW);
+        // add ghost to cyclist collection
+        this.leaders.unshift(ghostCyclist);
+        // greenWaves
+        this.greenWaves.push(tmpGW);
+
         /**** Visualization  of journey on map *****/
         // add journey to map
-        if (currentMap) currentMap.setupJourney(journeyTmp);
+        if (currentMap) currentMap.setupJourney(journeyTmp, tmpGW);
+        if (currentMap) currentMap.addCyclist(ghostCyclist);
         // add to collection
         this.journeys.push(journeyTmp);
       }else{
         alert("Route not initialized");
       }
+    }
+  }
+
+  /**
+  * Adds a cyclist to the nearest journey and creates a session for her
+  * @param {Event} event The mouse event
+  * @return {boolean} true if a new cyclist was added to the route
+  */
+  addCyclist(event){
+    let eventLocation = new Position (event.latlng.lat,event.latlng.lng);
+    // retrive the journey with the nearest route to event location
+    let journeyTmp = this.getNearestTo(eventLocation, 10);
+    // If there is a journey with a route nearby
+    if (journeyTmp){
+      // temp id
+      let idTmp = {id:this.appID, journey:journeyTmp.id, route:journeyTmp.referenceRoute.id};
+      // create a cyclists
+      let cyclistTmp = new Cyclist(idTmp, journeyTmp.referenceRoute, eventLocation, 3); // 3 is the default speed
+      // set leader
+      cyclistTmp.setLeader(this.getLeaderForJourney(journeyTmp));
+      // increase for next cyclist id
+      this.appID++;
+      // Create a session for this cyclist
+      let tmpS = new Session(cyclistTmp.id);
+      // Insert the session at the begining of journey sessions
+      journeyTmp.sessions.push(tmpS);
+      // Subscribe the session as observer to the cyclists
+      cyclistTmp.subscribe(tmpS);
+      // add cyclist to cyclist collection
+      this.followers.push(cyclistTmp);
+
+      /**** Visualization of cyclist on map *****/
+      if (currentMap) currentMap.addCyclist(cyclistTmp);
+
+      return true;
+    }else {
+      return false;
     }
   }
 
@@ -52,23 +115,27 @@ class JourneyManager{
   }
 
   /**
-  * Runs all the sessions in this Manager
-  * @param {Number} sampleRate The user definde sample rate
+  * Runs all the cyclists and journeys in this Manager
+  * @param {Number} sampleRate The user defined sample rate
   */
-  runSessions(sampleRate){
-    for(let journeyTmp of this.journeys){
-      //journeyTmp.runGhost(sampleRate);
-      journeyTmp.runSessions(sampleRate);
-      //journeyTmp.runSession(1,sampleRate);
+  runCyclists(sampleRate){
+    // run leaders
+    for(let cyclist of this.leaders){
+      cyclist.run(sampleRate); // nearestCyclistAhead , sampleRate
+    }
+    // run followers
+    for(let cyclist of this.followers){
+      cyclist.run(sampleRate); // nearestCyclistAhead , sampleRate
     }
   }
 
-/**
-* Retrives the journey with the nearest route to event location
-* @param {Position} eventLocation The location of cyclist insertion
-* @return {Journey} the collection of closest journey. It is a collection in case several routes have the same proximity
-*/
-  getNearestTo(eventLocation){
+  /**
+  * Retrives the journey with the nearest route to an event location
+  * @param {Position} eventLocation The location of cyclist insertion
+  * @param {Number} proximityRadius The scope in meters of valid proximity to accept a cyclist on a route
+  * @return {Journey} the collection of closest journey. It is a collection in case several routes have the same proximity
+  */
+  getNearestTo(eventLocation, proximityRadius){
     let rtn = this.journeys[0];
     let currentD = rtn.referenceRoute.getIndexAndProximityToClosestSegmentTo(eventLocation).proximity;
     //for each journey get the shortest distance
@@ -76,9 +143,27 @@ class JourneyManager{
       let nextD = this.journeys[i].referenceRoute.getIndexAndProximityToClosestSegmentTo(eventLocation).proximity;
       if (currentD > nextD){
         currentD = nextD;
+        console.log("here inside "+ currentD);
         rtn = this.journeys[i];
       }
     }
-    return rtn;
+    if (proximityRadius){
+      if (currentD <= proximityRadius){
+        return rtn;
+      } else {
+        alert("The cyclist is out of the scope of any journey. The acceptable proximity radius is: " + proximityRadius);
+        return undefined;
+      }
+    } else {
+      return rtn;
+    }
+  }
+
+  getLeaderForJourney(journeyID){
+    for(let c of this.leaders){
+      if (c.id.journey === journeyID)
+      console.log(c," ",journeyID);
+        return c;
+    }
   }
 }
