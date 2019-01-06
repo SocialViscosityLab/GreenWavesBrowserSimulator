@@ -13,7 +13,7 @@ let clicker;
 let directory;
 
 /**
-P5.js Setup. It setups variables and initializes instances
+Setup. It setups variables and initializes instances
 */
 //function setup(){
 window.onload = function(){

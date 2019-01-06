@@ -1,3 +1,6 @@
+/**
+* The class defining the scope and collection of positions in a ghost's green wave
+*/
 class GreenWave{
   constructor(journey){
     this.journey = journey;
@@ -22,8 +25,9 @@ class GreenWave{
   * The observer notify() function. Instances of this class observe an instance of Cyclist class
   */
   notify(data){
-    // add the datapoint
+    // add the position to the end
     this.greenWavePositions.unshift(data.position);
+    // remove the first position
     this.greenWavePositions.pop();
   }
 
