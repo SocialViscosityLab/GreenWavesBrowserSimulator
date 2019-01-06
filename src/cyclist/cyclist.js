@@ -61,16 +61,17 @@ class Cyclist{
     this.designKAdaptive = 0.1;
   }
 
+  /** Private Makes a datapoint with current properties of this cyclists
+  */
   generateDataPoint(){
     let datapoint = new DataPoint(this.myAcceleration, this.position, this.mySpeed, this.timeCounter);
     this.timeCounter++;
     return (datapoint);
   }
 
-  /*
-  * Subscribe as observer to this cyclist
+  /** Subscribe as observer to this cyclist
   https://pawelgrzybek.com/the-observer-pattern-in-javascript-explained/
-  **/
+  */
   subscribe(observer){
     this.observers.push(observer);
     // notify
@@ -78,10 +79,9 @@ class Cyclist{
 
   }
 
-  /*
-  * Unubscribe from this cyclist
+  /** Unubscribe from this cyclist
   https://pawelgrzybek.com/the-observer-pattern-in-javascript-explained/
-  **/
+  */
   unsubscribe(observer){
     this.observers = this.observers.filter(subscriber => subscriber !== observer);
   }

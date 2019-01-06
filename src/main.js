@@ -12,11 +12,11 @@ let clicker;
 // The instance that reads files from the hard drive
 let directory;
 
-
 /**
 P5.js Setup. It setups variables and initializes instances
 */
-function setup(){
+//function setup(){
+window.onload = function(){
 	document.getElementById("routeButton").onclick = setupRoutes;
 	document.getElementById("loopButton").onclick = switchRouteLoop;
 	document.getElementById("activateJourney").onclick = activateJourneys;
@@ -68,10 +68,14 @@ function activateJourneys(){
 	// activate all the journeys
 	let ghostSpeed = Number(document.getElementById("speed").value);
 	sampleRate = Number(document.getElementById("sampleRate").value);
-	// Activate all journeys
-	journeyM.activate(routeM.routes, ghostSpeed , sampleRate, currentMap);
-	// Execute the run function at the frequency of the sampleRate
-	clicker = setInterval(run, (1000*sampleRate));
+	if (routeM.routes.length > 0){
+		// Activate all journeys
+		journeyM.activate(routeM.routes, ghostSpeed , sampleRate, currentMap);
+		// Execute the run function at the frequency of the sampleRate
+		clicker = setInterval(run, (1000*sampleRate));
+	}else{
+		alert("Setup routes first")
+	}
 }
 
 /**

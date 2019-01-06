@@ -50,15 +50,27 @@
                       </a></li>
                       
                       <li><a
-                        href='#cyclistsetleader'
+                        href='#cyclistgeneratedatapoint'
                         class='regular pre-open'>
-                        #setLeader
+                        #generateDataPoint
                       </a></li>
                       
                       <li><a
-                        href='#cyclistsimplecc'
+                        href='#cyclistsubscribe'
                         class='regular pre-open'>
-                        #simpleCC
+                        #subscribe
+                      </a></li>
+                      
+                      <li><a
+                        href='#cyclistunsubscribe'
+                        class='regular pre-open'>
+                        #unsubscribe
+                      </a></li>
+                      
+                      <li><a
+                        href='#cyclistsetleader'
+                        class='regular pre-open'>
+                        #setLeader
                       </a></li>
                       
                       <li><a
@@ -68,15 +80,21 @@
                       </a></li>
                       
                       <li><a
-                        href='#cyclistgetfrontcyclist'
+                        href='#cyclistsimplecc'
                         class='regular pre-open'>
-                        #getFrontCyclist
+                        #simpleCC
                       </a></li>
                       
                       <li><a
                         href='#cyclistcollaborativeacc'
                         class='regular pre-open'>
                         #collaborativeACC
+                      </a></li>
+                      
+                      <li><a
+                        href='#cyclistgetfrontcyclist'
+                        class='regular pre-open'>
+                        #getFrontCyclist
                       </a></li>
                       
                     </ul>
@@ -129,6 +147,36 @@
               
                 
                 <li><a
+                  href='#initialize'
+                  class="">
+                  initialize
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#notify'
+                  class="">
+                  notify
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#setgreenwavescope'
+                  class="">
+                  setGreenWaveScope
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
                   href='#journey'
                   class=" toggle-sibling">
                   Journey
@@ -166,12 +214,6 @@
                       </a></li>
                       
                       <li><a
-                        href='#journeysetupghost'
-                        class='regular pre-open'>
-                        #setupGhost
-                      </a></li>
-                      
-                      <li><a
                         href='#journeyrunghost'
                         class='regular pre-open'>
                         #runGhost
@@ -187,12 +229,6 @@
                         href='#journeyrunsession'
                         class='regular pre-open'>
                         #runSession
-                      </a></li>
-                      
-                      <li><a
-                        href='#journeysetgreenwavescope'
-                        class='regular pre-open'>
-                        #setGreenWaveScope
                       </a></li>
                       
                       <li><a
@@ -230,9 +266,21 @@
                       </a></li>
                       
                       <li><a
-                        href='#journeymanagercyclists'
+                        href='#journeymanagerleaders'
                         class='regular pre-open'>
-                        #cyclists
+                        #leaders
+                      </a></li>
+                      
+                      <li><a
+                        href='#journeymanagerfollowers'
+                        class='regular pre-open'>
+                        #followers
+                      </a></li>
+                      
+                      <li><a
+                        href='#journeymanagergreenwaves'
+                        class='regular pre-open'>
+                        #greenWaves
                       </a></li>
                       
                       <li><a
@@ -242,15 +290,21 @@
                       </a></li>
                       
                       <li><a
+                        href='#journeymanageraddcyclist'
+                        class='regular pre-open'>
+                        #addCyclist
+                      </a></li>
+                      
+                      <li><a
                         href='#journeymanagergetghostsessionpoints'
                         class='regular pre-open'>
                         #getGhostSessionPoints
                       </a></li>
                       
                       <li><a
-                        href='#journeymanagerrunsessions'
+                        href='#journeymanagerruncyclists'
                         class='regular pre-open'>
-                        #runSessions
+                        #runCyclists
                       </a></li>
                       
                       <li><a
@@ -277,26 +331,31 @@
                 
                 <div class='toggle-target display-none'>
                   
+                  <ul class='list-reset py1-ul pl1'>
+                    <li class='h5'><span>Static members</span></li>
+                    
+                      <li><a
+                        href='#sessionsetsessionpoints'
+                        class='regular pre-open'>
+                        .setSessionPoints
+                      </a></li>
+                    
+                      <li><a
+                        href='#sessionsetsessionpoints'
+                        class='regular pre-open'>
+                        .setSessionPoints
+                      </a></li>
+                    
+                    </ul>
+                  
                   
                     <ul class='list-reset py1-ul pl1'>
                       <li class='h5'><span>Instance members</span></li>
                       
                       <li><a
-                        href='#sessionsetcyclist'
+                        href='#sessionnotify'
                         class='regular pre-open'>
-                        #setCyclist
-                      </a></li>
-                      
-                      <li><a
-                        href='#sessionrunstep'
-                        class='regular pre-open'>
-                        #runStep
-                      </a></li>
-                      
-                      <li><a
-                        href='#sessionsetsessionpoints'
-                        class='regular pre-open'>
-                        #setSessionPoints
+                        #notify
                       </a></li>
                       
                       <li><a
@@ -412,6 +471,12 @@
                       </a></li>
                       
                       <li><a
+                        href='#cartographymapcyclists'
+                        class='regular pre-open'>
+                        #mapCyclists
+                      </a></li>
+                      
+                      <li><a
                         href='#cartographysetup'
                         class='regular pre-open'>
                         #setup
@@ -439,6 +504,12 @@
                         href='#cartographyaddjourney'
                         class='regular pre-open'>
                         #addJourney
+                      </a></li>
+                      
+                      <li><a
+                        href='#cartographyaddcyclist'
+                        class='regular pre-open'>
+                        #addCyclist
                       </a></li>
                       
                       <li><a
@@ -478,9 +549,49 @@
                       </a></li>
                       
                       <li><a
+                        href='#cartographyplotroutescornerpoints'
+                        class='regular pre-open'>
+                        #plotRoutesCornerPoints
+                      </a></li>
+                      
+                      <li><a
+                        href='#cartographyplotcyclists'
+                        class='regular pre-open'>
+                        #plotCyclists
+                      </a></li>
+                      
+                      <li><a
                         href='#cartographyplotgreenwaves'
                         class='regular pre-open'>
                         #plotGreenWaves
+                      </a></li>
+                      
+                    </ul>
+                  
+                  
+                  
+                </div>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#mapcyclist'
+                  class=" toggle-sibling">
+                  MapCyclist
+                  <span class='icon'>▸</span>
+                </a>
+                
+                <div class='toggle-target display-none'>
+                  
+                  
+                    <ul class='list-reset py1-ul pl1'>
+                      <li class='h5'><span>Instance members</span></li>
+                      
+                      <li><a
+                        href='#mapcyclistplotmarker'
+                        class='regular pre-open'>
+                        #plotMarker
                       </a></li>
                       
                     </ul>
@@ -973,6 +1084,12 @@
                       </a></li>
                     
                       <li><a
+                        href='#geometryutilsdisttosegment'
+                        class='regular pre-open'>
+                        .distToSegment
+                      </a></li>
+                    
+                      <li><a
                         href='#geometryutilsgetbearing'
                         class='regular pre-open'>
                         .getBearing
@@ -1052,7 +1169,7 @@ DESIRED INTER-VEHICLE SPACING: the desired distance between the current vehicle 
 
  
   
-    <div class='pre p1 fill-light mt0'>new Cyclist(id: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>, position: <a href="#position">Position</a>, speed: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</div>
+    <div class='pre p1 fill-light mt0'>new Cyclist(id: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>, route: any, position: <a href="#position">Position</a>, speed: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</div>
    
   
   
@@ -1070,9 +1187,17 @@ DESIRED INTER-VEHICLE SPACING: the desired distance between the current vehicle 
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>id</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+            <span class='code bold'>id</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
 	    cyclist ID
 
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>route</span> <code class='quiet'>(any)</code>
+	    
           </div>
           
         </div>
@@ -1208,6 +1333,178 @@ DESIRED INTER-VEHICLE SPACING: the desired distance between the current vehicle 
       </div>
     </div>
   
+    <div class='border-bottom' id='cyclistgeneratedatapoint'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>generateDataPoint()</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Private Makes a datapoint with current properties of this cyclists</p>
+
+ 
+  
+    <div class='pre p1 fill-light mt0'>generateDataPoint()</div>
+   
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='cyclistsubscribe'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>subscribe(observer)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Subscribe as observer to this cyclist
+<a href="https://pawelgrzybek.com/the-observer-pattern-in-javascript-explained/">https://pawelgrzybek.com/the-observer-pattern-in-javascript-explained/</a></p>
+
+ 
+  
+    <div class='pre p1 fill-light mt0'>subscribe(observer: any)</div>
+   
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>observer</span> <code class='quiet'>(any)</code>
+	    
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='cyclistunsubscribe'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>unsubscribe(observer)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Unubscribe from this cyclist
+<a href="https://pawelgrzybek.com/the-observer-pattern-in-javascript-explained/">https://pawelgrzybek.com/the-observer-pattern-in-javascript-explained/</a></p>
+
+ 
+  
+    <div class='pre p1 fill-light mt0'>unsubscribe(observer: any)</div>
+   
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>observer</span> <code class='quiet'>(any)</code>
+	    
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
     <div class='border-bottom' id='cyclistsetleader'>
       <div class="clearfix small pointer toggle-sibling">
         <div class="py1 contain">
@@ -1253,6 +1550,76 @@ DESIRED INTER-VEHICLE SPACING: the desired distance between the current vehicle 
             <span class='code bold'>leader</span> <code class='quiet'>(<a href="#session">Session</a>)</code>
 	    The leader
 
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='cyclistgetstep'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>getStep(sampleRate, leader)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Get data from all the the other agents and act based on data from the
+nearestFrontNode</p>
+
+ 
+  
+    <div class='pre p1 fill-light mt0'>getStep(sampleRate: any, leader: any)</div>
+   
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>sampleRate</span> <code class='quiet'>(any)</code>
+	    
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>leader</span> <code class='quiet'>(any)</code>
+	    
           </div>
           
         </div>
@@ -1328,11 +1695,11 @@ form of adaptation</p>
       </div>
     </div>
   
-    <div class='border-bottom' id='cyclistgetstep'>
+    <div class='border-bottom' id='cyclistcollaborativeacc'>
       <div class="clearfix small pointer toggle-sibling">
         <div class="py1 contain">
             <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>getStep(nearestCyclistAhead, sampleRate, leader)</span>
+            <span class='code strong strong truncate'>collaborativeACC()</span>
         </div>
       </div>
       <div class="clearfix display-none toggle-target">
@@ -1340,12 +1707,14 @@ form of adaptation</p>
 
   
 
-  <p>Get data from all the the other agents and act based on data from the
-nearestFrontNode</p>
+  <p>Collaborative Adaptive Cruise Control.</p>
+<p>Based on
+"A Simulation Tool for Automated Platooning in Mixed Highway Scenarios"
+Segata et al. Proceedings of Mobicom 2012</p>
 
  
   
-    <div class='pre p1 fill-light mt0'>getStep(nearestCyclistAhead: any, sampleRate: any, leader: any)</div>
+    <div class='pre p1 fill-light mt0'>collaborativeACC()</div>
    
   
   
@@ -1357,35 +1726,6 @@ nearestFrontNode</p>
   
   
 
-  
-    <div class='py1 quiet mt1 prose-big'>Parameters</div>
-    <div class='prose'>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>nearestCyclistAhead</span> <code class='quiet'>(any)</code>
-	    
-          </div>
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>sampleRate</span> <code class='quiet'>(any)</code>
-	    
-          </div>
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>leader</span> <code class='quiet'>(any)</code>
-	    
-          </div>
-          
-        </div>
-      
-    </div>
   
 
   
@@ -1456,57 +1796,6 @@ nearestFrontNode</p>
         </div>
       
     </div>
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-</section>
-
-      </div>
-    </div>
-  
-    <div class='border-bottom' id='cyclistcollaborativeacc'>
-      <div class="clearfix small pointer toggle-sibling">
-        <div class="py1 contain">
-            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>collaborativeACC()</span>
-        </div>
-      </div>
-      <div class="clearfix display-none toggle-target">
-        <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-
-  <p>Collaborative Adaptive Cruise Control.</p>
-<p>Based on
-"A Simulation Tool for Automated Platooning in Mixed Highway Scenarios"
-Segata et al. Proceedings of Mobicom 2012</p>
-
- 
-  
-    <div class='pre p1 fill-light mt0'>collaborativeACC()</div>
-   
-  
-  
-
-  
-  
-  
-  
-  
-  
-
   
 
   
@@ -1767,6 +2056,177 @@ Segata et al. Proceedings of Mobicom 2012</p>
     </div>
   
 </div>
+
+  
+
+  
+</section>
+
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='initialize'>
+      initialize
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Fills a collection of datapoints for the greenwave. The position used is the begining of the joourney route</p>
+
+ 
+  
+    <div class='pre p1 fill-light mt0'>initialize()</div>
+   
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='notify'>
+      notify
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>The observer notify() function. Instances of this class observe an instance of Cyclist class</p>
+
+ 
+  
+    <div class='pre p1 fill-light mt0'>notify(data: any)</div>
+   
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>data</span> <code class='quiet'>(any)</code>
+	    
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='setgreenwavescope'>
+      setGreenWaveScope
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Sets the green wave scope in number of datapoints. Usually the green wave scope is defined in ticks, which can be converted to time by
+multiplying them by the duration of the sample rate, or into distance by multiplying ellapsed time by the speed</p>
+
+ 
+  
+    <div class='pre p1 fill-light mt0'>setGreenWaveScope(val: any)</div>
+   
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>val</span> <code class='quiet'>(any)</code>
+	    
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
 
   
 
@@ -2082,67 +2542,6 @@ The route is dissabled by default. It is disables when the leader reaches the en
       </div>
     </div>
   
-    <div class='border-bottom' id='journeysetupghost'>
-      <div class="clearfix small pointer toggle-sibling">
-        <div class="py1 contain">
-            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>setupGhost(speed)</span>
-        </div>
-      </div>
-      <div class="clearfix display-none toggle-target">
-        <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-
-  <p>Initializes the Ghost leader</p>
-
- 
-  
-    <div class='pre p1 fill-light mt0'>setupGhost(speed: any)</div>
-   
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Parameters</div>
-    <div class='prose'>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>speed</span> <code class='quiet'>(any)</code>
-	    
-          </div>
-          
-        </div>
-      
-    </div>
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-</section>
-
-      </div>
-    </div>
-  
     <div class='border-bottom' id='journeyrunghost'>
       <div class="clearfix small pointer toggle-sibling">
         <div class="py1 contain">
@@ -2365,68 +2764,6 @@ The route is dissabled by default. It is disables when the leader reaches the en
       </div>
     </div>
   
-    <div class='border-bottom' id='journeysetgreenwavescope'>
-      <div class="clearfix small pointer toggle-sibling">
-        <div class="py1 contain">
-            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>setGreenWaveScope(val)</span>
-        </div>
-      </div>
-      <div class="clearfix display-none toggle-target">
-        <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-
-  <p>Sets the green wave scope in number of datapoints. Usually the green wave scope is defined in ticks, which can be converted to time by
-multiplying them by the duration of the sample rate, or into distance by multiplying ellapsed time by the speed</p>
-
- 
-  
-    <div class='pre p1 fill-light mt0'>setGreenWaveScope(val: any)</div>
-   
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Parameters</div>
-    <div class='prose'>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>val</span> <code class='quiet'>(any)</code>
-	    
-          </div>
-          
-        </div>
-      
-    </div>
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-</section>
-
-      </div>
-    </div>
-  
     <div class='border-bottom' id='journeyvalidatesubscription'>
       <div class="clearfix small pointer toggle-sibling">
         <div class="py1 contain">
@@ -2556,7 +2893,7 @@ The subscription range radius is a property of the route</p>
 
   
 
-  <p>The collection of journeys in thjis simulation</p>
+  <p>The collection of journeys in this simulation</p>
 
  
   
@@ -2592,11 +2929,11 @@ The subscription range radius is a property of the route</p>
       </div>
     </div>
   
-    <div class='border-bottom' id='journeymanagercyclists'>
+    <div class='border-bottom' id='journeymanagerleaders'>
       <div class="clearfix small pointer toggle-sibling">
         <div class="py1 contain">
             <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>cyclists</span>
+            <span class='code strong strong truncate'>leaders</span>
         </div>
       </div>
       <div class="clearfix display-none toggle-target">
@@ -2604,11 +2941,107 @@ The subscription range radius is a property of the route</p>
 
   
 
-  <p>The coleection of cyclsist</p>
+  <p>The collection of leaders</p>
 
  
   
-    <div class='pre p1 fill-light mt0'>cyclists</div>
+    <div class='pre p1 fill-light mt0'>leaders</div>
+   
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='journeymanagerfollowers'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>followers</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>The collection of followers</p>
+
+ 
+  
+    <div class='pre p1 fill-light mt0'>followers</div>
+   
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='journeymanagergreenwaves'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>greenWaves</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>The green waves</p>
+
+ 
+  
+    <div class='pre p1 fill-light mt0'>greenWaves</div>
    
   
   
@@ -2652,7 +3085,7 @@ The subscription range radius is a property of the route</p>
 
   
 
-  <p>Activates the run() method in the function setInterval()</p>
+  <p>Used in main class. It activates the run() method in the function setInterval()</p>
 
  
   
@@ -2709,6 +3142,76 @@ The subscription range radius is a property of the route</p>
 
   
 
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='journeymanageraddcyclist'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>addCyclist(event)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Adds a cyclist to the nearest journey and creates a session for her</p>
+
+ 
+  
+    <div class='pre p1 fill-light mt0'>addCyclist(event: <a href="https://developer.mozilla.org/docs/Web/API/Event">Event</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></div>
+   
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>event</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/API/Event">Event</a>)</code>
+	    The mouse event
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code>:
+        true if a new cyclist was added to the route
+
+      
+    
   
 
   
@@ -2810,11 +3313,11 @@ The subscription range radius is a property of the route</p>
       </div>
     </div>
   
-    <div class='border-bottom' id='journeymanagerrunsessions'>
+    <div class='border-bottom' id='journeymanagerruncyclists'>
       <div class="clearfix small pointer toggle-sibling">
         <div class="py1 contain">
             <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>runSessions(sampleRate)</span>
+            <span class='code strong strong truncate'>runCyclists(sampleRate)</span>
         </div>
       </div>
       <div class="clearfix display-none toggle-target">
@@ -2822,11 +3325,11 @@ The subscription range radius is a property of the route</p>
 
   
 
-  <p>Runs all the sessions in this Manager</p>
+  <p>Runs all the cyclists and journeys in this Manager</p>
 
  
   
-    <div class='pre p1 fill-light mt0'>runSessions(sampleRate: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</div>
+    <div class='pre p1 fill-light mt0'>runCyclists(sampleRate: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</div>
    
   
   
@@ -2845,7 +3348,7 @@ The subscription range radius is a property of the route</p>
         <div class='space-bottom0'>
           <div>
             <span class='code bold'>sampleRate</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-	    The user definde sample rate
+	    The user defined sample rate
 
           </div>
           
@@ -2876,7 +3379,7 @@ The subscription range radius is a property of the route</p>
       <div class="clearfix small pointer toggle-sibling">
         <div class="py1 contain">
             <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>getNearestTo(eventLocation)</span>
+            <span class='code strong strong truncate'>getNearestTo(eventLocation, proximityRadius)</span>
         </div>
       </div>
       <div class="clearfix display-none toggle-target">
@@ -2884,11 +3387,11 @@ The subscription range radius is a property of the route</p>
 
   
 
-  <p>Retrives the journey with the nearest route to event location</p>
+  <p>Retrives the journey with the nearest route to an event location</p>
 
  
   
-    <div class='pre p1 fill-light mt0'>getNearestTo(eventLocation: <a href="#position">Position</a>): <a href="#journey">Journey</a></div>
+    <div class='pre p1 fill-light mt0'>getNearestTo(eventLocation: <a href="#position">Position</a>, proximityRadius: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>): <a href="#journey">Journey</a></div>
    
   
   
@@ -2908,6 +3411,15 @@ The subscription range radius is a property of the route</p>
           <div>
             <span class='code bold'>eventLocation</span> <code class='quiet'>(<a href="#position">Position</a>)</code>
 	    The location of cyclist insertion
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>proximityRadius</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+	    The scope in meters of valid proximity to accept a cyclist on a route
 
           </div>
           
@@ -2968,7 +3480,7 @@ The subscription range radius is a property of the route</p>
 
  
   
-    <div class='pre p1 fill-light mt0'>new Session(cyclist: any, id: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, startTime: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</div>
+    <div class='pre p1 fill-light mt0'>new Session(id: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</div>
    
   
   
@@ -2986,14 +3498,6 @@ The subscription range radius is a property of the route</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>cyclist</span> <code class='quiet'>(any)</code>
-	    
-          </div>
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <div>
             <span class='code bold'>id</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
 	    The user id session identifier
 
@@ -3001,16 +3505,6 @@ The subscription range radius is a property of the route</p>
           
         </div>
       
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>startTime</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
-	    The start time of the session which corresponds to the moment
-the cyclist joins the journey. It is equivalent to the ghost's server time).
-
-          </div>
-          
-        </div>
-      
     </div>
   
 
@@ -3023,64 +3517,14 @@ the cyclist joins the journey. It is equivalent to the ghost's server time).
   
 
   
-
-  
-    <div class='py1 quiet mt1 prose-big'>Instance Members</div>
+    <div class='py1 quiet mt1 prose-big'>Static Members</div>
     <div class="clearfix">
   
-    <div class='border-bottom' id='sessionsetcyclist'>
+    <div class='border-bottom' id='sessionsetsessionpoints'>
       <div class="clearfix small pointer toggle-sibling">
         <div class="py1 contain">
             <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>setCyclist()</span>
-        </div>
-      </div>
-      <div class="clearfix display-none toggle-target">
-        <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-
-  <p>Private Sets the origin of a session defined by the location at which a cyclist joins the journey. The origin is the starting position of the session on a route.</p>
-
- 
-  
-    <div class='pre p1 fill-light mt0'>setCyclist()</div>
-   
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-</section>
-
-      </div>
-    </div>
-  
-    <div class='border-bottom' id='sessionrunstep'>
-      <div class="clearfix small pointer toggle-sibling">
-        <div class="py1 contain">
-            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>runStep(route, frameRate)</span>
+            <span class='code strong strong truncate'>setSessionPoints(route, speed, sampleRate, frameRate)</span>
         </div>
       </div>
       <div class="clearfix display-none toggle-target">
@@ -3097,7 +3541,7 @@ we need to ask the route where on the path is located the traveled distance.</p>
 
  
   
-    <div class='pre p1 fill-light mt0'>runStep(route: <a href="#route">Route</a>, frameRate: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>): <a href="#position">Position</a></div>
+    <div class='pre p1 fill-light mt0'>setSessionPoints(route: <a href="#route">Route</a>, speed: any, sampleRate: any, frameRate: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>): <a href="#position">Position</a></div>
    
   
   
@@ -3124,6 +3568,22 @@ we need to ask the route where on the path is located the traveled distance.</p>
       
         <div class='space-bottom0'>
           <div>
+            <span class='code bold'>speed</span> <code class='quiet'>(any)</code>
+	    
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>sampleRate</span> <code class='quiet'>(any)</code>
+	    
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
             <span class='code bold'>frameRate</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
 	    Time glogal frameRate. It is also the time ahead from the current time in seconds
 
@@ -3141,6 +3601,28 @@ we need to ask the route where on the path is located the traveled distance.</p>
       <div class='py1 quiet mt1 prose-big'>Returns</div>
       <code><a href="#position">Position</a></code>:
         the latest estimated position
+<p>runStep(route, frameRate){
+let tmpDataP;
+if (this.status == "running"){
+//1- Determine the current position on a route. That is retrieved from the latest recorded dataPoint
+let currentPosition = this.cyclist.position; //this.dataPoints[this.dataPoints.length-1].position;
+//2- Calculate the distance traveled based on speed and step time
+let distanceTraveled = this.cyclist.mySpeed * frameRate;
+//3- Locate the corresponding position on the route for the distance traveled
+let tmpPosition = route.getPosition(currentPosition, distanceTraveled);</p>
+<p>this.cyclist.position = tmpPosition;</p>
+<p>if (tmpPosition instanceof Position){
+//  create the new dataPoint
+tmpDataP = new DataPoint(this.cyclist.myAcceleration, tmpPosition, this.cyclist.speed, this.timeCounter + frameRate);</p>
+<p>this.dataPoints.push(tmpDataP);</p>
+<p>this.timeCounter ++;</p>
+<p>} else {
+this.status = "completed";
+console.log("Session completed for vehicle: " , this.id_user);
+}
+}
+return tmpDataP;
+}</p>
 
       
     
@@ -3164,7 +3646,7 @@ we need to ask the route where on the path is located the traveled distance.</p>
       <div class="clearfix small pointer toggle-sibling">
         <div class="py1 contain">
             <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>setSessionPoints(route, sampleRate, speed)</span>
+            <span class='code strong strong truncate'>setSessionPoints(route, speed, sampleRate)</span>
         </div>
       </div>
       <div class="clearfix display-none toggle-target">
@@ -3172,12 +3654,12 @@ we need to ask the route where on the path is located the traveled distance.</p>
 
   
 
-  <p>Sets all the datapoints on a route based on a given speed and sampleRate. If the route is a loop
+  <p>Static class. Sets all the datapoints on a route based on a given speed and sampleRate. If the route is a loop
 it add points to the segment bewteen the last and the fisrt corner point</p>
 
  
   
-    <div class='pre p1 fill-light mt0'>setSessionPoints(route: <a href="#route">Route</a>, sampleRate: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>, speed: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</div>
+    <div class='pre p1 fill-light mt0'>setSessionPoints(route: <a href="#route">Route</a>, speed: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>, sampleRate: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></div>
    
   
   
@@ -3204,8 +3686,8 @@ it add points to the segment bewteen the last and the fisrt corner point</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>sampleRate</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
-	    Integer number in seconds
+            <span class='code bold'>speed</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
+	    The speed at the moment of joining the journey in meters per second
 
           </div>
           
@@ -3213,9 +3695,86 @@ it add points to the segment bewteen the last and the fisrt corner point</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>speed</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
-	    The speed at the moment of joining the journey in meters per second
+            <span class='code bold'>sampleRate</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
+	    Integer number in seconds
 
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></code>:
+        a collection of datapoints
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+</div>
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Instance Members</div>
+    <div class="clearfix">
+  
+    <div class='border-bottom' id='sessionnotify'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>notify(data)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>The observer notify() function. Instances of this class observe an instance of Cyclist class</p>
+
+ 
+  
+    <div class='pre p1 fill-light mt0'>notify(data: any)</div>
+   
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>data</span> <code class='quiet'>(any)</code>
+	    
           </div>
           
         </div>
@@ -3310,7 +3869,7 @@ it add points to the segment bewteen the last and the fisrt corner point</p>
   
 
   <p>Returns a collection of the latest datapoints of this session. The number of datapoints is defined by the parameter 'ticks'.
-If you multipluy tge number of ticks by the sampleRate, tyen you get the latest datapoints for that period of time</p>
+If you multiply the number of ticks by the sampleRate, tyen you get the latest datapoints for that period of time</p>
 
  
   
@@ -3857,6 +4416,54 @@ to visualize its complementary class named without the prefix (e.g., Journey)</p
       </div>
     </div>
   
+    <div class='border-bottom' id='cartographymapcyclists'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>mapCyclists</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>All the cyclists running on the routes</p>
+
+ 
+  
+    <div class='pre p1 fill-light mt0'>mapCyclists</div>
+   
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
     <div class='border-bottom' id='cartographysetup'>
       <div class="clearfix small pointer toggle-sibling">
         <div class="py1 contain">
@@ -3970,7 +4577,7 @@ to visualize its complementary class named without the prefix (e.g., Journey)</p
       <div class="clearfix small pointer toggle-sibling">
         <div class="py1 contain">
             <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>setupJourney(journey)</span>
+            <span class='code strong strong truncate'>setupJourney(journey, greenWave)</span>
         </div>
       </div>
       <div class="clearfix display-none toggle-target">
@@ -3982,7 +4589,7 @@ to visualize its complementary class named without the prefix (e.g., Journey)</p
 
  
   
-    <div class='pre p1 fill-light mt0'>setupJourney(journey: any)</div>
+    <div class='pre p1 fill-light mt0'>setupJourney(journey: any, greenWave: any)</div>
    
   
   
@@ -4001,6 +4608,14 @@ to visualize its complementary class named without the prefix (e.g., Journey)</p
         <div class='space-bottom0'>
           <div>
             <span class='code bold'>journey</span> <code class='quiet'>(any)</code>
+	    
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>greenWave</span> <code class='quiet'>(any)</code>
 	    
           </div>
           
@@ -4123,6 +4738,67 @@ to visualize its complementary class named without the prefix (e.g., Journey)</p
         <div class='space-bottom0'>
           <div>
             <span class='code bold'>journey</span> <code class='quiet'>(any)</code>
+	    
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='cartographyaddcyclist'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>addCyclist(cyclist)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Adds a cyclist to the collection of cyclists of this map</p>
+
+ 
+  
+    <div class='pre p1 fill-light mt0'>addCyclist(cyclist: any)</div>
+   
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>cyclist</span> <code class='quiet'>(any)</code>
 	    
           </div>
           
@@ -4437,6 +5113,102 @@ to visualize its complementary class named without the prefix (e.g., Journey)</p
       </div>
     </div>
   
+    <div class='border-bottom' id='cartographyplotroutescornerpoints'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>plotRoutesCornerPoints()</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Displays all the route cornerpoints on the map</p>
+
+ 
+  
+    <div class='pre p1 fill-light mt0'>plotRoutesCornerPoints()</div>
+   
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='cartographyplotcyclists'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>plotCyclists()</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Displays all the cyclists on the map</p>
+
+ 
+  
+    <div class='pre p1 fill-light mt0'>plotCyclists()</div>
+   
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
     <div class='border-bottom' id='cartographyplotgreenwaves'>
       <div class="clearfix small pointer toggle-sibling">
         <div class="py1 contain">
@@ -4522,6 +5294,144 @@ to visualize its complementary class named without the prefix (e.g., Journey)</p
   
   <div class='clearfix'>
     
+    <h3 class='fl m0' id='mapcyclist'>
+      MapCyclist
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>The visualization class of Session class.</p>
+
+ 
+  
+    <div class='pre p1 fill-light mt0'>new MapCyclist(cyclist: any, session: <a href="#cyclist">Cyclist</a>)</div>
+   
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>cyclist</span> <code class='quiet'>(any)</code>
+	    
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>session</span> <code class='quiet'>(<a href="#cyclist">Cyclist</a>)</code>
+	    The session associated to this class
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Instance Members</div>
+    <div class="clearfix">
+  
+    <div class='border-bottom' id='mapcyclistplotmarker'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>plotMarker(theMap)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Adds a marker for the cyclist position</p>
+
+ 
+  
+    <div class='pre p1 fill-light mt0'>plotMarker(theMap: <a href="#cartography">Cartography</a>)</div>
+   
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>theMap</span> <code class='quiet'>(<a href="#cartography">Cartography</a>)</code>
+	    An instance of Cartography class that contains the Leaflet map
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+</div>
+
+  
+
+  
+</section>
+
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
     <h3 class='fl m0' id='mapjourney'>
       MapJourney
     </h3>
@@ -4534,7 +5444,7 @@ to visualize its complementary class named without the prefix (e.g., Journey)</p
 
  
   
-    <div class='pre p1 fill-light mt0'>new MapJourney(journey: <a href="#journey">Journey</a>)</div>
+    <div class='pre p1 fill-light mt0'>new MapJourney(journey: <a href="#journey">Journey</a>, greenWave: any)</div>
    
   
   
@@ -4555,6 +5465,14 @@ to visualize its complementary class named without the prefix (e.g., Journey)</p
             <span class='code bold'>journey</span> <code class='quiet'>(<a href="#journey">Journey</a>)</code>
 	    The journey associated to this class
 
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>greenWave</span> <code class='quiet'>(any)</code>
+	    
           </div>
           
         </div>
@@ -5262,7 +6180,7 @@ corresponding to the session in the journey</p>
         <div class='space-bottom0'>
           <div>
             <span class='code bold'>theMap</span> <code class='quiet'>(<a href="#cartography">Cartography</a>)</code>
-	    An instance of Cartography that contauins the Leaflet map
+	    An instance of Cartography that contains the Leaflet map
 
           </div>
           
@@ -8153,6 +9071,96 @@ src: <a href="https://stackoverflow.com/questions/849211/shortest-distance-betwe
       <div class='py1 quiet mt1 prose-big'>Returns</div>
       <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>:
         The closest distance
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='geometryutilsdisttosegment'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>distToSegment(p, v, w)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Calculates distance of a position to a segment using vector projection on a plane.
+WARNING: it is only valid for short distances beacuse it asumes a planar 2D surface instead of a spheric surface
+Source: <a href="https://stackoverflow.com/questions/849211/shortest-distance-between-a-point-and-a-line-segment">https://stackoverflow.com/questions/849211/shortest-distance-between-a-point-and-a-line-segment</a></p>
+
+ 
+  
+    <div class='pre p1 fill-light mt0'>distToSegment(p: <a href="#position">Position</a>, v: <a href="#position">Position</a>, w: <a href="#position">Position</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></div>
+   
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>p</span> <code class='quiet'>(<a href="#position">Position</a>)</code>
+	    The position
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>v</span> <code class='quiet'>(<a href="#position">Position</a>)</code>
+	    Segment origin
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>w</span> <code class='quiet'>(<a href="#position">Position</a>)</code>
+	    Segment end
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>:
+        The closest distance in meters
 
       
     

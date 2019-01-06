@@ -44,7 +44,7 @@ class DirectoryReader{
           //read file content
           let tmp = JSON.parse(e.target.result);
           jsonObjects.push(tmp);
-        //  console.log(tmp);
+          console.log(tmp.properties.name);
         };
       })(f);
       // Read in the file
