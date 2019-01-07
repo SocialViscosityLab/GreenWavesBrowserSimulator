@@ -2,10 +2,14 @@
 * The class defining the scope and collection of positions in a ghost's green wave
 */
 class GreenWave{
-  constructor(journey){
+  constructor(journey, scope){
     this.journey = journey;
     // The green wave scope in number of positions.
-    this.greenWaveScope = 5;
+    if (scope){
+      this.greenWaveScope = scope;
+    } else {
+      this.greenWaveScope = 5;
+    }
     this.greenWavePositions = [];
     this.initialize();
   }
@@ -36,6 +40,7 @@ class GreenWave{
   multiplying them by the duration of the sample rate, or into distance by multiplying ellapsed time by the speed
   */
   setGreenWaveScope(val){
+    console.log("here");
     this.greenWaveScope = val;
   }
 }

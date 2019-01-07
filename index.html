@@ -92,7 +92,7 @@
     <div class = "row">
 
       <div class= "col-sm-4">
-        <h4> Route Settings</h4>
+        <h4> 1. Set up one or more routes</h4>
 
         <!--- reading the directory for routes -->
         <p>
@@ -100,27 +100,30 @@
 
           <!--- Directory access-->
           <a href="https://www.smartartifact.com/researchLab/routeMaker/index.html">Generate your own routes</a></p>
-          <br>
-
+          <hr>
+          <h6> If no route file choosen one around the D4SV Lab is loaded</h6>
           <button id = "routeButton" type = "button">Setup</button>
-          <button id = "loopButton" type = "button">Loop disabled</button>
-          <h6> By default it setups a route around the D4SV Lab </h6>
+          <button id = "loopButton" type = "button">Enable loop</button>
+
           <output id="list"></output>
 
         </div><!-- Close column -->
 
         <div class= "col-sm-4">
-          <h4> Leader (ghost) parameters</h4>
+          <h4>2. Set up leader/ghost parameters</h4>
           Sample rate<br>
           <input id = "sampleRate" type = "number" name = "sampleRate" value = "1" min = "0"> secs.
-          <br><br>
+          <br>
           Ghost speed:<br>
-          <input id = "speed" type="number" name="speed" value = "5" min = "0">m/s.
+          <input id = "speed" type="number" name="speed" value = "5" min = "0"> m/s.
+          <br>
+          Green wave scope:<br>
+          <input id = "greenWave" type="number" name="greenWave" value = "5" min = "1"> secs.
         </div><!-- Close column -->
 
 
         <div class= "col-sm-4">
-          <h4> Activate</h4>
+          <h4>3. Activate journey and add followers</h4>
           <button id = "activateJourney" type="submit"> Activate Journey</button>
           <br><br>
           <p>The journey starts with a default leader named 'the ghost'. Click on the route behind the ghost to add a new cyclist to the journey. New cyclists will try to adaptively match the leader's speed. </p>

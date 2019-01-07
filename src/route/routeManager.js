@@ -44,12 +44,12 @@ class RouteManager{
     // if there is a route
     if (this.routes[id]){
       // switch the value
-      if (btn.innerHTML == "Loop disabled"){
+      if (btn.innerHTML == "Enable loop"){
         this.routes[id].setLoop(true);
-        btn.innerHTML = "Loop enabled";
+        btn.innerHTML = "Disable loop";
       }else {
         this.routes[id].setLoop(false);
-        btn.innerHTML = "Loop disabled";
+        btn.innerHTML = "Enable loop";
       }
       // update route
       this.routes[id].update();

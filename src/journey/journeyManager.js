@@ -35,8 +35,10 @@ class JourneyManager{
         let tmpS = new Session(ghostCyclist.id);
     		// Insert the session at the begining of journey sessions
     		journeyTmp.sessions.unshift(tmpS);
+        // GreenWave GUI value
+        let w = document.getElementById("greenWave")
         // Create a green wave for this ghost
-        let tmpGW = new GreenWave(journeyTmp);
+        let tmpGW = new GreenWave(journeyTmp, Number(w.value));
         // Subscribe the session as observer to the cyclists
         ghostCyclist.subscribe(tmpS);
         // Subscribe the green wave as observer to the cyclists
