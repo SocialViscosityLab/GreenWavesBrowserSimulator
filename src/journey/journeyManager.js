@@ -26,7 +26,7 @@ class JourneyManager{
         // make route active
         journeyTmp.activateRoute(true);
         // cyclist temp id
-        let idTmp = {id:this.appID, journey:journeyTmp.id, route:routeTmp.id};
+        let idTmp = {id:this.appID + '_ghost', journey:journeyTmp.id, route:routeTmp.id};
         // ghost cyclist
         let ghostCyclist = new Cyclist(idTmp, journeyTmp.referenceRoute ,journeyTmp.referenceRoute.routePoints[0], ghostSpeed);
         // increase id for next cyclist

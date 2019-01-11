@@ -19,7 +19,7 @@
   crossorigin=""></script>
 
   <!-- js main codes -->
-  <!--script src = "libs/p5.js" type="text/javascript"></script-->
+  <script src = "libs/p5.js" type="text/javascript"></script>
   <script src = "src/main.js" type="text/javascript"></script>
   <!-- js route codes -->
   <script src = "src/route/routeManager.js" type="text/javascript"></script>
@@ -36,6 +36,12 @@
   <script src = "src/cyclist/bicycle.js" type="text/javascript"></script>
   <script src = "src/cyclist/rider.js" type="text/javascript"></script>
   <script src = "src/cyclist/cyclist.js" type="text/javascript"></script>
+  <!-- js 3D map  codes -->
+  <!--link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.css' rel='stylesheet' />
+  <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.js'></script-->
+  <link href="https://cdn.osmbuildings.org/mapbox-gl/0.47.0/mapbox-gl.css" rel="stylesheet">
+<script src="https://cdn.osmbuildings.org/mapbox-gl/0.47.0/mapbox-gl.js"></script>
+
   <!-- js map  codes -->
   <script src = "src/mapCode/cartography.js" type="text/javascript"></script>
   <script src = "src/mapCode/mapRoute.js" type="text/javascript"></script>
@@ -131,6 +137,11 @@
 
         </div>  <!-- Close column -->
 
+      </div> <!-- Close row -->
+      <div class="row"> <!-- Open row -->
+        <hr>
+        <h4>Output list</h4>
+        <ul id = 'outputList'></ul>
       </div> <!-- Close row -->
 
     </div> <!--close container -->

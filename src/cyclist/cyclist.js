@@ -34,13 +34,13 @@ class Cyclist{
     //this.distance = 0; // the distance elapsed from the origin
     this.step = 0; // the distance to move from current position
     // this.expectedAcc; // the expected acceleration
-    this.targetSpeed = 6; // the leader's target. The leader gets its target speed from user input
+    this.targetSpeed = 7; // the leader's target. The leader gets its target speed from user input
     // relative time
     this.timeCounter = 0;
 
     // variables for CACC
     // 1 . acceleration variables
-    this.topSpeed = 3;
+    this.topSpeed = 5;
     this.lastAccelerationPlatoon = 0;// Last acceleration calculated with CACC
     this.isLeader = true;
     this.greenWave = false;
@@ -123,12 +123,17 @@ class Cyclist{
       // notify
       this.notifyObservers(this.generateDataPoint());
       if (!this.isLeader){
-        console.log("my speed: "+this.mySpeed.toPrecision(4)+ ", in front's: " + this.leaderCyclist.mySpeed.toPrecision(4));
-        console.log("my accel: "+this.myAcceleration.toPrecision(4)+ ", in front's: " + this.leaderCyclist.myAcceleration.toPrecision(4));
+        // console.log("my speed: "+this.mySpeed.toPrecision(4)+ ", in front's: " + this.leaderCyclist.mySpeed.toPrecision(4));
+        // console.log("my accel: "+this.myAcceleration.toPrecision(4)+ ", in front's: " + this.leaderCyclist.myAcceleration.toPrecision(4));
       }
-    } else {
+    } else if (this.status != 'disabled'){
       this.status = "disabled";
-      //console.log("Session completed for cyclist: " , this.id );
+      console.log("Session completed for cyclist: " , this.id );
+      for (let observer of this.observers) {
+        if (observer instanceof Session){
+          observer.saveToJSON();
+        }
+      }
     }
   }
 

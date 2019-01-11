@@ -15,8 +15,7 @@ let directory;
 /**
 Setup. It setups variables and initializes instances
 */
-//function setup(){
-window.onload = function(){
+function setup(){
 	document.getElementById("routeButton").onclick = setupRoutes;
 	document.getElementById("loopButton").onclick = switchRouteLoop;
 	document.getElementById("activateJourney").onclick = activateJourneys;

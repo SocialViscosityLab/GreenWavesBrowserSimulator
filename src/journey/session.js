@@ -17,47 +17,6 @@ class Session{
 		this.dataPoints.push(data);
 	}
 
-
-	/**
-	*The concept here is to calculate where a vehicle will be located after running at a given speed for a given time.
-	The process is as follows:
-	1- Determine the current position on a route. That is retrieved from the latest recorded dataPoint or the ciclysts position
-	2- Calculate the distance traveled based on speed and step time
-	3- Locate the corresponding position on the route for the distance traveled. For this step of the process
-	we need to ask the route where on the path is located the traveled distance.
-	@param {Route} route The route
-	@param {Number} frameRate Time glogal frameRate. It is also the time ahead from the current time in seconds
-	@return {Position} the latest estimated position
-
-	runStep(route, frameRate){
-		let tmpDataP;
-		if (this.status == "running"){
-			//1- Determine the current position on a route. That is retrieved from the latest recorded dataPoint
-			let currentPosition = this.cyclist.position; //this.dataPoints[this.dataPoints.length-1].position;
-			//2- Calculate the distance traveled based on speed and step time
-			let distanceTraveled = this.cyclist.mySpeed * frameRate;
-			//3- Locate the corresponding position on the route for the distance traveled
-			let tmpPosition = route.getPosition(currentPosition, distanceTraveled);
-
-			this.cyclist.position = tmpPosition;
-
-			if (tmpPosition instanceof Position){
-				//  create the new dataPoint
-				tmpDataP = new DataPoint(this.cyclist.myAcceleration, tmpPosition, this.cyclist.speed, this.timeCounter + frameRate);
-
-				this.dataPoints.push(tmpDataP);
-
-				this.timeCounter ++;
-
-			} else {
-				this.status = "completed";
-				console.log("Session completed for vehicle: " , this.id_user);
-			}
-		}
-		return tmpDataP;
-	}
-	*/
-
 	/**
 	* Static class. Sets all the datapoints on a route based on a given speed and sampleRate. If the route is a loop
 	it add points to the segment bewteen the last and the fisrt corner point
@@ -158,7 +117,45 @@ class Session{
 	/**
 	* Exports the session path in GeoJSON format TO BE IMPLEMENTED
 	*/
-	saveRouteGeoJSON (){
-		console.log("SEE INSTRUCTIONS AT: https://eligrey.com/demos/FileSaver.js/");
+	saveToJSON() {
+
+		const MIME_TYPE = 'text/plain';
+		// fileName
+		let fileName = this.id_user.id +'_'+this.id_user.journey +'_'+ this.id_user.route;
+
+		let output = {'id':this.id_user.id, 'journey':this.id_user.journey, 'route':this.id_user.route};
+
+		output.startTime = this.startTime;
+
+		output.datapoints = this.dataPoints;
+
+		var outputString = (JSON.stringify(output, null, 2));
+
+		//console.log(outputString);
+
+		var blob;
+		// Create blog Object
+
+		blob = new Blob([outputString], {type : 'application/json'});
+
+		var a = document.createElement("a"); //document.getElementById('getFile');
+
+		var li = document.createElement("li")
+
+		a.download = fileName;
+
+		a.href = window.URL.createObjectURL(blob);
+
+		a.textContent = 'Output of '+ fileName;
+
+		a.dataset.downloadurl = [MIME_TYPE, a.download, a.href].join(':');
+
+		//a.classList.add('dragout');
+		var outputList = document.getElementById('outputList');
+
+		li.append(a)
+
+		outputList.append(li);
+
 	}
 }

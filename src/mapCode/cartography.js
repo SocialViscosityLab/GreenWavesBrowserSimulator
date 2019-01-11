@@ -107,6 +107,24 @@ class Cartography{
 	}
 
 	/**
+	* Instantiation of the map in 3D. It uses an accessToken provided by MapBox.
+	*/
+	setupMap3D(){
+
+	mapboxgl.accessToken = 'pk.eyJ1IjoianNhbGFtIiwiYSI6ImNqcDI3djR2ZzA0ZWszcG9ibGF6a3R3dGIifQ.-TWHodyioJTYbhU_a-jUKw';
+  this.map = new mapboxgl.Map({
+    container: 'mapid',
+    style: 'https://data.osmbuildings.org/0.2/anonymous/style.json',
+    //style: 'mapbox://styles/jsalam/cjqluyzunlbpi2rqjrtsliy6h',
+    center: [-88.23425,40.10250],
+    zoom: 17,
+    pitch: 50,
+    attributionControl: true
+  });
+}
+
+
+	/**
 	* Simply displays the lab marker on the map
 	*/
 	displayLabMarker(){
