@@ -11,6 +11,12 @@ let sampleRate;
 let clicker;
 // The instance that reads files from the hard drive
 let directory;
+//The intance of the communication
+let comm;
+// Current selected route
+let currentRoute;
+//Current journey
+let currentJourney;
 
 /**
 Setup. It setups variables and initializes instances
@@ -26,7 +32,7 @@ window.onload = function(){
 	routeM = new RouteManager();
 	// Instantiate JourneyManager
 	journeyM = new JourneyManager();
-	//new Communication();
+	comm = new Communication();
 	directory = new DirectoryReader();
 	// activate cyclist addition listener
 	this.addCyclistListener();
@@ -45,6 +51,8 @@ function setupRoutes(){
 	currentMap.plotRoutes();
 	// plot route corner points on map
 	currentMap.plotRoutesCornerPoints();
+	currentRoute = routeM.routes[0];
+	comm.addNewRoute(currentRoute.id, currentRoute.getPositionPoints());
 }
 
 /**
@@ -73,6 +81,8 @@ function activateJourneys(){
 		journeyM.activate(routeM.routes, ghostSpeed , sampleRate, currentMap);
 		// Execute the run function at the frequency of the sampleRate
 		clicker = setInterval(run, (1000*sampleRate));
+		currentJourney = journeyM.getCurrentJourney();
+		comm.addNewJourney(currentJourney.id,currentRoute.id);
 	}else{
 		alert("Setup routes first")
 	}
@@ -100,6 +110,10 @@ function run(){
 		if (!routeTmp.status){
 			clearInterval(clicker);
 			alert("Route finalized");
+		}else{
+			let tempDP = journeyM.getCurrentJourney().sessions[0].getLastDataPoint()
+			console.log(currentJourney.sessions[0].getLastDataPoint().getDoc());
+			comm.addNewDataPointInSession(currentJourney.id, "ghost", currentJourney.sessions[0].dataPoints.length-1, currentJourney.sessions[0].getLastDataPoint().getDoc());
 		}
 	}
 	// Run cyclists

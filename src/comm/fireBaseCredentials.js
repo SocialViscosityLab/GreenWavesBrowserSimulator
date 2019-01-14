@@ -6,7 +6,15 @@ var config = {
   databaseURL: "https://biketracker-e494b.firebaseio.com",
   projectId: "biketracker-e494b",
   storageBucket: "biketracker-e494b.appspot.com",
-  messagingSenderId: "715778490288"
+  messagingSenderId: "715778490288",
+  timestampsInSnapshots: true
 };
-firebase.initializeApp(config);
+
+var firebase = firebase.initializeApp(config);
+const admin = firebase.auth();
+const db = firebase.firestore();
+
+const settings = {timestampsInSnapshots: true};
+db.settings(settings);
+
 console.log("Firebase initialized");

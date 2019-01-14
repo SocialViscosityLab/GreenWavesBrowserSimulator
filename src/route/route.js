@@ -408,4 +408,12 @@ class Route {
 		}
 		return rtn;
 	}
+
+	getPositionPoints(){
+		let positionPoints = [ ]
+		for (let i = 0; i < this.routePoints.length; i++) {
+			positionPoints.push(this.routePoints[i].getPositionDoc());
+		}
+		return positionPoints;
+	}
 }

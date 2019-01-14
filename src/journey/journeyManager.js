@@ -13,6 +13,8 @@ class JourneyManager{
     this.greenWaves = [];
     //  temporal to simulate new cyclists id_user
     this.appID = 0;
+    // Id of the current active journey
+    this.currentJourneyId = 0;
   }
 
   /**
@@ -22,7 +24,7 @@ class JourneyManager{
     for (let routeTmp of currentRoutes){
       if (routeTmp != undefined){
         // Instantiate journey
-        let journeyTmp = new Journey(0, routeTmp);
+        let journeyTmp = new Journey(this.currentJourneyId, routeTmp);
         // make route active
         journeyTmp.activateRoute(true);
         // cyclist temp id
@@ -33,8 +35,8 @@ class JourneyManager{
         this.appID++;
         // Create a session for this cyclist
         let tmpS = new Session(ghostCyclist.id);
-    		// Insert the session at the begining of journey sessions
-    		journeyTmp.sessions.unshift(tmpS);
+        // Insert the session at the begining of journey sessions
+        journeyTmp.sessions.unshift(tmpS);
         // GreenWave GUI value
         let w = document.getElementById("greenWave")
         // Create a green wave for this ghost
@@ -165,7 +167,16 @@ class JourneyManager{
     for(let c of this.leaders){
       if (c.id.journey === journeyID)
       console.log(c," ",journeyID);
-        return c;
+      return c;
+    }
+  }
+
+  getCurrentJourney(){
+    for (let journeyTmp of this.journeys){
+
+      if (journeyTmp.id == this.currentJourneyId){
+        return journeyTmp;
+      }
     }
   }
 }

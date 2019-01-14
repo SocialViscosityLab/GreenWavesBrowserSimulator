@@ -41,5 +41,15 @@ class Position{
     this.lon = (this.lon * 180)/Math.PI;
     //this.positionFormat = "radians";
   }
-
+  /**
+  * Return an array with the two components of the position
+  * to have the format to push in the database
+  */
+  getPositionDoc(){
+    let positionDoc = {
+      latitude: this.lat,
+      longitude:this.lon
+    }
+    return positionDoc;
+  }
 }

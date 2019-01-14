@@ -161,4 +161,8 @@ class Session{
 	saveRouteGeoJSON (){
 		console.log("SEE INSTRUCTIONS AT: https://eligrey.com/demos/FileSaver.js/");
 	}
+
+	getLastDataPoint(){
+		return this.dataPoints[this.dataPoints.length-1];
+	}
 }

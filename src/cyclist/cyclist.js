@@ -30,7 +30,7 @@ class Cyclist{
     this.id = id;
     this.position = position;
     this.mySpeed = speed; // the agent's current speed
-    this.myAcceleration; // the agent's current acceleration
+    this.myAcceleration = 0; // the agent's current acceleration
     //this.distance = 0; // the distance elapsed from the origin
     this.step = 0; // the distance to move from current position
     // this.expectedAcc; // the expected acceleration
