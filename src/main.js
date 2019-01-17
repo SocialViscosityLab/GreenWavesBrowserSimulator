@@ -111,8 +111,9 @@ function run(){
 	currentMap.plotJourneys();
 	//plot dataPoints
 	//currentMap.displaySessionMarker[0,0];
-	// plot cyclists
-	currentMap.plotCyclists();
 	// plot green waves
 	currentMap.plotGreenWaves();
+	// plot cyclists
+	currentMap.plotCyclists();
+
 }

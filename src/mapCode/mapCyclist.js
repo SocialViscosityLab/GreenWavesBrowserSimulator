@@ -20,20 +20,29 @@ class MapCyclist{
   plotMarker(theMap){
 
     // for the first marker
-    if (this.marker == undefined){
+    if (!this.marker){
 
-      this.marker = L.marker([this.cyclist.position.lat,this.cyclist.position.lon]).addTo(theMap);
+      this.marker = L.circleMarker([this.cyclist.position.lat,this.cyclist.position.lon],{color:'blue', fill: true, weight:1, stroke:true, radius:5}).addTo(theMap);
 
     }else{
 
       let newLatLng = new L.LatLng(this.cyclist.position.lat , this.cyclist.position.lon);
+
+      // change the color of markers according to acceleration direction
+      if (this.cyclist.myAcceleration > 0){
+
+        this.marker.setStyle({color:'#00A86B'});
+
+      } else{
+        this.marker.setStyle({color:'red'});
+      }
 
       this.marker.setLatLng(newLatLng);
     }
     // Update marker label
     let label =  "C: " + this.cyclist.id.id + " Tick: " + this.cyclist.timeCounter;
 
-    this.marker.bindPopup(label).openPopup();
+    //this.marker.bindPopup(label).openPopup();
 
   }
 }

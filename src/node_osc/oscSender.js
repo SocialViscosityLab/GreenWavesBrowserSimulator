@@ -22,7 +22,7 @@ class OSCSender{
   */
   send (pattern, data){
     let message;
-    console.log(pattern,data);
+  //  console.log(pattern,data);
     if(pattern){
       message = new OSC.Message(pattern, data);
     }else{

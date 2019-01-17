@@ -193,12 +193,12 @@ class Cartography{
 	@param {Number} amount The size of the range of journeys to be plotted
 	*/
 	plotGreenWaves(start,amount){
-		if (start != undefined){
+		if (start){
 			if (start > this.mapJourneys.length -1){
 				console.log("Error. Index larger than array length");
 				return undefined;
 			}else{
-				if (amount != undefined){
+				if (amount){
 					//plot the range
 					let n = start+amount;
 					if (n > this.mapJourneys.length){ n = this.mapJourneys.length;}

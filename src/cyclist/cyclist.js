@@ -129,10 +129,10 @@ class Cyclist{
       let tmp = this.id.journey +"|"+this.id.route+"|"+this.targetSpeed+"|"+this.mySpeed.toPrecision(4)+"|"+this.myAcceleration.toPrecision(4);
       // myOsc is a global instance constructed in the main.js
       myOsc.send('/cyclist'+this.id.id,tmp);
-      if (!this.isLeader){
-         console.log("my speed: "+this.mySpeed.toPrecision(4)+ ", in front's: " + this.leaderCyclist.mySpeed.toPrecision(4));
-         console.log("my accel: "+this.myAcceleration.toPrecision(4)+ ", in front's: " + this.leaderCyclist.myAcceleration.toPrecision(4));
-      }
+      // if (!this.isLeader){
+      //    console.log("my speed: "+this.mySpeed.toPrecision(4)+ ", in front's: " + this.leaderCyclist.mySpeed.toPrecision(4));
+      //    console.log("my accel: "+this.myAcceleration.toPrecision(4)+ ", in front's: " + this.leaderCyclist.myAcceleration.toPrecision(4));
+      // }
     } else if (this.status != 'disabled'){
       this.status = "disabled";
       console.log("Session completed for cyclist: " , this.id );
