@@ -7,7 +7,7 @@
 * DESIRED INTER-VEHICLE SPACING: the desired distance between the current vehicle and the one in front including the length of the vehicle ahead.It could be chosen as a function of vehicle speed.
 *
 * Initial version developed in JAVA / Processing 3 by jsalam
-* @param {Object} id cyclist ID
+* @param {Object} id cyclist ID. Attributes: id (String) journey (String), route (String)
 * @param {Position} position Insertion position
 * @param {Number} speed insertion speed
 *
@@ -59,6 +59,7 @@ class Cyclist{
     this.desirdIVSpacing = this.length_vehicle_front + this.desiredSpacing;
     this.designKSimple = 0.35;// the lower the value, the slower the
     this.designKAdaptive = 0.1;
+
   }
 
   /** Private Makes a datapoint with current properties of this cyclists
@@ -114,7 +115,9 @@ class Cyclist{
     // if (!this.isLeader)console.log("step "+ step);
     // Ask the route for the location of the step
     let tmpPosition = this.myRoute.getPosition(this.position, step);
-
+    /* This validate that the route is returning a Position.
+    The route returns the String "completed" when the step
+    falls beyond the endpoint of the route*/
     if (tmpPosition instanceof Position){
       // uodate position
       this.position = tmpPosition;
@@ -122,9 +125,13 @@ class Cyclist{
       this.mySpeed = step * sampleRate;
       // notify
       this.notifyObservers(this.generateDataPoint());
+      // broadcasting on OSC
+      let tmp = this.id.journey +"|"+this.id.route+"|"+this.targetSpeed+"|"+this.mySpeed.toPrecision(4)+"|"+this.myAcceleration.toPrecision(4);
+      // myOsc is a global instance constructed in the main.js
+      myOsc.send('/cyclist'+this.id.id,tmp);
       if (!this.isLeader){
-        // console.log("my speed: "+this.mySpeed.toPrecision(4)+ ", in front's: " + this.leaderCyclist.mySpeed.toPrecision(4));
-        // console.log("my accel: "+this.myAcceleration.toPrecision(4)+ ", in front's: " + this.leaderCyclist.myAcceleration.toPrecision(4));
+         console.log("my speed: "+this.mySpeed.toPrecision(4)+ ", in front's: " + this.leaderCyclist.mySpeed.toPrecision(4));
+         console.log("my accel: "+this.myAcceleration.toPrecision(4)+ ", in front's: " + this.leaderCyclist.myAcceleration.toPrecision(4));
       }
     } else if (this.status != 'disabled'){
       this.status = "disabled";
@@ -136,6 +143,8 @@ class Cyclist{
       }
     }
   }
+
+
 
   /**
   * Get data from all the the other agents and act based on data from the

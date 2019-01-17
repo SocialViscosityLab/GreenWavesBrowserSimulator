@@ -95,35 +95,35 @@ class Journey{
 		this.sessions[0].setSessionPoints(this.referenceRoute, speed, sampleRate);//route, speed, sampleRate
 	}
 
-	/**
-	* Executes all the sessions in this journey
-	*@param {number} speed The cyclists speed in meters per second. WARNING It applies to ALL cyclists
-	*@param {number} sampleRate Integer value with sampling rate in seconds
-	*/
-	runSessions(sampleRate){
-		// run ghost session
-		this.runGhost(sampleRate);
-		// run all other sessions
-		for (var i = 1; i < this.sessions.length; i++) {
-			this.sessions[i].runStep (this.referenceRoute, sampleRate);
-		}
-	}
-
-	/**
-	* Executes the especified session
-	*@param {string} id The cyclists ID
-	*@param {number} speed The cyclists speed in meters per second
-	*@param {number} sampleRate Integer value with sampling rate in seconds
-	*/
-	runSession(id,sampleRate){
-		if (this.sessions[id] != undefined){
-			if (id == 0){
-				this.runGhost();
-			}else {
-				this.sessions[id].runStep (this.referenceRoute, sampleRate); //runSession (route, speed, sampleRate in milliseconds)
-			}
-		}
-	}
+	// /**
+	// * Executes all the sessions in this journey
+	// *@param {number} speed The cyclists speed in meters per second. WARNING It applies to ALL cyclists
+	// *@param {number} sampleRate Integer value with sampling rate in seconds
+	// */
+	// runSessions(sampleRate){
+	// 	// run ghost session
+	// 	this.runGhost(sampleRate);
+	// 	// run all other sessions
+	// 	for (var i = 1; i < this.sessions.length; i++) {
+	// 		this.sessions[i].runStep (this.referenceRoute, sampleRate);
+	// 	}
+	// }
+	//
+	// /**
+	// * Executes the especified session
+	// *@param {string} id The cyclists ID
+	// *@param {number} speed The cyclists speed in meters per second
+	// *@param {number} sampleRate Integer value with sampling rate in seconds
+	// */
+	// runSession(id,sampleRate){
+	// 	if (this.sessions[id] != undefined){
+	// 		if (id == 0){
+	// 			this.runGhost();
+	// 		}else {
+	// 			this.sessions[id].runStep (this.referenceRoute, sampleRate); //runSession (route, speed, sampleRate in milliseconds)
+	// 		}
+	// 	}
+	// }
 
 	/**
 	* returns true if the any point of the route is whithin the subscritpionRange radius from the currentLocation.

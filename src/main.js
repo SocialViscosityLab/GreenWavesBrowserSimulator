@@ -12,10 +12,14 @@ let clicker;
 // The instance that reads files from the hard drive
 let directory;
 
+var myOsc;
 /**
 Setup. It setups variables and initializes instances
 */
 function setup(){
+	//osc
+	myOsc = new OSCSender();
+	// GUI elements
 	document.getElementById("routeButton").onclick = setupRoutes;
 	document.getElementById("loopButton").onclick = switchRouteLoop;
 	document.getElementById("activateJourney").onclick = activateJourneys;
