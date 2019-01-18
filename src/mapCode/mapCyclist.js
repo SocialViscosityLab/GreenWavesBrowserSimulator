@@ -22,7 +22,8 @@ class MapCyclist{
     // for the first marker
     if (!this.marker){
 
-      this.marker = L.circleMarker([this.cyclist.position.lat,this.cyclist.position.lon],{color:'blue', fill: true, weight:1, stroke:true, radius:5}).addTo(theMap);
+      this.marker = L.circleMarker([this.cyclist.position.lat,this.cyclist.position.lon],
+        {color:'blue', fillColor: 'blue', weight:1, stroke:true, radius:5}).addTo(theMap);
 
     }else{
 
@@ -31,10 +32,10 @@ class MapCyclist{
       // change the color of markers according to acceleration direction
       if (this.cyclist.myAcceleration > 0){
 
-        this.marker.setStyle({color:'#00A86B'});
+        this.marker.setStyle({color:'#00A86B', fillColor: '#00A86B', fill:true, fillOpacity: 0.4});
 
       } else{
-        this.marker.setStyle({color:'red'});
+        this.marker.setStyle({color:'red', fillColor: 'red', fill:true, fillOpacity: 0.4});
       }
 
       this.marker.setLatLng(newLatLng);

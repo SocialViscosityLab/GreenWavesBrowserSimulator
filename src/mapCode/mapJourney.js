@@ -60,15 +60,13 @@ class MapJourney{
       latlons[i] = [this.greenWavePositions[i].lat, this.greenWavePositions[i].lon];
     }
 
-    if (this.greenWavePolyline == undefined){
-
+    if (!this.greenWavePolyline){
+      // create the polyline
       this.greenWavePolyline = L.polyline(latlons, {color: '#00FF00', weight:10,  opacity: 0.6}).addTo(theMap);
 
     } else{
-      // remove the current pathPolyline
-      theMap.removeLayer(this.greenWavePolyline);
-      // add a new one
-      this.greenWavePolyline = L.polyline(latlons, {color: '#00FF00', weight:10, opacity: 0.6}).addTo(theMap);
+      // update lat longs
+      this.greenWavePolyline.setLatLngs(latlons);
     }
   }
 }
