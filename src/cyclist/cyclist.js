@@ -202,7 +202,7 @@ class Cyclist{
   * "A Simulation Tool for Automated Platooning in Mixed Highway Scenarios"
   * Segata et al. Proceedings of Mobicom 2012
   *
-  * @return
+  * @return {Number}
   */
   collaborativeACC() {
 

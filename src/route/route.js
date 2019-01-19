@@ -29,8 +29,8 @@ class Route {
 
 	/******* SETTERS ********
 	/**
-	Set to true if the route is a loop
-	@param {boolean} bool True if the route is a loop
+	* Set to true if the route is a loop
+	* @param {boolean} bool True if the route is a loop
 	*/
 	setLoop(bool){
 		this.loop = bool;
@@ -149,7 +149,8 @@ class Route {
 	}
 
 	/**
-	Gets the distance on route traveled from the route origin to a position on a route.
+	Gets the distance on route traveled from the route origin to the start position
+	of the nearest segment to a given point.
 	CAVEAT: This method assumes that the position is very close to the route path.
 	@param {Position} position The position in space
 	@return {number} distance traveled in meters
