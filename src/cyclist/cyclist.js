@@ -161,7 +161,8 @@ class Cyclist{
       // for all other cyclsist
     } else {
       // get the gap to the preceding cyclsist
-      let gap = GeometryUtils.getDistance(this.leaderCyclist.position , this.position);
+      let gap = myRoute.getAtoBDistance(this.leaderCyclist.position , this.position);
+      //let gap = GeometryUtils.getDistance(this.leaderCyclist.position , this.position);
       // console.log(gap)
       /* NOTE: Ideally this should be just collaborativeACC() without any condition, but I am testng it as it was coded in java
       * The issue is that CACC does not account for situations in which a follower overpasses the preceding vehicle
