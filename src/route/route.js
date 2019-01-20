@@ -56,6 +56,8 @@ class Route {
 	Process: to DETERMINE TRAVELED DISTANCE the idea is to get the distance to the current point and then add the step distance
 	* @param {Position} position The insertion position on the route
 	* @param {Number} stepLength The distance traveled for the duration of a sample rate at a given speed. It is defined in meters.
+	* @return {Position} Returns the position where the cyclsist should be after traveling the stepLength on the route.
+	* If the position falls beyond the last cornerpoint of this route, then the last cornerpoint is returned.
 	*/
 	getPosition (position, stepLength){
 		// Validate if the position is on the route path
@@ -107,7 +109,7 @@ class Route {
 			}
 		} else {
 			//console.log("WARNING!!! Route completed or position off route");
-			return "completed";
+			return this.segments[this.segments.length-1].end;
 		}
 	}
 
