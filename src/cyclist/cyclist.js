@@ -128,7 +128,7 @@ class Cyclist{
       // broadcasting on OSC
       let tmp = this.id.journey +"|"+this.id.route+"|"+this.targetSpeed+"|"+this.mySpeed.toPrecision(4)+"|"+this.myAcceleration.toPrecision(4);
       // myOsc is a global instance constructed in the main.js
-      myOsc.send('/cyclist'+this.id.id,tmp);
+      // myOsc.send('/cyclist'+this.id.id,tmp);
       // if (!this.isLeader){
       //    console.log("my speed: "+this.mySpeed.toPrecision(4)+ ", in front's: " + this.leaderCyclist.mySpeed.toPrecision(4));
       //    console.log("my accel: "+this.myAcceleration.toPrecision(4)+ ", in front's: " + this.leaderCyclist.myAcceleration.toPrecision(4));
@@ -160,15 +160,18 @@ class Cyclist{
       this.simpleCC();
       // for all other cyclsist
     } else {
+      // THIS DISABLES THE CONVOY FUNCTIONALITY BECAUSE EVERYONE IS FOLLOWING THE LEADER
+      this.nearestFrontNode = this.leaderCyclist;
       // get the gap to the preceding cyclsist
-      let gap = GeometryUtils.getDistance(this.leaderCyclist.position , this.position);
+      let gap = this.myRoute.getAtoBDistance(this.nearestFrontNode.position , this.position);
+      //let gap = GeometryUtils.getDistance(this.leaderCyclist.position , this.position);
       // console.log(gap)
       /* NOTE: Ideally this should be just collaborativeACC() without any condition, but I am testng it as it was coded in java
       * The issue is that CACC does not account for situations in which a follower overpasses the preceding vehicle
       */
       if (gap > this.desirdIVSpacing) {
         // apply acceleration algortithm
-        this.collaborativeACC();
+        this.collaborativeACC(gap);
         //this.simpleCC();
       } else {
         // display negative acceleration
@@ -178,7 +181,7 @@ class Cyclist{
     // Get the step length for that speed
     // x = Vi*t + (at2)/2, where time(t) is = 1
     step = (this.mySpeed * sampleRate) + (((this.myAcceleration * Math.pow(sampleRate, 2))) / 2);
-    //console.log("speed: " + this.mySpeed + ", acceleration: " + this.myAcceleration + ", step:" + step + ", sampleRate " , sampleRate);
+  //  console.log("speed: " + this.mySpeed + ", acceleration: " + this.myAcceleration + ", step:" + step + ", sampleRate " , sampleRate);
     return Number(step);
   }
 
@@ -202,11 +205,10 @@ class Cyclist{
   * "A Simulation Tool for Automated Platooning in Mixed Highway Scenarios"
   * Segata et al. Proceedings of Mobicom 2012
   *
+  * @param {Number} distanceFrontToThis The distance in meter between this vehicle and the vehicle ahead
   * @return {Number}
   */
-  collaborativeACC() {
-
-    this.nearestFrontNode = this.leaderCyclist;
+  collaborativeACC(distanceFrontToThis) {
 
     // a Get information from the nearest node in the front
     let rel_speed_front;
@@ -217,9 +219,9 @@ class Cyclist{
       // Calculate relative speed to the node in front
       rel_speed_front = this.mySpeed - this.nearestFrontNode.mySpeed;
       // distance to vehice ahead
-      let distanceFrontToCurrent = GeometryUtils.getDistance(this.position, this.nearestFrontNode.position);
+      //let distanceFrontToThis = GeometryUtils.getDistance(this.position, this.nearestFrontNode.position);
       // Calculate spacing error
-      spacing_error = - distanceFrontToCurrent + this.desirdIVSpacing;
+      spacing_error = - Math.abs(distanceFrontToThis) + this.desirdIVSpacing;
 
       nodeFrontAcceleration = this.nearestFrontNode.myAcceleration;
 
@@ -277,7 +279,7 @@ class Cyclist{
     // 			// If temp is not myself
     // 			if (temp.id != this.id) {
     // 				// If temp is ahead
-    // 				if (temp.position.x - this.position.x > 0) {
+    // 				if (route.getAtoBDistance(temp.position, this.position) > 0) {
     // 					// if temp is closer
     // 					if (temp.position.x - this.position.x <= distanceToFront) {
     // 						// if (pos.dist(temp.pos) <= distanceToFront) {

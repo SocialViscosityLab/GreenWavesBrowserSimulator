@@ -45,7 +45,7 @@ class Route {
 	}
 
 	update(){
-		this.makeSegments();
+		this.segments = this.makeSegments();
 		console.log("Route updated.  Route points: " + this.routePoints.length + ", segments: " + this.segments.length +  ", loop: " + this.loop);
 	}
 
@@ -54,8 +54,8 @@ class Route {
 	/**
 	* Calculates the position on route for a traveled distance starting from a given position.
 	Process: to DETERMINE TRAVELED DISTANCE the idea is to get the distance to the current point and then add the step distance
-	* @param {Number} stepLength The distance traveled for the duration of a sample rate at a given speed. It is defined in meters.
 	* @param {Position} position The insertion position on the route
+	* @param {Number} stepLength The distance traveled for the duration of a sample rate at a given speed. It is defined in meters.
 	*/
 	getPosition (position, stepLength){
 		// Validate if the position is on the route path
@@ -63,7 +63,7 @@ class Route {
 			// get the index of the closest segment to position
 			let index = this.getIndexAndProximityToClosestSegmentTo(position).index;
 			//console.log("index: " + index);
-			// retrieve the segemnt for that index
+			// retrieve the segment for that index
 			let currentSegment = this.segments[index];
 			// The traveled distance on the segment
 			let distanceOnSegment = Number(currentSegment.getDistanceOnSegment(position));
@@ -75,15 +75,12 @@ class Route {
 			if (accumDistanceOnSegment < currentSegment.length){
 				// if yes.. get and return the NEW POSITION
 				return currentSegment.getIntermediatePointFromDistance(accumDistanceOnSegment);
-
 			} else {
 				// console.log("-- NEXT SEGMENT ");
 				// Validate that traveled distance is less or equal to route's length
 				if (this.stillOnRoute(position,stepLength)){
-					//console.log ("Still on route... ");
 					// Recalculate accumulated distance on the next segment
 					let remainingDistForNextSegment = accumDistanceOnSegment - currentSegment.length;
-					//console.log("remaining distance for next segment: "+ remainingDistForNextSegment);
 					// retrieve the next segment
 					index = index + 1;
 					// if the index is greater than the number of segments
@@ -93,14 +90,11 @@ class Route {
 							index = 0;
 						} else {
 							// Route completed
-							// console.log("WARNING!!! Route completed");
 							return this.segments[this.segments.length-1].end;
 						}
-
 					}
 					// retrieve current segment
 					currentSegment = this.segments[index];
-					// console.log("next index: " + (index));
 					// return the NEW POSITION
 					return currentSegment.getIntermediatePointFromDistance(remainingDistForNextSegment);
 
@@ -110,18 +104,15 @@ class Route {
 					return this.segments[this.segments.length-1].end;
 				}
 			}
-
 		} else {
-
 			//console.log("WARNING!!! Route completed or position off route");
-
 			return "completed";
 		}
 	}
 
 	/**
 	* Determines wether a traveled distance to a position + 1 step is shorter or equal to the route length
-	@param {Position} position The position near to any of the route segments. A valid proximity is evaluated by the getTraveledDistanceToSegmentStart() function.
+	@param {Position} position The position near to any of the route segments.
 	@param {Number} stepLength the step length in meters
 	@return true if still on route, else false.
 	*/
@@ -151,6 +142,68 @@ class Route {
 	/**
 	Gets the distance on route traveled from the route origin to the start position
 	of the nearest segment to a given point.
+	* Gets the distance from the route start to the position
+	*/
+	getTraveledDistanceToPosition(position){
+		// validate if the position is an instance of Position
+		if (position instanceof Position){
+			// get the index of the closest segment to the position
+			let index = this.getIndexAndProximityToClosestSegmentTo(position).index;
+			//console.log("index : "+index);
+			// get the distance to the start cornerpoint of that segment
+			let distanceToCorner = this.getAccDistanceUpToSegment(index, false);
+			//console.log("  to corner: " + distanceToCorner);
+			// calculate the distance on the segment
+			let distanceOnSegment = this.segments[index].getDistanceOnSegment(position);
+			//console.log("  on segement: " + distanceOnSegment)
+			// add the distance to the corner to the distance on the segment
+			return Number.parseFloat(distanceToCorner + distanceOnSegment);
+			// return the distance
+		}else{
+			return undefined;
+		}
+	}
+
+	/**
+	* Gets the distance traveled on the route path in meters from pointA to point B.
+	The returned value is positive when A is in front of B, else the distance is negative.
+	@param {Position} positionA First position on the route
+	@param {Position} positionB Second position on the route
+	@return The value of the distance between the two points.The returned value is
+	positive when A is in front of B, else the distance is negative.
+	*/
+	getAtoBDistance(positionA, positionB){
+		let distanceToA = this.getTraveledDistanceToPosition(positionA);
+		let distanceToB = this.getTraveledDistanceToPosition(positionB);
+		//console.log("a: " + distanceToA +", b: " + distanceToB);
+		//console.log("diff: " + (distanceToA -  distanceToB));
+		return (distanceToA - distanceToB);//Math.abs(distanceToA - distanceToB);
+	}
+
+	/**
+	* Gets the accumulated distance up to the first cornerpoint of the segment identified by its
+	* index on the route's collection of segments. If inclusive paratemter is true the accumulated
+	* distance extends to the last cornerPoint of the segment
+	@param {Number} index The index of the segment
+	@param {boolean} inclusive If true,  The index of the segment
+	*/
+	getAccDistanceUpToSegment(index, inclusive){
+		let rtn = 0;
+		if (inclusive == true){
+			for (var i = 0; i <= index; i++) {
+				rtn += Number(this.segments[i].length);
+			}
+		} else {
+			for (var i = 0; i < index; i++) {
+				rtn += Number(this.segments[i].length);
+			}
+
+		}
+		return Number.parseFloat(rtn);
+	}
+
+	/**
+	Gets the distance on route traveled from the route origin to a position on a route.
 	CAVEAT: This method assumes that the position is very close to the route path.
 	@param {Position} position The position in space
 	@return {number} distance traveled in meters
@@ -158,17 +211,10 @@ class Route {
 	getTraveledDistanceToSegmentStart(position){
 		if (position instanceof Position){
 			// Detect the closest route segment
-			let segmentIndex = this.getIndexAndProximityToClosestSegmentTo(position);
+			let segmentIndex = this.getIndexAndProximityToClosestSegmentTo(position).index;
 			// console.log("segmentIndex "+ segmentIndex);
-			// Calculate the distance from origin to begining of segment
-			let distanceTraveled = 0;
-
-			for (var i = 0; i < segmentIndex; i++) {
-
-				distanceTraveled += Number(this.segments[i].length);
-			}
-
-			return Number.parseFloat(distanceTraveled);
+			// Calculate and return the distance from origin to begining of segment
+			return this.getAccDistanceUpToSegment(segmentIndex, false);
 
 		}else{
 			console.log("Parameter position is not an instance of Position")
@@ -247,16 +293,7 @@ class Route {
 	*/
 	determineResidualTime(speed, timeOnRoute, segmentIndex){
 		// Calculate the ellapsed time from the route startPosition to the first segment's cornerPoint
-		let accumulatedDistance = 0;
-
-		// if the vehicle is on a route segment different than the first one
-		if (segmentIndex > 0){
-
-			for (let i = 0; i < segmentIndex; i++){
-
-				accumulatedDistance += Number(this.segments[i].length);
-			}
-		}
+		let accumulatedDistance = this.getAccDistanceUpToSegment(segmentIndex, false);
 		// console.log("accum dist: " + accumulatedDistance);
 		// the time needed to arrive to the initial corner point of the current segment
 		let timeToSegment = accumulatedDistance/Number(speed);
@@ -319,7 +356,7 @@ class Route {
 		this.id = object.properties.name;
 		// iterate over the objects
 		for (var i = 0; i < positions.length; i++) {
-		// create the positions
+			// create the positions
 			let tmpPos = new Position(Number(positions[i][0]), Number(positions[i][1]));
 			// add them to the collection
 			this.routePoints.push(tmpPos);
@@ -357,11 +394,11 @@ class Route {
 	* @param {Position} position The position to be validated
 	*/
 	validatePosition (position){
-		let distance = GeometryUtils.getDistance(position, this.segments[this.segments.length-1].end);
+		let distance = this.getAtoBDistance(this.segments[this.segments.length-1].end, position);
 		if (this.loop){
 			return true;
 		} else{
-			return (distance != 0 ? true : false);
+			return (distance >= 0 ? true : false);
 		}
 	}
 
@@ -382,31 +419,24 @@ class Route {
 			segments.push(new Segment(this.routePoints[this.routePoints.length-1],this.routePoints[0]));
 
 		}
-		// Show segements on console
-		// for (let s of segments) {
-		// 	console.log("segment length: " + s.length);
-		// }
+	//	Show segements on console
+		for (let s of segments) {
+			console.log("segment length: " + s.length);
+		}
 
 		return segments;
 	}
 
-	/**
-	* Retreves the segment at a given index
-	@param {Number} index The index less than the segment array length
-	*/
-	getSegment(index){
+	// /**
+	// * Retrieves the segment at a given index
+	// @param {Number} index The index less than the segment array length
+	// */
+	// getSegment(index){
+	//
+	// 	if (index < this.segments.length -1){
+	//
+	// 		return segments[index];
+	// 	}
+	// }
 
-		if (index < this.segments.length -1){
-
-			return segments[index];
-		}
-	}
-
-	getAccDistanceUpToSegment(index){
-		let rtn = 0;
-		for (var i = 0; i <= index; i++) {
-			rtn += Number(this.segments[i].length);
-		}
-		return rtn;
-	}
 }

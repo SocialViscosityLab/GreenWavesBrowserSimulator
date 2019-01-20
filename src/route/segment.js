@@ -49,7 +49,7 @@ class Segment{
   @return {Number} distance Distance in meters
   */
   getDistanceOnSegment(position){
-    return GeometryUtils.getDistance(this.start, position).toPrecision(4);
+    return GeometryUtils.getDistance(this.start, position);
   }
 
   /**
