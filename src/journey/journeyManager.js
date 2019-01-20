@@ -153,7 +153,7 @@ class JourneyManager{
       if (currentD <= proximityRadius){
         return rtn;
       } else {
-        alert("The cyclist is out of the scope of any journey. The acceptable proximity radius is: " + proximityRadius);
+        alert("The cyclist you intend to add is out of the scope of any journey. The acceptable proximity radius is: " + proximityRadius + ' meters');
         return undefined;
       }
     } else {

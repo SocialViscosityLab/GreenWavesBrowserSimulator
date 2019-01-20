@@ -101,6 +101,7 @@ class Route {
 				} else {
 					// Route completed
 					console.log("WARNING!!! Route completed");
+					// Return the last point if the route
 					return this.segments[this.segments.length-1].end;
 				}
 			}
@@ -120,10 +121,10 @@ class Route {
 		// If the route is not a loop do the following, else the position will be on the route
 		if (!this.loop){
 			// The traveled distance to the segment start
-			let distanceToCorner = Number(this.getTraveledDistanceToSegmentStart(position));
+			//let distanceToCorner = Number(this.getTraveledDistanceToSegmentStart(position));
 			//console.log("distance to corner: " + distanceToCorner);
 			// accumulated traveled distance
-			let traveledDistance = distanceToCorner + stepLength;
+			let traveledDistance = this.getTraveledDistanceToPosition(position) + stepLength;
 			// console.log("stepLength: ", stepLength,", traveled distance: " + traveledDistance);
 			// evalute the distance traveled against the route length
 			if (traveledDistance <= this.getTotalLength()){
@@ -420,23 +421,30 @@ class Route {
 
 		}
 	//	Show segements on console
-		for (let s of segments) {
-			console.log("segment length: " + s.length);
-		}
+		// for (let s of segments) {
+		// 	console.log("segment length: " + s.length);
+		// }
 
 		return segments;
 	}
 
-	// /**
-	// * Retrieves the segment at a given index
-	// @param {Number} index The index less than the segment array length
-	// */
-	// getSegment(index){
-	//
-	// 	if (index < this.segments.length -1){
-	//
-	// 		return segments[index];
-	// 	}
-	// }
+	/**
+	* Retrieves the segment at a given index
+	@param {Number} index The index less than the segment array length
+	@return Returns the segment of the route
+	*/
+	getSegment(index){
+		if (index < this.segments.length){
+			return this.segments[index];
+		} else {
+			console.log("ERROR. index larger than collection of segments");
+		}
+	}
 
+	/**
+	* @return Returns the last segment of the route
+	*/
+	getLastSegment(){
+			return this.segments[this.segments.length-1];
+	}
 }

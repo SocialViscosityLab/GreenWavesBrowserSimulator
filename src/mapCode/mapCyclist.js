@@ -38,6 +38,10 @@ class MapCyclist{
         this.marker.setStyle({color:'red', fillColor: 'red', fill:true, fillOpacity: 0.4});
       }
 
+      if (this.cyclist.status == "disabled"){
+        this.marker.setStyle({color:'blue', fillColor: 'blue', fill:true, fillOpacity: 0.4});
+      }
+
       this.marker.setLatLng(newLatLng);
     }
     // Update marker label

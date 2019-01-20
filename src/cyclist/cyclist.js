@@ -20,7 +20,7 @@ class Cyclist{
     this.rider = new Rider(); // here add atributes of rider
 
     // Activated by default because the cyclists is an instance only if it is activated
-    this.stauts = "enabled";
+    this.status = "enabled";
     // The session subscribed to this cyclist. It uses the observer pattern to notify things to its session
     this.observers = [];
     // the current route on which this cyclist is running
@@ -110,16 +110,14 @@ class Cyclist{
   }
 
   run(sampleRate){
-    // get the stepLength
-    let step = this.getStep(sampleRate);
-    // if (!this.isLeader)console.log("step "+ step);
-    // Ask the route for the location of the step
-    let tmpPosition = this.myRoute.getPosition(this.position, step);
-    /* This validate that the route is returning a Position.
-    The route returns the String "completed" when the step
-    falls beyond the endpoint of the route*/
-    if (tmpPosition instanceof Position){
-      // uodate position
+    // If the route is not completed and the cyclists is enabled
+    if (this.position !== this.myRoute.getLastSegment().end && this.status == "enabled"){
+      // get the stepLength
+      let step = this.getStep(sampleRate);
+      // if (!this.isLeader)console.log("step "+ step);
+      // Ask the route for the location of the step
+      let tmpPosition = this.myRoute.getPosition(this.position, step);
+      // update position
       this.position = tmpPosition;
       // update speed
       this.mySpeed = step * sampleRate;
@@ -181,7 +179,7 @@ class Cyclist{
     // Get the step length for that speed
     // x = Vi*t + (at2)/2, where time(t) is = 1
     step = (this.mySpeed * sampleRate) + (((this.myAcceleration * Math.pow(sampleRate, 2))) / 2);
-  //  console.log("speed: " + this.mySpeed + ", acceleration: " + this.myAcceleration + ", step:" + step + ", sampleRate " , sampleRate);
+    //  console.log("speed: " + this.mySpeed + ", acceleration: " + this.myAcceleration + ", step:" + step + ", sampleRate " , sampleRate);
     return Number(step);
   }
 
