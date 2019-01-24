@@ -8,7 +8,11 @@
 class DataPoint{
   constructor(acc, pos, speed, time){
     console.log(acc);
-    this.acceleration = acc;
+    if(acc < 0.0001){
+      this.acceleration = 0;
+    }else{
+      this.acceleration = acc;
+    }
     this.position = pos;
     this.speed = speed;
     this.time = time;

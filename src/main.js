@@ -83,6 +83,8 @@ function activateJourneys(){
 		clicker = setInterval(run, (1000*sampleRate));
 		currentJourney = journeyM.getCurrentJourney();
 		comm.addNewJourney(currentJourney.id,currentRoute.id);
+		comm.addNewGhostSession(currentJourney.id);
+
 	}else{
 		alert("Setup routes first")
 	}
@@ -112,8 +114,8 @@ function run(){
 			alert("Route finalized");
 		}else{
 			let tempDP = journeyM.getCurrentJourney().sessions[0].getLastDataPoint()
-			console.log(currentJourney.sessions[0].getLastDataPoint().getDoc());
-			comm.addNewDataPointInSession(currentJourney.id, "ghost", currentJourney.sessions[0].dataPoints.length-1, currentJourney.sessions[0].getLastDataPoint().getDoc());
+			comm.updateCurrentGhostPosition(currentJourney.id,currentJourney.sessions[0].getLastDataPoint().getDoc())
+			comm.addNewDataPointInSession(currentJourney.id, "00000", currentJourney.sessions[0].dataPoints.length-1, currentJourney.sessions[0].getLastDataPoint().getDoc());
 		}
 	}
 	// Run cyclists
