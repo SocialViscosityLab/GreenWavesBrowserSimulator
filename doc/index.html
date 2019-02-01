@@ -230,18 +230,6 @@
                       </a></li>
                       
                       <li><a
-                        href='#journeyrunsessions'
-                        class='regular pre-open'>
-                        #runSessions
-                      </a></li>
-                      
-                      <li><a
-                        href='#journeyrunsession'
-                        class='regular pre-open'>
-                        #runSession
-                      </a></li>
-                      
-                      <li><a
                         href='#journeyvalidatesubscription'
                         class='regular pre-open'>
                         #validateSubscription
@@ -350,12 +338,6 @@
                         .setSessionPoints
                       </a></li>
                     
-                      <li><a
-                        href='#sessionsetsessionpoints'
-                        class='regular pre-open'>
-                        .setSessionPoints
-                      </a></li>
-                    
                     </ul>
                   
                   
@@ -381,9 +363,9 @@
                       </a></li>
                       
                       <li><a
-                        href='#sessionsaveroutegeojson'
+                        href='#sessionsavetojson'
                         class='regular pre-open'>
-                        #saveRouteGeoJSON
+                        #saveToJSON
                       </a></li>
                       
                     </ul>
@@ -396,9 +378,9 @@
               
                 
                 <li><a
-                  href='#onload'
+                  href='#setup'
                   class="">
-                  onload
+                  setup
                   
                 </a>
                 
@@ -532,6 +514,12 @@
                         href='#cartographysetupmap'
                         class='regular pre-open'>
                         #setupMap
+                      </a></li>
+                      
+                      <li><a
+                        href='#cartographysetupmap3d'
+                        class='regular pre-open'>
+                        #setupMap3D
                       </a></li>
                       
                       <li><a
@@ -841,6 +829,24 @@
                       </a></li>
                       
                       <li><a
+                        href='#routegettraveleddistancetoposition'
+                        class='regular pre-open'>
+                        #getTraveledDistanceToPosition
+                      </a></li>
+                      
+                      <li><a
+                        href='#routegetatobdistance'
+                        class='regular pre-open'>
+                        #getAtoBDistance
+                      </a></li>
+                      
+                      <li><a
+                        href='#routegetaccdistanceuptosegment'
+                        class='regular pre-open'>
+                        #getAccDistanceUpToSegment
+                      </a></li>
+                      
+                      <li><a
                         href='#routegettraveleddistancetosegmentstart'
                         class='regular pre-open'>
                         #getTraveledDistanceToSegmentStart
@@ -898,6 +904,12 @@
                         href='#routegetsegment'
                         class='regular pre-open'>
                         #getSegment
+                      </a></li>
+                      
+                      <li><a
+                        href='#routegetlastsegment'
+                        class='regular pre-open'>
+                        #getLastSegment
                       </a></li>
                       
                     </ul>
@@ -1198,7 +1210,7 @@ DESIRED INTER-VEHICLE SPACING: the desired distance between the current vehicle 
         <div class='space-bottom0'>
           <div>
             <span class='code bold'>id</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
-	    cyclist ID
+	    cyclist ID. Attributes: id (String) journey (String), route (String)
 
           </div>
           
@@ -1709,7 +1721,7 @@ form of adaptation</p>
       <div class="clearfix small pointer toggle-sibling">
         <div class="py1 contain">
             <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>collaborativeACC()</span>
+            <span class='code strong strong truncate'>collaborativeACC(distanceFrontToThis)</span>
         </div>
       </div>
       <div class="clearfix display-none toggle-target">
@@ -1724,7 +1736,7 @@ Segata et al. Proceedings of Mobicom 2012</p>
 
  
   
-    <div class='pre p1 fill-light mt0'>collaborativeACC()</div>
+    <div class='pre p1 fill-light mt0'>collaborativeACC(distanceFrontToThis: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a></div>
    
   
   
@@ -1737,9 +1749,31 @@ Segata et al. Proceedings of Mobicom 2012</p>
   
 
   
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>distanceFrontToThis</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+	    The distance in meter between this vehicle and the vehicle ahead
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
 
   
 
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a></code>:
+        
+
+      
+    
   
 
   
@@ -2091,7 +2125,7 @@ Segata et al. Proceedings of Mobicom 2012</p>
 
  
   
-    <div class='pre p1 fill-light mt0'>new GreenWave(journey: any)</div>
+    <div class='pre p1 fill-light mt0'>new GreenWave(journey: any, scope: any)</div>
    
   
   
@@ -2110,6 +2144,14 @@ Segata et al. Proceedings of Mobicom 2012</p>
         <div class='space-bottom0'>
           <div>
             <span class='code bold'>journey</span> <code class='quiet'>(any)</code>
+	    
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>scope</span> <code class='quiet'>(any)</code>
 	    
           </div>
           
@@ -2664,157 +2706,6 @@ The route is dissabled by default. It is disables when the leader reaches the en
           <div>
             <span class='code bold'>speed</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
 	    The leading cyclists speed in meters per second
-
-          </div>
-          
-        </div>
-      
-    </div>
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-</section>
-
-      </div>
-    </div>
-  
-    <div class='border-bottom' id='journeyrunsessions'>
-      <div class="clearfix small pointer toggle-sibling">
-        <div class="py1 contain">
-            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>runSessions(sampleRate, speed)</span>
-        </div>
-      </div>
-      <div class="clearfix display-none toggle-target">
-        <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-
-  <p>Executes all the sessions in this journey</p>
-
- 
-  
-    <div class='pre p1 fill-light mt0'>runSessions(sampleRate: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>, speed: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</div>
-   
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Parameters</div>
-    <div class='prose'>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>sampleRate</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
-	    Integer value with sampling rate in seconds
-
-          </div>
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>speed</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
-	    The cyclists speed in meters per second. WARNING It applies to ALL cyclists
-
-          </div>
-          
-        </div>
-      
-    </div>
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-</section>
-
-      </div>
-    </div>
-  
-    <div class='border-bottom' id='journeyrunsession'>
-      <div class="clearfix small pointer toggle-sibling">
-        <div class="py1 contain">
-            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>runSession(id, sampleRate, speed)</span>
-        </div>
-      </div>
-      <div class="clearfix display-none toggle-target">
-        <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-
-  <p>Executes the especified session</p>
-
- 
-  
-    <div class='pre p1 fill-light mt0'>runSession(id: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, sampleRate: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>, speed: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</div>
-   
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Parameters</div>
-    <div class='prose'>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>id</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
-	    The cyclists ID
-
-          </div>
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>sampleRate</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
-	    Integer value with sampling rate in seconds
-
-          </div>
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>speed</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
-	    The cyclists speed in meters per second
 
           </div>
           
@@ -3601,128 +3492,6 @@ The subscription range radius is a property of the route</p>
       <div class="clearfix small pointer toggle-sibling">
         <div class="py1 contain">
             <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>setSessionPoints(route, speed, sampleRate, frameRate)</span>
-        </div>
-      </div>
-      <div class="clearfix display-none toggle-target">
-        <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-
-  <p>The concept here is to calculate where a vehicle will be located after running at a given speed for a given time.
-The process is as follows:
-1- Determine the current position on a route. That is retrieved from the latest recorded dataPoint or the ciclysts position
-2- Calculate the distance traveled based on speed and step time
-3- Locate the corresponding position on the route for the distance traveled. For this step of the process
-we need to ask the route where on the path is located the traveled distance.</p>
-
- 
-  
-    <div class='pre p1 fill-light mt0'>setSessionPoints(route: <a href="#route">Route</a>, speed: any, sampleRate: any, frameRate: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>): <a href="#position">Position</a></div>
-   
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Parameters</div>
-    <div class='prose'>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>route</span> <code class='quiet'>(<a href="#route">Route</a>)</code>
-	    The route
-
-          </div>
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>speed</span> <code class='quiet'>(any)</code>
-	    
-          </div>
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>sampleRate</span> <code class='quiet'>(any)</code>
-	    
-          </div>
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>frameRate</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-	    Time glogal frameRate. It is also the time ahead from the current time in seconds
-
-          </div>
-          
-        </div>
-      
-    </div>
-  
-
-  
-
-  
-    
-      <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="#position">Position</a></code>:
-        the latest estimated position
-<p>runStep(route, frameRate){
-let tmpDataP;
-if (this.status == "running"){
-//1- Determine the current position on a route. That is retrieved from the latest recorded dataPoint
-let currentPosition = this.cyclist.position; //this.dataPoints[this.dataPoints.length-1].position;
-//2- Calculate the distance traveled based on speed and step time
-let distanceTraveled = this.cyclist.mySpeed * frameRate;
-//3- Locate the corresponding position on the route for the distance traveled
-let tmpPosition = route.getPosition(currentPosition, distanceTraveled);</p>
-<p>this.cyclist.position = tmpPosition;</p>
-<p>if (tmpPosition instanceof Position){
-//  create the new dataPoint
-tmpDataP = new DataPoint(this.cyclist.myAcceleration, tmpPosition, this.cyclist.speed, this.timeCounter + frameRate);</p>
-<p>this.dataPoints.push(tmpDataP);</p>
-<p>this.timeCounter ++;</p>
-<p>} else {
-this.status = "completed";
-console.log("Session completed for vehicle: " , this.id_user);
-}
-}
-return tmpDataP;
-}</p>
-
-      
-    
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-</section>
-
-      </div>
-    </div>
-  
-    <div class='border-bottom' id='sessionsetsessionpoints'>
-      <div class="clearfix small pointer toggle-sibling">
-        <div class="py1 contain">
-            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
             <span class='code strong strong truncate'>setSessionPoints(route, speed, sampleRate)</span>
         </div>
       </div>
@@ -4004,11 +3773,11 @@ If you multiply the number of ticks by the sampleRate, tyen you get the latest d
       </div>
     </div>
   
-    <div class='border-bottom' id='sessionsaveroutegeojson'>
+    <div class='border-bottom' id='sessionsavetojson'>
       <div class="clearfix small pointer toggle-sibling">
         <div class="py1 contain">
             <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>saveRouteGeoJSON()</span>
+            <span class='code strong strong truncate'>saveToJSON()</span>
         </div>
       </div>
       <div class="clearfix display-none toggle-target">
@@ -4020,7 +3789,7 @@ If you multiply the number of ticks by the sampleRate, tyen you get the latest d
 
  
   
-    <div class='pre p1 fill-light mt0'>saveRouteGeoJSON()</div>
+    <div class='pre p1 fill-light mt0'>saveToJSON()</div>
    
   
   
@@ -4066,8 +3835,8 @@ If you multiply the number of ticks by the sampleRate, tyen you get the latest d
   
   <div class='clearfix'>
     
-    <h3 class='fl m0' id='onload'>
-      onload
+    <h3 class='fl m0' id='setup'>
+      setup
     </h3>
     
     
@@ -4078,7 +3847,7 @@ If you multiply the number of ticks by the sampleRate, tyen you get the latest d
 
  
   
-    <div class='pre p1 fill-light mt0'>onload()</div>
+    <div class='pre p1 fill-light mt0'>setup()</div>
    
   
   
@@ -4967,6 +4736,54 @@ to visualize its complementary class named without the prefix (e.g., Journey)</p
  
   
     <div class='pre p1 fill-light mt0'>setupMap()</div>
+   
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='cartographysetupmap3d'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>setupMap3D()</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Instantiation of the map in 3D. It uses an accessToken provided by MapBox.</p>
+
+ 
+  
+    <div class='pre p1 fill-light mt0'>setupMap3D()</div>
    
   
   
@@ -6886,7 +6703,7 @@ Process: to DETERMINE TRAVELED DISTANCE the idea is to get the distance to the c
 
  
   
-    <div class='pre p1 fill-light mt0'>getPosition(position: <a href="#position">Position</a>, stepLength: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</div>
+    <div class='pre p1 fill-light mt0'>getPosition(position: <a href="#position">Position</a>, stepLength: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>): <a href="#position">Position</a></div>
    
   
   
@@ -6925,6 +6742,15 @@ Process: to DETERMINE TRAVELED DISTANCE the idea is to get the distance to the c
 
   
 
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="#position">Position</a></code>:
+        Returns the position where the cyclsist should be after traveling the stepLength on the route.
+If the position falls beyond the last cornerpoint of this route, then the last cornerpoint is returned.
+
+      
+    
   
 
   
@@ -6976,7 +6802,7 @@ Process: to DETERMINE TRAVELED DISTANCE the idea is to get the distance to the c
         <div class='space-bottom0'>
           <div>
             <span class='code bold'>position</span> <code class='quiet'>(<a href="#position">Position</a>)</code>
-	    The position near to any of the route segments. A valid proximity is evaluated by the getTraveledDistanceToSegmentStart() function.
+	    The position near to any of the route segments.
 
           </div>
           
@@ -7004,6 +6830,223 @@ Process: to DETERMINE TRAVELED DISTANCE the idea is to get the distance to the c
 
       
     
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='routegettraveleddistancetoposition'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>getTraveledDistanceToPosition(position)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Gets the distance on route traveled from the route origin to the start position
+of the nearest segment to a given point.
+Gets the distance from the route start to the position</p>
+
+ 
+  
+    <div class='pre p1 fill-light mt0'>getTraveledDistanceToPosition(position: any)</div>
+   
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>position</span> <code class='quiet'>(any)</code>
+	    
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='routegetatobdistance'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>getAtoBDistance(positionA, positionB)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Gets the distance traveled on the route path in meters from pointA to point B.
+The returned value is positive when A is in front of B, else the distance is negative.</p>
+
+ 
+  
+    <div class='pre p1 fill-light mt0'>getAtoBDistance(positionA: <a href="#position">Position</a>, positionB: <a href="#position">Position</a>): any</div>
+   
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>positionA</span> <code class='quiet'>(<a href="#position">Position</a>)</code>
+	    First position on the route
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>positionB</span> <code class='quiet'>(<a href="#position">Position</a>)</code>
+	    Second position on the route
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code>any</code>:
+        The value of the distance between the two points.The returned value is
+positive when A is in front of B, else the distance is negative.
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='routegetaccdistanceuptosegment'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>getAccDistanceUpToSegment(index, inclusive)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Gets the accumulated distance up to the first cornerpoint of the segment identified by its
+index on the route's collection of segments. If inclusive paratemter is true the accumulated
+distance extends to the last cornerPoint of the segment</p>
+
+ 
+  
+    <div class='pre p1 fill-light mt0'>getAccDistanceUpToSegment(index: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>, inclusive: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>)</div>
+   
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>index</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+	    The index of the segment
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>inclusive</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>)</code>
+	    If true,  The index of the segment
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
   
 
   
@@ -7608,11 +7651,11 @@ It assumes a constant speed</p>
 
   
 
-  <p>Retreves the segment at a given index</p>
+  <p>Retrieves the segment at a given index</p>
 
  
   
-    <div class='pre p1 fill-light mt0'>getSegment(index: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</div>
+    <div class='pre p1 fill-light mt0'>getSegment(index: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>): any</div>
    
   
   
@@ -7642,6 +7685,69 @@ It assumes a constant speed</p>
 
   
 
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code>any</code>:
+        Returns the segment of the route
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='routegetlastsegment'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>getLastSegment()</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  
+ 
+  
+    <div class='pre p1 fill-light mt0'>getLastSegment(): any</div>
+   
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code>any</code>:
+        Returns the last segment of the route
+
+      
+    
   
 
   

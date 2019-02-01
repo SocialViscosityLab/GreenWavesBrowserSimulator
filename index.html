@@ -65,7 +65,7 @@
 
   <!-- OSC -->
   <script src ="libs/osc.min.js" type = "text/javascript"></script>
-  <script src ="src/node_osc/oscSender.js" type ="text/javascript"></script>
+  <script src ="node_osc/oscSender.js" type ="text/javascript"></script>
 
   <!--- Directory access -->
   <script src="src/utils/directoryReader.js" type="text/javascript"></script>
@@ -78,9 +78,10 @@
   <div class="container"> <!--- The map container -->
 
     <div class="row">
-      <h1>Smart bicycles tracker map demo</h1>
+      <h3><b>D</b>4<b>SV</b></h3>
       <h4>Design for social viscosity lab</h4>
       <p> University of Illinois at Urbana - Champaign</p>
+      <h1>Smart bicycles tracker map demo</h1>
       <hr>
     </div>
 
@@ -103,18 +104,18 @@
 
       <div class= "col-sm-4">
         <h4> 1. Set up one or more routes</h4>
+        <h6>If no route chosen, a route around the lab is setup by default</h6>
 
         <!--- reading the directory for routes -->
         <p>
           <input type="file" id="files" name="files[]" multiple />
 
           <!--- Directory access-->
-          <a href="https://www.smartartifact.com/researchLab/routeMaker/index.html">Generate your own routes</a></p>
+          <h6>You can draw your own routes and import them to this app</h6>
+          <a href="https://www.smartartifact.com/researchLab/routeMaker/index.html" target="_blank">Generate your own routes</a></p>
           <hr>
-          <h6> If no route file choosen one around the D4SV Lab is loaded</h6>
-          <button id = "routeButton" type = "button">Setup</button>
-          <button id = "loopButton" type = "button">Enable loop</button>
-
+          <button id = "routeButton" type = "button">Setup routes</button>
+          <h6> If no route file chosen, one around the D4SV Lab is loaded.</h6>
           <output id="list"></output>
 
         </div><!-- Close column -->
@@ -123,29 +124,37 @@
           <h4>2. Set up leader/ghost parameters</h4>
           Sample rate<br>
           <input id = "sampleRate" type = "number" name = "sampleRate" value = "1" min = "0"> secs.
+          <h6>It defines how often the system triggers an event that activates one action step on all agents</h6>
           <br>
           Ghost speed:<br>
           <input id = "speed" type="number" name="speed" value = "5" min = "0"> m/s.
+          <h6>The global speed of all ghost leaders</h6>
           <br>
           Green wave scope:<br>
           <input id = "greenWave" type="number" name="greenWave" value = "5" min = "1"> secs.
+          <h6> The duration of green light on all traffic lights. It is converted into the length of the ghost's 'tail' in meters.</h6>
         </div><!-- Close column -->
 
 
         <div class= "col-sm-4">
           <h4>3. Activate journey and add followers</h4>
           <button id = "activateJourney" type="submit"> Activate Journey</button>
-          <br><br>
-          <p>The journey starts with a default leader named 'the ghost'. Click on the route behind the ghost to add a new cyclist to the journey. New cyclists will try to adaptively match the leader's speed. </p>
+          <button id = "loopButton" type = "button">Enable loop</button>
+          <br>
+          <h6>The journey starts with a default leader named 'the ghost'. If the route is a closed circuit enable the loop once the route is activated.</h6>
+          <h6>Click on the route behind the ghost to add a new cyclist to the journey. New cyclists will try to adaptively match the leader's speed. </h6>
           <!-- <button id = "exportJSON" type = "button">Export to JSON</button>-->
+          <hr>
+          <h4>Output list</h4>
+          <h6>One a cyclist completes the route, a file with its output is added below</h6>
+          <ul id = 'outputList'></ul>
 
         </div>  <!-- Close column -->
 
       </div> <!-- Close row -->
       <div class="row"> <!-- Open row -->
         <hr>
-        <h4>Output list</h4>
-        <ul id = 'outputList'></ul>
+
       </div> <!-- Close row -->
 
     </div> <!--close container -->

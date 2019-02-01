@@ -13,10 +13,10 @@ HOW TO RUN A NODE SERVER
 
 const OSC = require('osc-js')
 
-const configa = { udpClient: { port: 9129 } }
+const configa = { udpClient: { port: 7171 } }
 
 const myOsc = new OSC({ plugin: new OSC.BridgePlugin(configa) })
 
 myOsc.open() // start a WebSocket server on port 9129
 
-console.log('Listening on port 9129!');
+console.log('Listening on port 7171!');

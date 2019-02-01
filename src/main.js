@@ -17,8 +17,9 @@ var myOsc;
 Setup. It setups variables and initializes instances
 */
 function setup(){
-	//osc
+	//osc. This is currently used in the cyclcist's run() function.
 	myOsc = new OSCSender();
+	myOsc.enable(false);
 	// GUI elements
 	document.getElementById("routeButton").onclick = setupRoutes;
 	document.getElementById("loopButton").onclick = switchRouteLoop;

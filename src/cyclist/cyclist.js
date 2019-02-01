@@ -126,7 +126,7 @@ class Cyclist{
       // broadcasting on OSC
       let tmp = this.id.journey +"|"+this.id.route+"|"+this.targetSpeed+"|"+this.mySpeed.toPrecision(4)+"|"+this.myAcceleration.toPrecision(4);
       // myOsc is a global instance constructed in the main.js
-      // myOsc.send('/cyclist'+this.id.id,tmp);
+      myOsc.send('/agent '+this.id.id,tmp);
       // if (!this.isLeader){
       //    console.log("my speed: "+this.mySpeed.toPrecision(4)+ ", in front's: " + this.leaderCyclist.mySpeed.toPrecision(4));
       //    console.log("my accel: "+this.myAcceleration.toPrecision(4)+ ", in front's: " + this.leaderCyclist.myAcceleration.toPrecision(4));
