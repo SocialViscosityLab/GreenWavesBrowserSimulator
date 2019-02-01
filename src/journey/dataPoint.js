@@ -7,7 +7,6 @@
 */
 class DataPoint{
   constructor(acc, pos, speed, time){
-    console.log(acc);
     if(acc < 0.0001){
       this.acceleration = 0;
     }else{

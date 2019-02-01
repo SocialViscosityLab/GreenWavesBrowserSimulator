@@ -179,4 +179,7 @@ class JourneyManager{
       }
     }
   }
+  setCurrentJourneyId(id){
+    this.currentJourneyId = id;
+  }
 }

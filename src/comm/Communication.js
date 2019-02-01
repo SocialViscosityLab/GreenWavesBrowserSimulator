@@ -1,15 +1,49 @@
 class Communication{
   constructor(){
+    this.newJourneyId = 0;
+  }
+
+  getNewJourneyId(){
+    let jId = 0;
+    var journeys = db.collection('journeys').get().then(snapshot => {
+      snapshot.forEach(doc => {
+        let id = parseInt(doc.id);
+        if(id !== null){
+          if (id > jId){
+            jId = id;
+          }
+        }
+      });
+      let zeros = "00000";
+      let journeyId = (zeros+(jId+1)).slice(-zeros.length);
+      this.newJourneyId = journeyId;
+
+      //return newId;
+    });
+    return journeys;
   }
 
   addNewRoute(id,positionPoints){
-    db.collection('routes').doc(id).set({'position_points':positionPoints});
-    console.log("new route added");
+    for (var i = 0; i <= positionPoints.length; i++){
+      if (positionPoints[i] != undefined){
+        let zeros = "000";
+        let ppId = (zeros+i).slice(-zeros.length);
+        db.collection('routes').doc(id).collection('position_points').doc(ppId).set(positionPoints[i]);
+        db.collection('routes').doc(id).set({loop:false});
+
+      }
+    }
+    //console.log("new route added");
   }
+
+  setRouteLoop(id, loop){
+    db.collection('routes').doc(id).set({loop:loop});
+  }
+
+
   addNewJourney(id, refRouteId){
-    let journeyId = ""+id;
     let refRoute = db.collection('routes').doc(refRouteId);
-    db.collection('journeys').doc(journeyId).set({reference_route:refRoute});
+    db.collection('journeys').doc(id).set({reference_route:refRoute});
     console.log("new journey added");
 
   }
