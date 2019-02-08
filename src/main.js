@@ -11,6 +11,12 @@ let sampleRate;
 let clicker;
 // The instance that reads files from the hard drive
 let directory;
+//The intance of the communication
+let comm;
+// Current selected route
+let currentRoute;
+//Current journey
+let currentJourney;
 
 var myOsc;
 /**
@@ -23,14 +29,15 @@ function setup(){
 	// GUI elements
 	document.getElementById("routeButton").onclick = setupRoutes;
 	document.getElementById("loopButton").onclick = switchRouteLoop;
-	document.getElementById("activateJourney").onclick = activateJourneys;
+	document.getElementById("activateJourney").onclick = 	createAndActivateJourney;
+
 	// Instantiate and initialize the map
 	currentMap = new Cartography();
 	// Instantiate RouteManager
 	routeM = new RouteManager();
 	// Instantiate JourneyManager
 	journeyM = new JourneyManager();
-	//new Communication();
+	comm = new Communication();
 	directory = new DirectoryReader();
 	// activate cyclist addition listener
 	this.addCyclistListener();
@@ -49,8 +56,12 @@ function setupRoutes(){
 	currentMap.plotRoutes();
 	// plot route corner points on map
 	currentMap.plotRoutesCornerPoints();
+	currentRoute = routeM.routes[routeM.routes.length-1];
+	comm.addNewRoute(currentRoute.id, currentRoute.getPositionPoints());
 }
-
+function createAndActivateJourney(){
+	Promise.resolve(comm.getNewJourneyId()).then(activateJourneys);
+}
 /**
 * On HTML button click event it opens or closes the route loop
 */
@@ -58,6 +69,7 @@ function switchRouteLoop(){
 	routeM.switchRouteLoop(0, document.getElementById("loopButton"));
 	// plot route path on map
 	currentMap.plotRoutes();
+  comm.setRouteLoop(currentRoute.id,currentRoute.loop);
 }
 
 function workbench(){
@@ -73,10 +85,16 @@ function activateJourneys(){
 	let ghostSpeed = Number(document.getElementById("speed").value);
 	sampleRate = Number(document.getElementById("sampleRate").value);
 	if (routeM.routes.length > 0){
+		journeyM.setCurrentJourneyId(comm.newJourneyId);
 		// Activate all journeys
 		journeyM.activate(routeM.routes, ghostSpeed , sampleRate, currentMap);
 		// Execute the run function at the frequency of the sampleRate
 		clicker = setInterval(run, (1000*sampleRate));
+		currentJourney = journeyM.getCurrentJourney();
+		comm.addNewJourney(currentJourney.id,currentRoute.id);
+		comm.addNewGhostSession(currentJourney.id);
+		comm.listenToJourenysSessions(currentJourney.id);
+
 	}else{
 		alert("Setup routes first")
 	}
@@ -104,6 +122,10 @@ function run(){
 		if (!routeTmp.status){
 			clearInterval(clicker);
 			alert("Route finalized");
+		}else{
+			let tempDP = journeyM.getCurrentJourney().sessions[0].getLastDataPoint()
+			comm.updateCurrentGhostPosition(currentJourney.id,currentJourney.sessions[0].getLastDataPoint().getDoc())
+			comm.addNewDataPointInSession(currentJourney.id, "00000", currentJourney.sessions[0].dataPoints.length-1, currentJourney.sessions[0].getLastDataPoint().getDoc());
 		}
 	}
 	// Run cyclists

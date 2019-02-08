@@ -158,4 +158,8 @@ class Session{
 		outputList.append(li);
 
 	}
+
+	getLastDataPoint(){
+		return this.dataPoints[this.dataPoints.length-1];
+	}
 }

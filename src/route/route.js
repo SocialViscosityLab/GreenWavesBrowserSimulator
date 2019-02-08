@@ -449,4 +449,12 @@ class Route {
 	getLastSegment(){
 			return this.segments[this.segments.length-1];
 	}
+
+	getPositionPoints(){
+		let positionPoints = [ ]
+		for (let i = 0; i < this.routePoints.length; i++) {
+			positionPoints.push(this.routePoints[i].getPositionDoc());
+		}
+		return positionPoints;
+	}
 }

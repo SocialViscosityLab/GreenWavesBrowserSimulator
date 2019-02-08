@@ -7,14 +7,18 @@
 */
 class DataPoint{
   constructor(acc, pos, speed, time){
-    this.acceleration = acc;
+    if(acc < 0.0001){
+      this.acceleration = 0;
+    }else{
+      this.acceleration = acc;
+    }
     this.position = pos;
     this.speed = speed;
     this.time = time;
     // suggestion: computed locally by the cyclists mobile phone. It requires the leader's (ghost) positions to do such computation.
-    this.suggestion;
-    // The coordiantes are geodesic by default is they are expressed in latitute and longitude. Else are polar if they are expressed in radians.
-    this.positionFormat ;
+    this.suggestion = 0;
+    // The coordiantes are geodesic is they are expressed in latitute and longitude. Else are polar if they are expressed in radians.
+    this.positionFormat = "geodesic";
   }
 
 /**
@@ -42,5 +46,22 @@ class DataPoint{
 
   getLatLon(){
     return [this.position.lat,this.position.lon];
+  }
+
+
+  /**
+  * Insert the information of the dataPoint in an object
+  * with the structure ready to be send to the database
+  */
+  getDoc(){
+    let dataPointDoc = {
+      latitude: this.position.lat,
+      longitude: this.position.lon,
+      acceleration: this.acceleration,
+      speed: this.speed,
+      time: this.time,
+      suggestion: this.suggestion
+    }
+    return dataPointDoc;
   }
 }
