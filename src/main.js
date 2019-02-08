@@ -89,6 +89,7 @@ function activateJourneys(){
 		currentJourney = journeyM.getCurrentJourney();
 		comm.addNewJourney(currentJourney.id,currentRoute.id);
 		comm.addNewGhostSession(currentJourney.id);
+		comm.listenToJourenysSessions(currentJourney.id);
 
 	}else{
 		alert("Setup routes first")

@@ -23,6 +23,24 @@ class Communication{
     return journeys;
   }
 
+  listenToJourenysSessions(jId){
+    var sessions = db.collection("journeys").doc(jId).collection("sessions")
+    .onSnapshot(function(docSnapShot) {
+      docSnapShot.forEach(function(doc){
+
+        if(doc.id != "00000"){
+          let changingSession = doc.data();
+          console.log("Current data: ", changingSession);
+          return changingSession;
+          //current_position: {acceleration: 0, latitude: 40.1149175, longitude: -88.22143, speed: 0, suggestion: -1, …}
+          //id_user: "mTgx1snPoAaYr3aCwKemtyIJNw63"
+          //start_time: "2019/1/7 - 21:10:54"
+        }
+      })
+    });
+    return sessions;
+  }
+
   addNewRoute(id,positionPoints){
     for (var i = 0; i <= positionPoints.length; i++){
       if (positionPoints[i] != undefined){
@@ -45,8 +63,8 @@ class Communication{
     let refRoute = db.collection('routes').doc(refRouteId);
     db.collection('journeys').doc(id).set({reference_route:refRoute});
     console.log("new journey added");
-
   }
+
   addNewGhostSession(jId){
     let journeyId = ""+jId;
     let time = new Date();
@@ -69,6 +87,5 @@ class Communication{
   updateCurrentGhostPosition(jId,dataPointDoc){
     let journeyId = ""+jId;
     db.collection('journeys').doc(journeyId).collection('sessions').doc("00000").update({current_ghost_position:dataPointDoc});
-
   }
 }
