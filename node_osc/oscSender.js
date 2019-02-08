@@ -12,6 +12,7 @@ class OSCSender{
   constructor(){
     this.osc = new OSC();
     this.osc.open();
+    this.listen();
     this.enabled = true;
   }
 
@@ -24,13 +25,14 @@ class OSCSender{
   send (pattern, data){
     if (this.enabled){
       let message;
-      console.log(pattern,data);
+
       if(pattern){
         message = new OSC.Message(pattern, data);
       }else{
         message = new OSC.Message('/agent', data);
       }
       this.osc.send(message);
+      console.log(message);
     }
   }
 
@@ -40,5 +42,11 @@ class OSCSender{
   */
   enable(val){
     this.enabled = val;
+  }
+
+  listen(){
+    this.osc.on('*', message => {
+      console.log(message.args)
+    })
   }
 }

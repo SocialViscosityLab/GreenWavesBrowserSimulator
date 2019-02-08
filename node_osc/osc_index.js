@@ -9,14 +9,22 @@ HOW TO RUN A NODE SERVER
 4. run the app
   node osc_index.js
 */
-/*OSC example modified Processing exmaples */
+/*OSC example modified Processing examples */
+
+// OSC Library:  https://www.npmjs.com/package/osc-js
 
 const OSC = require('osc-js')
 
-const configa = { udpClient: { port: 7171 } }
+const port = 7171;
+
+const configa = { udpClient: { port: port } }
 
 const myOsc = new OSC({ plugin: new OSC.BridgePlugin(configa) })
 
-myOsc.open() // start a WebSocket server on port 9129
+myOsc.open() // start a WebSocket server on port
 
-console.log('Listening on port 7171!');
+console.log('Listening on port ' + port);
+
+myOsc.on('*', message => {
+  console.log(message.args)
+})

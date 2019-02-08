@@ -72,7 +72,7 @@ class JourneyManager{
     // If there is a journey with a route nearby
     if (journeyTmp){
       // temp id
-      let idTmp = {id:this.appID, journey:journeyTmp.id, route:journeyTmp.referenceRoute.id};
+      let idTmp = {id:this.appID + '_follower', journey:journeyTmp.id, route:journeyTmp.referenceRoute.id};
       // create a cyclists
       let cyclistTmp = new Cyclist(idTmp, journeyTmp.referenceRoute, eventLocation, 3); // 3 is the default speed
       // set leader
