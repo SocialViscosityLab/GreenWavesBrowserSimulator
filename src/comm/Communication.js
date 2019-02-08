@@ -27,14 +27,15 @@ class Communication{
     var sessions = db.collection("journeys").doc(jId).collection("sessions")
     .onSnapshot(function(docSnapShot) {
       docSnapShot.forEach(function(doc){
-
-        if(doc.id != "00000"){
+        if(doc.id !== "00000"){
           let changingSession = doc.data();
           console.log("Current data: ", changingSession);
+          journeyM.addRemoteCyclist(doc.id, changingSession);
           return changingSession;
           //current_position: {acceleration: 0, latitude: 40.1149175, longitude: -88.22143, speed: 0, suggestion: -1, …}
           //id_user: "mTgx1snPoAaYr3aCwKemtyIJNw63"
           //start_time: "2019/1/7 - 21:10:54"
+
         }
       })
     });

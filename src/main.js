@@ -1,6 +1,6 @@
 
 // The journey manager in this simulation
-let journeyM;
+var journeyM;
 // The routes manager in this simulation
 let routeM;
 // The instance of Cartography displayed in browser/
