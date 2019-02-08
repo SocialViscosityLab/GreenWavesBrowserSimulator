@@ -27,7 +27,8 @@ class Cyclist{
     this.myRoute = route;
 
     // Kinematic Variables
-    this.id = id;
+    this.id = id; // this is an object with {id:this.appID, journey:journeyTmp.id, route:journeyTmp.referenceRoute.id};
+
     this.position = position;
     this.mySpeed = speed; // the agent's current speed
     this.myAcceleration = 0; // the agent's current acceleration
