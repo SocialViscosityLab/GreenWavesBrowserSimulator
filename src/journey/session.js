@@ -3,8 +3,11 @@
 * @param {string} id The user id session identifier
 */
 class Session{
-	constructor(id){
-		this.id_user = id;
+	constructor(id, cyclistId){
+		this.id_session = {
+			id: id,
+			cyclistId: cyclistId
+		}
 		this.dataPoints = [];
 		this.startTime = new Date();
 	}
@@ -120,10 +123,11 @@ class Session{
 	saveToJSON() {
 
 		const MIME_TYPE = 'text/plain';
-		// fileName
-		let fileName = this.id_user.id +'_'+this.id_user.journey +'_'+ this.id_user.route;
 
-		let output = {'id':this.id_user.id, 'journey':this.id_user.journey, 'route':this.id_user.route};
+		// fileName
+		let fileName = this.id_session.cyclistId.id +'_'+this.id_session.cyclistId.journey +'_'+ this.id_session.cyclistId.route;
+
+		let output = {'id_session':this.id_session.id, 'id_cyclist':this.id_session.cyclistId.id, 'journey':this.id_session.cyclistId.journey, 'route':this.id_session.cyclistId.route};
 
 		output.startTime = this.startTime;
 

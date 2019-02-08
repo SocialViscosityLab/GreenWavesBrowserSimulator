@@ -32,7 +32,7 @@ class OSCSender{
         message = new OSC.Message('/agent', data);
       }
       this.osc.send(message);
-      console.log(message);
+    //  console.log(message);
     }
   }
 

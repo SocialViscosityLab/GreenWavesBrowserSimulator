@@ -25,6 +25,6 @@ myOsc.open() // start a WebSocket server on port
 
 console.log('Listening on port ' + port);
 
-myOsc.on('*', message => {
-  console.log(message.args)
-})
+// myOsc.on('*', message => {
+//   console.log(message.args)
+// })

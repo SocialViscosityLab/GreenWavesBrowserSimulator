@@ -34,7 +34,7 @@ class JourneyManager{
         // increase id for next cyclist
         this.appID++;
         // Create a session for this cyclist
-        let tmpS = new Session(ghostCyclist.id);
+        let tmpS = new Session("00000",ghostCyclist.id);
         // Insert the session at the begining of journey sessions
         journeyTmp.sessions.unshift(tmpS);
         // GreenWave GUI value
@@ -82,7 +82,7 @@ class JourneyManager{
       // increase for next cyclist id
       this.appID++;
       // Create a session for this cyclist
-      let tmpS = new Session(cyclistTmp.id);
+      let tmpS = new Session(cyclistTmp.id.id,cyclistTmp.id); //session id, cyclist id
       // Insert the session at the begining of journey sessions
       journeyTmp.sessions.push(tmpS);
       // Subscribe the session as observer to the cyclists
@@ -98,6 +98,53 @@ class JourneyManager{
       return false;
     }
   }
+
+
+  /**
+  * Adds a remote cyclist to the latest active journey and creates a local session for her
+  * @param {Event} event The communication event triggered when the remote cyclcist joins the db session
+  */
+    addRemoteCyclist(sessionId, event){
+
+      //current_position: {acceleration: 0, latitude: 40.1149175, longitude: -88.22143, speed: 0, suggestion: -1, …}
+      //id_user: "mTgx1snPoAaYr3aCwKemtyIJNw63"
+      //start_time: "2019/1/7 - 21:10:54"
+
+      // retrive the latest journey
+      let journeyTmp = this.getCurrentJourney();
+
+      let updatedSession;
+      for (let tempS of journeyTmp.sessions){
+        if(tempS.id_session.id == sessionId){
+          updatedSession = tempS
+        }
+      }
+      if(updatedSession){
+          //TODO: updated the session
+      }else{
+        //Creates a session if it doesn't exist
+        let eventLocation = new Position (event.current_position.latitude,event.current_position.longitude);
+
+          // temp id
+          let idTmp = {id:event.id_user, journey:journeyTmp.id, route:journeyTmp.referenceRoute.id};
+          // create a cyclists
+          let cyclistTmp = new Cyclist(idTmp, journeyTmp.referenceRoute, eventLocation, event.current_position.speed);
+          // set leader
+          cyclistTmp.setLeader(this.getLeaderForJourney(journeyTmp));
+          // Create a local session for this cyclist
+          let tmpS = new Session(sessionId, cyclistTmp.id);
+          // Insert the session at the begining of journey sessions
+          journeyTmp.sessions.push(tmpS);
+          // Subscribe the session as observer to the cyclists
+          cyclistTmp.subscribe(tmpS);
+          // add cyclist to cyclist collection
+          this.followers.push(cyclistTmp);
+
+          /**** Visualization of cyclist on map *****/
+          if (currentMap) currentMap.addCyclist(cyclistTmp);
+      }
+    }
+
 
   /**
   * Gets the session points for a given journey
@@ -129,7 +176,7 @@ class JourneyManager{
     }
     // run followers
     for(let cyclist of this.followers){
-      cyclist.run(sampleRate); // nearestCyclistAhead , sampleRate
+      //cyclist.run(sampleRate); // nearestCyclistAhead , sampleRate
     }
   }
 
