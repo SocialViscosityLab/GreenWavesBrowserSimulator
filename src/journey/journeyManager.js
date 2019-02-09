@@ -31,6 +31,8 @@ class JourneyManager{
         let idTmp = {id:this.appID + '_ghost', journey:journeyTmp.id, route:routeTmp.id};
         // ghost cyclist
         let ghostCyclist = new Cyclist(idTmp, journeyTmp.referenceRoute ,journeyTmp.referenceRoute.routePoints[0], ghostSpeed, true);
+        // set ghosts target speed 
+        ghostCyclist.targetSpeed = ghostSpeed;
         // increase id for next cyclist
         this.appID++;
         // Create a session for this cyclist

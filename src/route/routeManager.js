@@ -24,6 +24,7 @@ class RouteManager{
         // store route
         this.routes.push(routeTmp);
       }
+      currentMap.recenter(this.routes[this.routes.length-1].routePoints[0]);
     }else{
       // The route points
       let points = [[40.10146, -88.23445],[40.10143,-88.23860],[40.10409,-88.23863],[40.10409,-88.23345],[40.10146,-88.233385]];

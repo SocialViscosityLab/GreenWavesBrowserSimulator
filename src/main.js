@@ -94,7 +94,6 @@ function activateJourneys(){
 		comm.addNewGhostSession(currentJourney.id);
 		// Activates session change listener in firebase
 		comm.listenToJourenysSessions(currentJourney.id);
-
 	}else{
 		alert("Setup routes first")
 	}

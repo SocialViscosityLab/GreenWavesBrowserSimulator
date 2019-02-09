@@ -27,6 +27,14 @@ class Cartography{
 	}
 
 	/**
+	Recenter the map at the given position
+	*/
+	recenter(position, zoom = 17){
+
+		this.map.setView([position.lat,position.lon], zoom);
+	}
+
+	/**
 	Sets the first route to the map
 	*/
 	setupRoute(route){
@@ -183,7 +191,15 @@ class Cartography{
 	*/
 	plotCyclists(){
 		for (let c of this.mapCyclists) {
-			c.plotMarker(this.map);
+
+			if (c.cyclist.id.id == "0_ghost"){
+
+				c.plotGhost(this.map);
+
+			}else{
+
+				c.plotMarker(this.map);
+			}
 		}
 	}
 
