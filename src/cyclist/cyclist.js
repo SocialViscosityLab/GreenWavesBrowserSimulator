@@ -13,22 +13,23 @@
 *
 */
 class Cyclist{
-  constructor(id, route, position, speed){
+  constructor(id, route, position, speed, isSimulated){
     /** The bicycle and its attributes such as electric, assisted, weight*/
     this.bicycle = new Bicycle(); // here add attributes of bicycle
     /** The rider and her attributes such as weight, fitness, power*/
     this.rider = new Rider(); // here add atributes of rider
-
     // Activated by default because the cyclists is an instance only if it is activated
     this.status = "enabled";
     // The session subscribed to this cyclist. It uses the observer pattern to notify things to its session
     this.observers = [];
+    // this is an object with {id:this.appID, journey:journeyTmp.id, route:journeyTmp.referenceRoute.id};
+    this.id = id;
     // the current route on which this cyclist is running
     this.myRoute = route;
+    // boolean variable defining if this cyclist is simulated or is an actual cyclists on the street
+    this.isSimulated = isSimulated; 
 
     // Kinematic Variables
-    this.id = id; // this is an object with {id:this.appID, journey:journeyTmp.id, route:journeyTmp.referenceRoute.id};
-
     this.position = position;
     this.mySpeed = speed; // the agent's current speed
     this.myAcceleration = 0; // the agent's current acceleration
@@ -129,11 +130,8 @@ class Cyclist{
       let tmp = Number(this.mySpeed.toPrecision(4));
 
       // myOsc is a global instance constructed in the main.js
-      myOsc.send("/agent",tmp);
-      // if (!this.isLeader){
-      //    console.log("my speed: "+this.mySpeed.toPrecision(4)+ ", in front's: " + this.leaderCyclist.mySpeed.toPrecision(4));
-      //    console.log("my accel: "+this.myAcceleration.toPrecision(4)+ ", in front's: " + this.leaderCyclist.myAcceleration.toPrecision(4));
-      // }
+      // myOsc.send("/agent",tmp);
+
     } else if (this.status != 'disabled'){
       this.status = "disabled";
       console.log("Session completed for cyclist: " , this.id );

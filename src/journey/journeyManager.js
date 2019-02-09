@@ -30,7 +30,7 @@ class JourneyManager{
         // cyclist temp id
         let idTmp = {id:this.appID + '_ghost', journey:journeyTmp.id, route:routeTmp.id};
         // ghost cyclist
-        let ghostCyclist = new Cyclist(idTmp, journeyTmp.referenceRoute ,journeyTmp.referenceRoute.routePoints[0], ghostSpeed);
+        let ghostCyclist = new Cyclist(idTmp, journeyTmp.referenceRoute ,journeyTmp.referenceRoute.routePoints[0], ghostSpeed, true);
         // increase id for next cyclist
         this.appID++;
         // Create a session for this cyclist
@@ -76,7 +76,7 @@ class JourneyManager{
       // temp id
       let idTmp = {id:this.appID + '_follower', journey:journeyTmp.id, route:journeyTmp.referenceRoute.id};
       // create a cyclists
-      let cyclistTmp = new Cyclist(idTmp, journeyTmp.referenceRoute, eventLocation, 3); // 3 is the default speed
+      let cyclistTmp = new Cyclist(idTmp, journeyTmp.referenceRoute, eventLocation, 3, true); // 3 is the default speed
       // set leader
       cyclistTmp.setLeader(this.getLeaderForJourney(journeyTmp));
       // increase for next cyclist id
@@ -128,7 +128,7 @@ class JourneyManager{
           // temp id
           let idTmp = {id:event.id_user, journey:journeyTmp.id, route:journeyTmp.referenceRoute.id};
           // create a cyclists
-          let cyclistTmp = new Cyclist(idTmp, journeyTmp.referenceRoute, eventLocation, event.current_position.speed);
+          let cyclistTmp = new Cyclist(idTmp, journeyTmp.referenceRoute, eventLocation, event.current_position.speed, false);
           // set leader
           cyclistTmp.setLeader(this.getLeaderForJourney(journeyTmp));
           // Create a local session for this cyclist
@@ -176,7 +176,9 @@ class JourneyManager{
     }
     // run followers
     for(let cyclist of this.followers){
-      //cyclist.run(sampleRate); // nearestCyclistAhead , sampleRate
+      if (cyclist.isSimulated){
+        cyclist.run(sampleRate); // sampleRate
+      }
     }
   }
 

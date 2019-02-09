@@ -77,6 +77,7 @@ class Communication{
     db.collection('journeys').doc(journeyId).collection('sessions').doc("00000").set(metaData);
     console.log("metaData added");
   }
+  
   addNewDataPointInSession(jId, sessionId, dpId, dataPointDoc){
     let journeyId = ""+jId;
     let dataPointId =  ""+dpId;

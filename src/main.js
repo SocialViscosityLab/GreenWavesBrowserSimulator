@@ -1,6 +1,6 @@
 
 // The journey manager in this simulation
-var journeyM;
+let journeyM;
 // The routes manager in this simulation
 let routeM;
 // The instance of Cartography displayed in browser/
@@ -24,8 +24,8 @@ Setup. It setups variables and initializes instances
 */
 function setup(){
 	//osc. This is currently used in the cyclcist's run() function.
-	myOsc = new OSCSender();
-	myOsc.enable(true);
+	//myOsc = new OSCSender();
+	//myOsc.enable(false);
 	// GUI elements
 	document.getElementById("routeButton").onclick = setupRoutes;
 	document.getElementById("loopButton").onclick = switchRouteLoop;
@@ -37,12 +37,12 @@ function setup(){
 	routeM = new RouteManager();
 	// Instantiate JourneyManager
 	journeyM = new JourneyManager();
+	// Instantiates communication with Firebase
 	comm = new Communication();
+	// instance made to read and write files to this computer from the browser
 	directory = new DirectoryReader();
 	// activate cyclist addition listener
 	this.addCyclistListener();
-
-	//workbench();
 }
 
 /**
@@ -57,8 +57,10 @@ function setupRoutes(){
 	// plot route corner points on map
 	currentMap.plotRoutesCornerPoints();
 	currentRoute = routeM.routes[routeM.routes.length-1];
+	// adds route to firebase
 	comm.addNewRoute(currentRoute.id, currentRoute.getPositionPoints());
 }
+
 function createAndActivateJourney(){
 	Promise.resolve(comm.getNewJourneyId()).then(activateJourneys);
 }
@@ -70,11 +72,6 @@ function switchRouteLoop(){
 	// plot route path on map
 	currentMap.plotRoutes();
   comm.setRouteLoop(currentRoute.id,currentRoute.loop);
-}
-
-function workbench(){
-	let coll = [1,2,3,4,5];
-	console.log( coll.slice(coll.length - 6, coll.length));
 }
 
 /**
@@ -91,8 +88,11 @@ function activateJourneys(){
 		// Execute the run function at the frequency of the sampleRate
 		clicker = setInterval(run, (1000*sampleRate));
 		currentJourney = journeyM.getCurrentJourney();
+		// Adds new journey to firebase
 		comm.addNewJourney(currentJourney.id,currentRoute.id);
+		// Adds new session to firebase
 		comm.addNewGhostSession(currentJourney.id);
+		// Activates session change listener in firebase
 		comm.listenToJourenysSessions(currentJourney.id);
 
 	}else{
