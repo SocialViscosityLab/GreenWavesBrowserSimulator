@@ -68,6 +68,7 @@ class MapSession{
       this.sessionMarkers[0] = L.marker([last.position.lat,last.position.lon]).addTo(theMap.map);
 
     }else{
+      console.log(this.session.id);
 
       let newLatLng = new L.LatLng(last.position.lat , last.position.lon);
 
