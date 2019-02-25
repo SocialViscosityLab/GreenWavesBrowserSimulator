@@ -29,7 +29,7 @@ class Communication{
       docSnapShot.forEach(function(doc){
         if(doc.id !== "00000"){
           let changingSession = doc.data();
-          console.log("Current data: ", changingSession);
+          //console.log("Current data: ", changingSession);
           journeyM.addRemoteCyclist(doc.id, changingSession);
           return changingSession;
           //current_position: {acceleration: 0, latitude: 40.1149175, longitude: -88.22143, speed: 0, suggestion: -1, …}
@@ -77,7 +77,7 @@ class Communication{
     db.collection('journeys').doc(journeyId).collection('sessions').doc("00000").set(metaData);
     console.log("metaData added");
   }
-  
+
   addNewDataPointInSession(jId, sessionId, dpId, dataPointDoc){
     let journeyId = ""+jId;
     let dataPointId =  ""+dpId;

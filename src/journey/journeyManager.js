@@ -31,7 +31,7 @@ class JourneyManager{
         let idTmp = {id:this.appID + '_ghost', journey:journeyTmp.id, route:routeTmp.id};
         // ghost cyclist
         let ghostCyclist = new Cyclist(idTmp, journeyTmp.referenceRoute ,journeyTmp.referenceRoute.routePoints[0], ghostSpeed, true);
-        // set ghosts target speed 
+        // set ghosts target speed
         ghostCyclist.targetSpeed = ghostSpeed;
         // increase id for next cyclist
         this.appID++;
@@ -122,7 +122,23 @@ class JourneyManager{
         }
       }
       if(updatedSession){
-          //TODO: updated the session
+        //console.log("Getting position of the session number: "+updatedSession.id_session.id)
+        for (let cyclist of this.followers){
+          //console.log("follower id: "+cyclist.id.id)
+          //console.log(updatedSession.id_session.cyclistId.id)
+
+          if(cyclist.id.id == updatedSession.id_session.cyclistId.id){
+            let eventLocation = new Position (event.current_position.latitude,event.current_position.longitude);
+            let speed =  event.current_position.speed;
+            let acc =  event.current_position.acceleration;
+            let time =  event.current_position.time;
+
+            cyclist.SetDataPoint(acc, eventLocation, speed, time);
+            //console.log("Did enter to update the cyclist position")
+          }
+          break;
+        }
+
       }else{
         //Creates a session if it doesn't exist
         let eventLocation = new Position (event.current_position.latitude,event.current_position.longitude);
@@ -178,9 +194,9 @@ class JourneyManager{
     }
     // run followers
     for(let cyclist of this.followers){
-      if (cyclist.isSimulated){
-        cyclist.run(sampleRate); // sampleRate
-      }
+      //if (cyclist.isSimulated){
+      cyclist.run(sampleRate); // sampleRate
+      //}
     }
   }
 

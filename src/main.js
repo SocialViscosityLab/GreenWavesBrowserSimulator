@@ -19,10 +19,15 @@ let currentRoute;
 let currentJourney;
 
 var myOsc;
+// Boolean to set if the database should be connected
+let connect;
 /**
 Setup. It setups variables and initializes instances
 */
 function setup(){
+
+	//Set up to connect or not connect to the database
+	connect = true;
 	//osc. This is currently used in the cyclcist's run() function.
 	//myOsc = new OSCSender();
 	//myOsc.enable(false);
@@ -37,8 +42,10 @@ function setup(){
 	routeM = new RouteManager();
 	// Instantiate JourneyManager
 	journeyM = new JourneyManager();
-	// Instantiates communication with Firebase
-	comm = new Communication();
+	if(connect){
+		// Instantiates communication with Firebase
+		comm = new Communication();
+	}
 	// instance made to read and write files to this computer from the browser
 	directory = new DirectoryReader();
 	// activate cyclist addition listener
@@ -57,12 +64,18 @@ function setupRoutes(){
 	// plot route corner points on map
 	currentMap.plotRoutesCornerPoints();
 	currentRoute = routeM.routes[routeM.routes.length-1];
-	// adds route to firebase
-	comm.addNewRoute(currentRoute.id, currentRoute.getPositionPoints());
+	if(connect){
+		// adds route to firebase
+		comm.addNewRoute(currentRoute.id, currentRoute.getPositionPoints());
+	}
 }
 
 function createAndActivateJourney(){
-	Promise.resolve(comm.getNewJourneyId()).then(activateJourneys);
+	if(connect){
+		Promise.resolve(comm.getNewJourneyId()).then(activateJourneys);
+	}else{
+		activateJourneys();
+	}
 }
 /**
 * On HTML button click event it opens or closes the route loop
@@ -71,7 +84,9 @@ function switchRouteLoop(){
 	routeM.switchRouteLoop(0, document.getElementById("loopButton"));
 	// plot route path on map
 	currentMap.plotRoutes();
-  comm.setRouteLoop(currentRoute.id,currentRoute.loop);
+	if(connect){
+  	comm.setRouteLoop(currentRoute.id,currentRoute.loop);
+	}
 }
 
 /**
@@ -82,18 +97,25 @@ function activateJourneys(){
 	let ghostSpeed = Number(document.getElementById("speed").value);
 	sampleRate = Number(document.getElementById("sampleRate").value);
 	if (routeM.routes.length > 0){
-		journeyM.setCurrentJourneyId(comm.newJourneyId);
+		if(connect){
+			journeyM.setCurrentJourneyId(comm.newJourneyId);
+		}else{
+			journeyM.setCurrentJourneyId("00000");
+		}
 		// Activate all journeys
 		journeyM.activate(routeM.routes, ghostSpeed , sampleRate, currentMap);
 		// Execute the run function at the frequency of the sampleRate
 		clicker = setInterval(run, (1000*sampleRate));
 		currentJourney = journeyM.getCurrentJourney();
-		// Adds new journey to firebase
-		comm.addNewJourney(currentJourney.id,currentRoute.id);
-		// Adds new session to firebase
-		comm.addNewGhostSession(currentJourney.id);
-		// Activates session change listener in firebase
-		comm.listenToJourenysSessions(currentJourney.id);
+
+		if(connect){
+			// Adds new journey to firebase
+			comm.addNewJourney(currentJourney.id,currentRoute.id);
+			// Adds new session to firebase
+			comm.addNewGhostSession(currentJourney.id);
+			// Activates session change listener in firebase
+			comm.listenToJourenysSessions(currentJourney.id);
+		}
 	}else{
 		alert("Setup routes first")
 	}
@@ -123,8 +145,10 @@ function run(){
 			alert("Route finalized");
 		}else{
 			let tempDP = journeyM.getCurrentJourney().sessions[0].getLastDataPoint()
-			comm.updateCurrentGhostPosition(currentJourney.id,currentJourney.sessions[0].getLastDataPoint().getDoc())
-			comm.addNewDataPointInSession(currentJourney.id, "00000", currentJourney.sessions[0].dataPoints.length-1, currentJourney.sessions[0].getLastDataPoint().getDoc());
+			if(connect){
+				comm.updateCurrentGhostPosition(currentJourney.id,currentJourney.sessions[0].getLastDataPoint().getDoc())
+				comm.addNewDataPointInSession(currentJourney.id, "00000", currentJourney.sessions[0].dataPoints.length-1, currentJourney.sessions[0].getLastDataPoint().getDoc());
+			}
 		}
 	}
 	// Run cyclists

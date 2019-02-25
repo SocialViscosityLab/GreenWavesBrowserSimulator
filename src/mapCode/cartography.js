@@ -197,7 +197,6 @@ class Cartography{
 				c.plotGhost(this.map);
 
 			}else{
-
 				c.plotMarker(this.map);
 			}
 		}

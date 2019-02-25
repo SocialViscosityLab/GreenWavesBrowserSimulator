@@ -14,6 +14,8 @@
 */
 class Cyclist{
   constructor(id, route, position, speed, isSimulated){
+    // boolean variable defining if this cyclist is simulated or is an actual cyclists on the street
+    this.isSimulated = isSimulated;
     /** The bicycle and its attributes such as electric, assisted, weight*/
     this.bicycle = new Bicycle(); // here add attributes of bicycle
     /** The rider and her attributes such as weight, fitness, power*/
@@ -26,8 +28,9 @@ class Cyclist{
     this.id = id;
     // the current route on which this cyclist is running
     this.myRoute = route;
-    // boolean variable defining if this cyclist is simulated or is an actual cyclists on the street
-    this.isSimulated = isSimulated; 
+
+    // Current data point of the cyclist
+    this.currentDataPoint;
 
     // Kinematic Variables
     this.position = position;
@@ -71,15 +74,20 @@ class Cyclist{
     this.timeCounter++;
     return (datapoint);
   }
-
+  SetDataPoint(acc, pos, speed, time){
+    this.myAcceleration = acc;
+    this.position = pos;
+    this.mySpeed = speed;
+    this.timeCounter = time;
+    this.currentDataPoint = new DataPoint(acc, pos, speed, time);
+  }
   /** Subscribe as observer to this cyclist
   https://pawelgrzybek.com/the-observer-pattern-in-javascript-explained/
   */
   subscribe(observer){
     this.observers.push(observer);
     // notify
-    this.notifyObservers(this.generateDataPoint());
-
+      this.notifyObservers(this.generateDataPoint());
   }
 
   /** Unubscribe from this cyclist
@@ -114,23 +122,25 @@ class Cyclist{
   run(sampleRate){
     // If the route is not completed and the cyclists is enabled
     if (this.position !== this.myRoute.getLastSegment().end && this.status == "enabled"){
-      // get the stepLength
-      let step = this.getStep(sampleRate);
-      // if (!this.isLeader)console.log("step "+ step);
-      // Ask the route for the location of the step
-      let tmpPosition = this.myRoute.getPosition(this.position, step);
-      // update position
-      this.position = tmpPosition;
-      // update speed
-      this.mySpeed = step * sampleRate;
-      // notify
-      this.notifyObservers(this.generateDataPoint());
-      // broadcasting on OSC
-    //  let tmp = this.id.journey +"/"+this.id.route+"/"+this.targetSpeed+"/"+this.mySpeed.toPrecision(4)+"/"+this.myAcceleration.toPrecision(4);
-      let tmp = Number(this.mySpeed.toPrecision(4));
 
-      // myOsc is a global instance constructed in the main.js
-      // myOsc.send("/agent",tmp);
+      if(this.isSimulated){
+        // get the stepLength
+        let step = this.getStep(sampleRate);
+        // Ask the route for the location of the step
+        let tmpPosition = this.myRoute.getPosition(this.position, step);
+        // update position
+        this.position = tmpPosition;
+        // update speed
+        this.mySpeed = step * sampleRate;
+        // notify
+        this.notifyObservers(this.generateDataPoint());
+        // broadcasting on OSC
+        let tmp = Number(this.mySpeed.toPrecision(4));
+        // myOsc is a global instance constructed in the main.js
+      }else{
+        //console.log(this.currentDataPoint);
+        this.notifyObservers(this.currentDataPoint);
+      }
 
     } else if (this.status != 'disabled'){
       this.status = "disabled";
