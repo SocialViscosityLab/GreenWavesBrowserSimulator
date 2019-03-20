@@ -11,7 +11,12 @@ var config = {
 };
 
 var firebase = firebase.initializeApp(config);
-const admin = firebase.auth();
+//const admin = firebase.auth();
+const admin = firebase.auth().signInWithEmailAndPassword("dd6@illinois.edu", "manchas").catch(function(error) {
+  var errorCode = error.code;
+  var errorMessage = error.message;
+});
+
 const db = firebase.firestore();
 
 const settings = {timestampsInSnapshots: true};
