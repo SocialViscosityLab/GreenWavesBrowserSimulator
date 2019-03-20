@@ -52,7 +52,7 @@
         //   {color:'blue', fillColor: 'blue', weight:1, stroke:true, radius:5}).addTo(theMap);
 
       }else{
-        console.log("Printing cyclist:"+this.cyclist.id.id);
+        //console.log("Printing cyclist:"+this.cyclist.id.id);
 
         let newLatLng = new L.LatLng(this.cyclist.position.lat , this.cyclist.position.lon);
 
