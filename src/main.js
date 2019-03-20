@@ -27,7 +27,7 @@ Setup. It setups variables and initializes instances
 function setup(){
 
 	//Set up to connect or not connect to the database
-	connect = true;
+	connect = false;
 	//osc. This is currently used in the cyclcist's run() function.
 	//myOsc = new OSCSender();
 	//myOsc.enable(false);
@@ -35,6 +35,7 @@ function setup(){
 	document.getElementById("routeButton").onclick = setupRoutes;
 	document.getElementById("loopButton").onclick = switchRouteLoop;
 	document.getElementById("activateJourney").onclick = 	createAndActivateJourney;
+	document.getElementById("connectFirebase").onclick = connectFirebase;
 
 	// Instantiate and initialize the map
 	currentMap = new Cartography();
@@ -42,10 +43,10 @@ function setup(){
 	routeM = new RouteManager();
 	// Instantiate JourneyManager
 	journeyM = new JourneyManager();
-	if(connect){
-		// Instantiates communication with Firebase
-		comm = new Communication();
-	}
+	// if(connect){
+	// 	// Instantiates communication with Firebase
+	// 	comm = new Communication();
+	// }
 	// instance made to read and write files to this computer from the browser
 	directory = new DirectoryReader();
 	// activate cyclist addition listener
@@ -118,6 +119,17 @@ function activateJourneys(){
 		}
 	}else{
 		alert("Setup routes first")
+	}
+}
+
+function connectFirebase(){
+	comm = new Communication();
+	connect = !connect;
+	if (connect){
+		document.getElementById("databaseConnection").innerHTML = "connected";
+	} else {
+		comm = undefined;
+		document.getElementById("databaseConnection").innerHTML = "disconnected";
 	}
 }
 
