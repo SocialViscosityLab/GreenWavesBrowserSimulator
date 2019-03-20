@@ -105,7 +105,7 @@
   makeIcon(iconFileName, shadowFileName, x, y){
       var theIcon = {
           iconUrl: 'src/mapCode/markers/'+iconFileName,
-          iconSize:     [21, 35], // size of the icon
+          iconSize:     [21, 38], // size of the icon
           iconAnchor:   [x, y], // point of the icon which will correspond to marker's location
           popupAnchor:  [-3, -36] // point from which the popup should open relative to the iconAnchor
       };
