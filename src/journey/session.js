@@ -92,9 +92,9 @@ class Session{
 		var rtn = [];
 
 		for (let dp of this.dataPoints) {
-
-			rtn.push([dp.position.lat, dp.position.lon]);
-
+			if (dp! = undefined){
+				rtn.push([dp.position.lat, dp.position.lon]);
+			}
 		}
 		return rtn;
 	}

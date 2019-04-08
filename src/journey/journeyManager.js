@@ -94,7 +94,6 @@ class JourneyManager{
 
       /**** Visualization of cyclist on map *****/
       if (currentMap) currentMap.addCyclist(cyclistTmp);
-
       return true;
     }else {
       return false;
@@ -107,7 +106,6 @@ class JourneyManager{
   * @param {Event} event The communication event triggered when the remote cyclcist joins the db session
   */
     addRemoteCyclist(sessionId, event){
-
       //current_position: {acceleration: 0, latitude: 40.1149175, longitude: -88.22143, speed: 0, suggestion: -1, …}
       //id_user: "mTgx1snPoAaYr3aCwKemtyIJNw63"
       //start_time: "2019/1/7 - 21:10:54"

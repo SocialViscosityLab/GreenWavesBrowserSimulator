@@ -87,7 +87,12 @@ class Cyclist{
   subscribe(observer){
     this.observers.push(observer);
     // notify
+    if(this.isSimulated){
       this.notifyObservers(this.generateDataPoint());
+    }else{
+      this.notifyObservers(this.currentDataPoint);
+    }
+
   }
 
   /** Unubscribe from this cyclist
@@ -132,13 +137,15 @@ class Cyclist{
         this.position = tmpPosition;
         // update speed
         this.mySpeed = step * sampleRate;
+        let dpTemp = this.generateDataPoint();
         // notify
-        this.notifyObservers(this.generateDataPoint());
+        this.notifyObservers(dpTemp);
         // broadcasting on OSC
         let tmp = Number(this.mySpeed.toPrecision(4));
         // myOsc is a global instance constructed in the main.js
       }else{
-        //console.log(this.currentDataPoint);
+        console.log(this.currentDataPoint)
+
         this.notifyObservers(this.currentDataPoint);
       }
 
