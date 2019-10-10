@@ -144,9 +144,10 @@ class Cyclist{
         let tmp = Number(this.mySpeed.toPrecision(4));
         // myOsc is a global instance constructed in the main.js
       }else{
-        console.log(this.currentDataPoint)
-
+      //  console.log(this.currentDataPoint)
+if (this.currentDataPoint != undefined){
         this.notifyObservers(this.currentDataPoint);
+      }
       }
 
     } else if (this.status != 'disabled'){

@@ -92,7 +92,7 @@ class Session{
 		var rtn = [];
 
 		for (let dp of this.dataPoints) {
-			if (dp! = undefined){
+			if (dp != undefined){
 				rtn.push([dp.position.lat, dp.position.lon]);
 			}
 		}
