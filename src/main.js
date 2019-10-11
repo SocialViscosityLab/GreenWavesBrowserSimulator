@@ -34,7 +34,7 @@ function setup(){
 	// GUI elements
 	document.getElementById("routeButton").onclick = setupRoutes;
 	document.getElementById("loopButton").onclick = switchRouteLoop;
-	document.getElementById("activateJourney").onclick = 	createAndActivateJourney;
+	document.getElementById("activateJourney").onclick = createAndActivateJourney;
 	document.getElementById("connectFirebase").onclick = connectFirebase;
 
 	// Instantiate and initialize the map
@@ -43,10 +43,6 @@ function setup(){
 	routeM = new RouteManager();
 	// Instantiate JourneyManager
 	journeyM = new JourneyManager();
-	// if(connect){
-	// 	// Instantiates communication with Firebase
-	// 	comm = new Communication();
-	// }
 	// instance made to read and write files to this computer from the browser
 	directory = new DirectoryReader();
 	// activate cyclist addition listener
