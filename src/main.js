@@ -137,7 +137,7 @@ function getFirebaseData() {
 		console.log("Journey: " + idJourney + ", Session: " + idSession);
 
 		let result = comm.getSession(idJourney, idSession).then(
-			saveJSON({'a':0, "b":[1,2]}, "test.json"))
+			saveJSON(result, idJourney+"_"+idSession+".json"))
 	} else {
 		alert("It seems that the connection to Firebase is dissabled. Connect to Firebase and tru again")
 	}
