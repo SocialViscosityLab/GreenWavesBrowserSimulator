@@ -36,6 +36,7 @@ function setup(){
 	document.getElementById("loopButton").onclick = switchRouteLoop;
 	document.getElementById("activateJourney").onclick = createAndActivateJourney;
 	document.getElementById("connectFirebase").onclick = connectFirebase;
+	document.getElementById("getFirebaseData").onclick = getFirebaseData;
 
 	// Instantiate and initialize the map
 	currentMap = new Cartography();
@@ -127,6 +128,12 @@ function connectFirebase(){
 		comm = undefined;
 		document.getElementById("databaseConnection").innerHTML = "disconnected";
 	}
+}
+
+function getFirebaseData(){
+	let idJourney=document.getElementById("idJourney").value;
+	let idSession=document.getElementById("idSession").value;
+	console.log("Journey: " + idJourney + ", Session: " + idSession);
 }
 
 /**
