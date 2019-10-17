@@ -24,7 +24,7 @@ let connect;
 /**
 Setup. It setups variables and initializes instances
 */
-function setup(){
+function setup() {
 
 	//Set up to connect or not connect to the database
 	connect = false;
@@ -53,7 +53,7 @@ function setup(){
 /**
 * On HTML button click event it create the route markers of the cornerpoints on the map
 */
-function setupRoutes(){
+function setupRoutes() {
 	// Get routes from directory and set them up.
 	routeM.setupRoutes(directory, currentMap);
 	/**** Visualization  of route on Map *****/
@@ -61,68 +61,68 @@ function setupRoutes(){
 	currentMap.plotRoutes();
 	// plot route corner points on map
 	currentMap.plotRoutesCornerPoints();
-	currentRoute = routeM.routes[routeM.routes.length-1];
-	if(connect){
+	currentRoute = routeM.routes[routeM.routes.length - 1];
+	if (connect) {
 		// adds route to firebase
 		comm.addNewRoute(currentRoute.id, currentRoute.getPositionPoints());
 	}
 }
 
-function createAndActivateJourney(){
-	if(connect){
+function createAndActivateJourney() {
+	if (connect) {
 		Promise.resolve(comm.getNewJourneyId()).then(activateJourneys);
-	}else{
+	} else {
 		activateJourneys();
 	}
 }
 /**
 * On HTML button click event it opens or closes the route loop
 */
-function switchRouteLoop(){
+function switchRouteLoop() {
 	routeM.switchRouteLoop(0, document.getElementById("loopButton"));
 	// plot route path on map
 	currentMap.plotRoutes();
-	if(connect){
-  	comm.setRouteLoop(currentRoute.id,currentRoute.loop);
+	if (connect) {
+		comm.setRouteLoop(currentRoute.id, currentRoute.loop);
 	}
 }
 
 /**
 * On HTML button click event it  activates journeys in the Journey Manager
 */
-function activateJourneys(){
+function activateJourneys() {
 	// activate all the journeys
 	let ghostSpeed = Number(document.getElementById("speed").value);
 	sampleRate = Number(document.getElementById("sampleRate").value);
-	if (routeM.routes.length > 0){
-		if(connect){
+	if (routeM.routes.length > 0) {
+		if (connect) {
 			journeyM.setCurrentJourneyId(comm.newJourneyId);
-		}else{
+		} else {
 			journeyM.setCurrentJourneyId("00000");
 		}
 		// Activate all journeys
-		journeyM.activate(routeM.routes, ghostSpeed , sampleRate, currentMap);
+		journeyM.activate(routeM.routes, ghostSpeed, sampleRate, currentMap);
 		// Execute the run function at the frequency of the sampleRate
-		clicker = setInterval(run, (1000*sampleRate));
+		clicker = setInterval(run, (1000 * sampleRate));
 		currentJourney = journeyM.getCurrentJourney();
 
-		if(connect){
+		if (connect) {
 			// Adds new journey to firebase
-			comm.addNewJourney(currentJourney.id,currentRoute.id);
+			comm.addNewJourney(currentJourney.id, currentRoute.id);
 			// Adds new session to firebase
 			comm.addNewGhostSession(currentJourney.id);
 			// Activates session change listener in firebase
 			comm.listenToJourenysSessions(currentJourney.id);
 		}
-	}else{
+	} else {
 		alert("Setup routes first")
 	}
 }
 
-function connectFirebase(){
+function connectFirebase() {
 	comm = new Communication();
 	connect = !connect;
-	if (connect){
+	if (connect) {
 		document.getElementById("databaseConnection").innerHTML = "connected";
 	} else {
 		comm = undefined;
@@ -130,19 +130,24 @@ function connectFirebase(){
 	}
 }
 
-function getFirebaseData(){
-	let idJourney=document.getElementById("idJourney").value;
-	let idSession=document.getElementById("idSession").value;
-	console.log("Journey: " + idJourney + ", Session: " + idSession);
+function getFirebaseData() {
+	if (connect) {
+		let idJourney = document.getElementById("idJourney").value;
+		let idSession = document.getElementById("idSession").value;
+		console.log("Journey: " + idJourney + ", Session: " + idSession);
+		// comm.getSession(idJourney, idSession)
+	} else {
+		alert("It seems that the connection to Firebase is dissabled. Connect to Firebase and tru again")
+	}
 }
 
 /**
 * Add session to journey with nearest route
 */
-function addCyclistListener(){
-	currentMap.map.on('click', function(event) {
+function addCyclistListener() {
+	currentMap.map.on('click', function (event) {
 		// add ciclists
-		if (journeyM.addCyclist(event)){
+		if (journeyM.addCyclist(event)) {
 			// update mapJourneys
 			currentMap.updateJourney();
 		}
@@ -153,16 +158,16 @@ function addCyclistListener(){
 /**
 * Run the simulation
 */
-function run(){
-	for(let routeTmp of routeM.routes){
-		if (!routeTmp.status){
+function run() {
+	for (let routeTmp of routeM.routes) {
+		if (!routeTmp.status) {
 			clearInterval(clicker);
 			alert("Route finalized");
-		}else{
+		} else {
 			let tempDP = journeyM.getCurrentJourney().sessions[0].getLastDataPoint()
-			if(connect){
-				comm.updateCurrentGhostPosition(currentJourney.id,currentJourney.sessions[0].getLastDataPoint().getDoc())
-				comm.addNewDataPointInSession(currentJourney.id, "00000", currentJourney.sessions[0].dataPoints.length-1, currentJourney.sessions[0].getLastDataPoint().getDoc());
+			if (connect) {
+				comm.updateCurrentGhostPosition(currentJourney.id, currentJourney.sessions[0].getLastDataPoint().getDoc())
+				comm.addNewDataPointInSession(currentJourney.id, "00000", currentJourney.sessions[0].dataPoints.length - 1, currentJourney.sessions[0].getLastDataPoint().getDoc());
 			}
 		}
 	}
