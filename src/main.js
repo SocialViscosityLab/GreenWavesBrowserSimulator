@@ -70,7 +70,7 @@ function setupRoutes() {
 
 function createAndActivateJourney() {
 	if (connect) {
-		Promise.resolve(comm.getNewJourneyId()).then(activateJourneys);
+		comm.getNewJourneyId().then(activateJourneys);
 	} else {
 		activateJourneys();
 	}
@@ -134,13 +134,38 @@ function getFirebaseData() {
 	if (connect) {
 		let idJourney = document.getElementById("idJourney").value;
 		let idSession = document.getElementById("idSession").value;
-		console.log("Journey: " + idJourney + ", Session: " + idSession);
 
-		let result = comm.getSession(idJourney, idSession).then(
-			saveJSON(result, idJourney+"_"+idSession+".json"))
+		if(idJourney == "Journey ID" && idSession == "Session ID"){
+			console.log("getting last session")
+			
+			Promise.resolve(comm.getLastSession()).then(sjson =>
+				saveJSON(sjson, idJourney+"_"+idSession+".json")
+				);
+		}else if(idSession == "00000" && idJourney != "Journey ID" ){
+			console.log("getting Ghost's session from Journey: "+ idJourney)			
+			
+			Promise.resolve(comm.getGhostSession(idJourney)).then(sjson =>
+				saveJSON(sjson, idJourney+"_ghost.json")
+				);
+		}else{
+			console.log("getting session: "+idSession+" from Journey: "+ idJourney)		
+			
+			Promise.resolve(comm.getSession(idJourney, idSession)).then(sjson =>
+				saveJSON(sjson, idJourney+"_"+idSession+".json")
+				);
+				
+
+		}
 	} else {
 		alert("It seems that the connection to Firebase is dissabled. Connect to Firebase and tru again")
 	}
+}
+
+/**
+ * Save Jsons files
+ */
+function saveSessionOnJson(){
+
 }
 
 /**
