@@ -65,6 +65,59 @@ class JourneyManager{
   }
 
   /**
+   * Used in main class. It activates the run() method in the function setInterval()
+   */
+  importJourney(journeyID,journeyRoute, sessionsJSON, currentMap){
+      if (journeyRoute != undefined){
+        // Instantiate journey
+        let journeyTmp = new Journey(journeyID, journeyRoute);
+        // make route active
+        journeyTmp.activateRoute(true);
+        // cyclist temp id
+        //let idTmp = {id:this.appID + '_ghost', journey:journeyTmp.id, route:journeyRoute.id};
+        // ghost cyclist
+        //let ghostCyclist = new Cyclist(idTmp, journeyTmp.referenceRoute ,journeyTmp.referenceRoute.routePoints[0], ghostSpeed, true);
+        // set ghosts target speed
+        //ghostCyclist.targetSpeed = ghostSpeed;
+        // increase id for next cyclist
+        //this.appID++;
+        // Create a session for this cyclist
+
+        /**
+         * @todo goes through sessionsJSON array and create a temporal session. 
+         * Fist it constructs the session with "Session(SessionID,UserID)"
+         * Then, uses the method of importCyclistData to save the datapoints into the sessions
+         */
+
+        let tmpS = new Session("00000",ghostCyclist.id);
+        // Insert the session at the begining of journey sessions
+        journeyTmp.sessions.unshift(tmpS);
+        // GreenWave GUI value
+        //let w = document.getElementById("greenWave")
+        // Create a green wave for this ghost
+        //let tmpGW = new GreenWave(journeyTmp, Number(w.value));
+        // Subscribe the session as observer to the cyclists
+        //ghostCyclist.subscribe(tmpS);
+        // Subscribe the green wave as observer to the cyclists
+        //ghostCyclist.subscribe(tmpGW);
+        // add ghost to cyclist collection
+        //this.leaders.unshift(ghostCyclist);
+        // greenWaves
+        //this.greenWaves.push(tmpGW);
+
+        /**** Visualization  of journey on map *****/
+        // add journey to map
+        if (currentMap) currentMap.setupJourney(journeyTmp);
+        if (currentMap) currentMap.addCyclist(ghostCyclist);
+        // add to collection
+        this.journeys.push(journeyTmp);
+      }else{
+        alert("Route not initialized");
+      }
+  }
+
+
+  /**
   * Adds a cyclist to the nearest journey and creates a session for her
   * @param {Event} event The mouse event
   * @return {boolean} true if a new cyclist was added to the route
@@ -131,7 +184,7 @@ class JourneyManager{
             let acc =  event.current_position.acceleration;
             let time =  event.current_position.time;
 
-            cyclist.SetDataPoint(acc, eventLocation, speed, time);
+            cyclist.setDataPoint(acc, eventLocation, speed, time);
             //console.log("Did enter to update the cyclist position")
           }
           break;
@@ -160,6 +213,69 @@ class JourneyManager{
           if (currentMap) currentMap.addCyclist(cyclistTmp);
       }
     }
+
+/**
+  * Adds a remote cyclist to the latest active journey and creates a local session for her
+  * @param {Event} event The communication event triggered when the remote cyclcist joins the db session
+  * @todo addecuate the method in order to receive datapoints from the loaded jsons and store them in the session object
+  */
+    importCyclistData(sessionId, event){
+      //current_position: {acceleration: 0, latitude: 40.1149175, longitude: -88.22143, speed: 0, suggestion: -1, …}
+      //id_user: "mTgx1snPoAaYr3aCwKemtyIJNw63"
+      //start_time: "2019/1/7 - 21:10:54"
+
+      // retrive the latest journey
+      let journeyTmp = this.getCurrentJourney();
+
+      let updatedSession;
+      for (let tempS of journeyTmp.sessions){
+        if(tempS.id_session.id == sessionId){
+          updatedSession = tempS
+        }
+      }
+      if(updatedSession){
+        //console.log("Getting position of the session number: "+updatedSession.id_session.id)
+        for (let cyclist of this.followers){
+          //console.log("follower id: "+cyclist.id.id)
+          //console.log(updatedSession.id_session.cyclistId.id)
+
+          if(cyclist.id.id == updatedSession.id_session.cyclistId.id){
+            let eventLocation = new Position (event.current_position.latitude,event.current_position.longitude);
+            let speed =  event.current_position.speed;
+            let acc =  event.current_position.acceleration;
+            let time =  event.current_position.time;
+
+            cyclist.setDataPoint(acc, eventLocation, speed, time);
+            //console.log("Did enter to update the cyclist position")
+          }
+          break;
+        }
+
+      }else{
+        //Creates a session if it doesn't exist
+        let eventLocation = new Position (event.current_position.latitude,event.current_position.longitude);
+
+          // temp id
+          let idTmp = {id:event.id_user, journey:journeyTmp.id, route:journeyTmp.referenceRoute.id};
+          // create a cyclists
+          let cyclistTmp = new Cyclist(idTmp, journeyTmp.referenceRoute, eventLocation, event.current_position.speed, false);
+          // set leader
+          cyclistTmp.setLeader(this.getLeaderForJourney(journeyTmp));
+          // Create a local session for this cyclist
+          let tmpS = new Session(sessionId, cyclistTmp.id);
+          // Insert the session at the begining of journey sessions
+          journeyTmp.sessions.push(tmpS);
+          // Subscribe the session as observer to the cyclists
+          cyclistTmp.subscribe(tmpS);
+          // add cyclist to cyclist collection
+          this.followers.push(cyclistTmp);
+
+          /**** Visualization of cyclist on map *****/
+          if (currentMap) currentMap.addCyclist(cyclistTmp);
+      }
+    }
+
+    
 
 
   /**

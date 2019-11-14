@@ -24,11 +24,13 @@ class DirectoryReader{
   * The function called on 'choose file' button click
   */
   handleFileSelect(evt) {
+    //reset global variable
+    jsonObjects = [];
     // FileList object files is a FileList of File objects. List some properties.
     let files = evt.target.files;
 
     let htmlOutput = [];
-    // iterate over the selected files
+    // iterate over the selected fil
     for (let i = 0, f; f = files[i]; i++) {
       // update GUI
       htmlOutput.push('<li><strong>', escape(f.name), '</strong> ','</li>');
@@ -44,7 +46,7 @@ class DirectoryReader{
           //read file content
           let tmp = JSON.parse(e.target.result);
           jsonObjects.push(tmp);
-          console.log(tmp.properties.name);
+          //console.log(tmp.properties.name);
         };
       })(f);
       // Read in the file

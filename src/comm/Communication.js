@@ -80,7 +80,6 @@ class Communication{
     })
     .then(snapshot =>{
       snapshot.forEach(dp => {
-        //console.log(dp.id)
         data_points_array[dp.id] = {
           'acceleration' : dp.data().acceleration,
           'latitude' : dp.data().latitude,
@@ -89,9 +88,7 @@ class Communication{
           'suggestion' : dp.data().suggestion,
           'time' : dp.data().time
           }
-        //data_points_array.push(dp.id, temp_dp)
       })
-      console.log(session_json)
       session_json.data_points = data_points_array
       return session_json
     });
@@ -99,70 +96,63 @@ class Communication{
 
 
   /**
-   * Looks for the last session on the data base and returns it in form of a json
-   * @returns {Promise,JSON} Session_json
+   * Looks for all the information of a specific journey
+   * and return an object with all its information
+   * @returns {Promise,Object} journey
    */
- getLastSession(){
-  let jId = 0;
-  let journeyId = '00000'
-  let sessionId = '00000'
-  
-  return db.collection('journeys').get()
-  .then(snapshot => {
-    snapshot.forEach(doc => {
-      let id = parseInt(doc.id);
-      if(id !== null){
-        if (id > jId){
-          jId = id;
-        }
-      }
-    });
-    journeyId = this.formatID(jId)
-    //console.log('Last journey found: '+journeyId)
-    return db.collection('journeys').doc(journeyId).collection('sessions').get();
-    })
-    .then(snapshot => {
-        let sId = 0;
+  getJourney(journeyId){
+    let journey 
+    let routeRef
+    let sessions = []
+    let journeyRef = db.collection('journeys').doc(journeyId)
+
+    return journeyRef.get().then(doc => {
+      return doc.data().reference_route.collection('position_points').get()
+      })
+      .then(snapshot => {
+        let position_points = []
         snapshot.forEach(doc => {
-          let id_s = parseInt(doc.id);
-          if(id_s !== null){
-            if (id_s > sId){
-              sId = id_s;
-            }
+          let coord = doc.data()
+          position_points.push({lat : coord.latitude, lon : coord.longitude})
+        });
+        journey = {ref_route: position_points, sessions: []}
+        return journeyRef.collection('sessions').get()
+      })
+      .then(snapshot => {
+        let sessions_promises = [ ]
+        snapshot.forEach(doc => {
+          let temp_sID = doc.id
+          console.log(temp_sID)
+          if(temp_sID != '00000'){
+            sessions_promises.push(
+              this.getSession(journeyId, temp_sID)
+              )
+          }else{
+            sessions_promises.push(
+              this.getGhostSession(journeyId)
+            )
           }
         });
-      sessionId = this.formatID(sId)
-      //console.log('Last session found: '+sessionId)
-      let doc_ref = db.collection('journeys').doc(journeyId).collection('sessions').doc(sessionId); 
-      return doc_ref.get()
+        return Promise.all(sessions_promises)
       })
-      .then(doc => {
-        let session_json
-        let session_data = doc.data()
-        //console.log(session_data)
-        let user_id = session_data.id_user
-        let start_time = session_data.start_time
-        let dp_array = session_data.data_points
-
-        session_json = {
-          'user_id' : user_id,
-          'start_time' : start_time,
-          'data_points' : dp_array
-        }
-        return session_json
-      });
-  }
+      .then(sessions_docs => {
+          console.log(sessions_docs)
+          journey.sessions = sessions_docs
+          return journey
+        });
+    }
 
 
-/**
- * Format a number with the id format used on the database
- * @param {Integer} id 
- */
+  /**
+   * Format a number with the id format used on the database
+   * @param {Integer} id 
+   */
   formatID(id){
     let zeros = "00000";
     return  (zeros+id).slice(-zeros.length)
   }
 
+  
   /**
    * Listen to a specific journey and returns any session that 
    * presents a change in it
@@ -174,13 +164,8 @@ class Communication{
       docSnapShot.forEach(function(doc){
         if(doc.id !== "00000"){
           let changingSession = doc.data();
-          //console.log("Current data: ", changingSession);
           journeyM.addRemoteCyclist(doc.id, changingSession);
           return changingSession;
-          //current_position: {acceleration: 0, latitude: 40.1149175, longitude: -88.22143, speed: 0, suggestion: -1, …}
-          //id_user: "mTgx1snPoAaYr3aCwKemtyIJNw63"
-          //start_time: "2019/1/7 - 21:10:54"
-
         }
       })
     });
@@ -272,4 +257,61 @@ class Communication{
     let journeyId = ""+jId;
     db.collection('journeys').doc(journeyId).collection('sessions').doc("00000").update({current_ghost_position:dataPointDoc});
   }
+
+
+  /**
+   * Looks for the last session on the data base and returns it in form of a json
+   * @returns {Promise,JSON} Session_json
+   */
+ getLastSession(){
+  let jId = 0;
+  let journeyId = '00000'
+  let sessionId = '00000'
+  
+  return db.collection('journeys').get()
+  .then(snapshot => {
+    snapshot.forEach(doc => {
+      let id = parseInt(doc.id);
+      if(id !== null){
+        if (id > jId){
+          jId = id;
+        }
+      }
+    });
+    journeyId = this.formatID(jId)
+    //console.log('Last journey found: '+journeyId)
+    return db.collection('journeys').doc(journeyId).collection('sessions').get();
+    })
+    .then(snapshot => {
+        let sId = 0;
+        snapshot.forEach(doc => {
+          let id_s = parseInt(doc.id);
+          if(id_s !== null){
+            if (id_s > sId){
+              sId = id_s;
+            }
+          }
+        });
+      sessionId = this.formatID(sId)
+      //console.log('Last session found: '+sessionId)
+      let doc_ref = db.collection('journeys').doc(journeyId).collection('sessions').doc(sessionId); 
+      return doc_ref.get()
+      })
+      .then(doc => {
+        let session_json
+        let session_data = doc.data()
+        //console.log(session_data)
+        let user_id = session_data.id_user
+        let start_time = session_data.start_time
+        let dp_array = session_data.data_points
+
+        session_json = {
+          'user_id' : user_id,
+          'start_time' : start_time,
+          'data_points' : dp_array
+        }
+        return session_json
+      });
+  }
 }
+

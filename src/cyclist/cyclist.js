@@ -71,10 +71,11 @@ class Cyclist{
   */
   generateDataPoint(){
     let datapoint = new DataPoint(this.myAcceleration, this.position, this.mySpeed, this.timeCounter);
-    this.timeCounter++;
+    this.timeCounter+=(sampleRate * 1000);
     return (datapoint);
   }
-  SetDataPoint(acc, pos, speed, time){
+
+  setDataPoint(acc, pos, speed, time){
     this.myAcceleration = acc;
     this.position = pos;
     this.mySpeed = speed;
