@@ -65,7 +65,7 @@ class JourneyManager{
   }
 
   /**
-   * Used in main class. It activates the run() method in the function setInterval()
+   * Used in analysis class
    */
   importJourney(journeyID,journeyRoute, sessionsJSON, currentMap){
       if (journeyRoute != undefined){

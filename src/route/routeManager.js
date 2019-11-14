@@ -39,6 +39,25 @@ class RouteManager{
   }
 
   /**
+  * Creates a single route from JSON cornerpoints. It is ussually used to import routes into the analysis tool
+  */
+ setupSingleRoute(cornerPoints, currentMap){
+  let routeTmp;
+  if (cornerPoints.length > 0){
+    for (let points of cornerPoints){
+      // Instantiate objects
+      routeTmp = new Route(points.properties.name);
+      routeTmp.initiateRouteFromGeoJSON (points);
+      // add route to map
+      currentMap.setupRoute(routeTmp);
+      // store route
+      this.routes.push(routeTmp);
+    }
+    currentMap.recenter(this.routes[this.routes.length-1].routePoints[0]);
+  }
+}
+
+  /**
   * Opens or closes the route loop
   */
   switchRouteLoop(id, btn){

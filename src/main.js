@@ -61,6 +61,7 @@ function setupRoutes() {
 	currentMap.plotRoutes();
 	// plot route corner points on map
 	currentMap.plotRoutesCornerPoints();
+	// Updates the current route with the last uploaded route
 	currentRoute = routeM.routes[routeM.routes.length - 1];
 	if (connect) {
 		// adds route to firebase

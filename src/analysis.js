@@ -139,6 +139,12 @@ function getFirebaseData() {
 		Promise.resolve(comm.getJourney(idJourney)).then(journey => {
 			console.log(journey)
 			saveJSON(journey, idJourney+".json")
+			// Creates the route for the retrieved journey
+			routeM.setupSingleRoute(journey.ref_route,currentMap)
+			// Updates the current route
+			currentRoute = routeM.routes[routeM.routes.length - 1];
+			// Creates a journey from the retrieved journey data 
+			journeyM.importJourney(idJourney,currentRoute,journey.sessions,currentMap)
 		})
 	} else {
 		alert("It seems that the connection to Firebase is dissabled. Connect to Firebase and try again")
