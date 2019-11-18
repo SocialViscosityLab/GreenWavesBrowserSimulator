@@ -67,7 +67,7 @@ class JourneyManager{
   /**
    * Used in analysis class
    */
-  importJourney(journeyID,journeyRoute, sessionsJSON, currentMap){
+  importJourney(journeyID, journeyRoute, sessionsJSON, currentMap){
       if (journeyRoute != undefined){
         // Instantiate journey
         let journeyTmp = new Journey(journeyID, journeyRoute);
