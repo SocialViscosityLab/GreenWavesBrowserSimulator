@@ -122,7 +122,6 @@ class Communication{
         let sessions_promises = [ ]
         snapshot.forEach(doc => {
           let temp_sID = doc.id
-          console.log(temp_sID)
           if(temp_sID != '00000'){
             sessions_promises.push(
               this.getSession(journeyId, temp_sID)
@@ -136,7 +135,6 @@ class Communication{
         return Promise.all(sessions_promises)
       })
       .then(sessions_docs => {
-          console.log(sessions_docs)
           journey.sessions = sessions_docs
           return journey
         });

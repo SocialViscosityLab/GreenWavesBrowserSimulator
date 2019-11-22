@@ -34,6 +34,7 @@ function setup() {
 	// GUI elements
 	document.getElementById("connectFirebase").onclick = connectFirebase;
 	document.getElementById("getSessionData").onclick = getFirebaseData;
+	document.getElementById("showJourney").onclick = createAndActivateJourney;
 	/**
 	 * @todo: 
 	 * 1. with the route reference we should create a query to get the route and create a route object with it
@@ -71,11 +72,7 @@ function setupRoutes() {
 }
 
 function createAndActivateJourney() {
-	if (connect) {
-		comm.getNewJourneyId().then(activateJourneys);
-	} else {
 		activateJourneys();
-	}
 }
 /**
 * On HTML button click event it opens or closes the route loop
@@ -94,28 +91,12 @@ function switchRouteLoop() {
 */
 function activateJourneys() {
 	// activate all the journeys
-	let ghostSpeed = Number(document.getElementById("speed").value);
-	sampleRate = Number(document.getElementById("sampleRate").value);
 	if (routeM.routes.length > 0) {
-		if (connect) {
-			journeyM.setCurrentJourneyId(comm.newJourneyId);
-		} else {
-			journeyM.setCurrentJourneyId("00000");
-		}
+		journeyM.setCurrentJourneyId("00000");
 		// Activate all journeys
-		journeyM.activate(routeM.routes, ghostSpeed, sampleRate, currentMap);
+		//journeyM.activate(routeM.routes, Number(0), 0, currentMap);
 		// Execute the run function at the frequency of the sampleRate
-		clicker = setInterval(run, (1000 * sampleRate));
-		currentJourney = journeyM.getCurrentJourney();
-
-		if (connect) {
-			// Adds new journey to firebase
-			comm.addNewJourney(currentJourney.id, currentRoute.id);
-			// Adds new session to firebase
-			comm.addNewGhostSession(currentJourney.id);
-			// Activates session change listener in firebase
-			comm.listenToJourenysSessions(currentJourney.id);
-		}
+		clicker = setInterval(run, (1000));
 	} else {
 		alert("Setup routes first")
 	}
@@ -134,17 +115,17 @@ function connectFirebase() {
 
 function getFirebaseData() {
 	if (connect) {
-		//let idJourney = document.getElementById("idJourney").value;
-		let idJourney = '00195';
+		let idJourney = document.getElementById("idJourney").value;
+		//let idJourney = '00195';
 		Promise.resolve(comm.getJourney(idJourney)).then(journey => {
-			console.log(journey)
-			saveJSON(journey, idJourney+".json")
+			//saveJSON(journey, idJourney+".json")
 			// Creates the route for the retrieved journey
 			routeM.setupSingleRoute(journey.ref_route,currentMap)
 			// Updates the current route
 			currentRoute = routeM.routes[routeM.routes.length - 1];
 			// Creates a journey from the retrieved journey data 
 			journeyM.importJourney(idJourney,currentRoute,journey.sessions,currentMap)
+			console.log(journey)
 		})
 	} else {
 		alert("It seems that the connection to Firebase is dissabled. Connect to Firebase and try again")
@@ -170,18 +151,6 @@ function addCyclistListener() {
 * Run the simulation
 */
 function run() {
-	for (let routeTmp of routeM.routes) {
-		if (!routeTmp.status) {
-			clearInterval(clicker);
-			alert("Route finalized");
-		} else {
-			let tempDP = journeyM.getCurrentJourney().sessions[0].getLastDataPoint()
-			if (connect) {
-				comm.updateCurrentGhostPosition(currentJourney.id, currentJourney.sessions[0].getLastDataPoint().getDoc())
-				comm.addNewDataPointInSession(currentJourney.id, "00000", currentJourney.sessions[0].dataPoints.length - 1, currentJourney.sessions[0].getLastDataPoint().getDoc());
-			}
-		}
-	}
 	// Run cyclists
 	journeyM.runCyclists(sampleRate);
 	//plot all journeys
@@ -192,5 +161,5 @@ function run() {
 	currentMap.plotGreenWaves();
 	// plot cyclists
 	currentMap.plotCyclists();
-
+	clearInterval(clicker);
 }

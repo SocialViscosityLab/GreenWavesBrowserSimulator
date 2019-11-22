@@ -352,7 +352,7 @@ class Route {
 
 	/**
 	* Creates the list of corner points in a route from the values input in the GUI
-	* @param {number} totalRoutePoints
+	* @param {number} object
 	*/
 	initiateRouteFromGeoJSON(object){
 		let positions = object.geometry.coordinates;
@@ -368,6 +368,26 @@ class Route {
 		this.segments =  this.makeSegments();
 		// message
 		console.log("Route " + this.id + " initialized.  Route points: " + this.routePoints.length + ", segments: " + this.segments.length +  ", loop: " + this.loop);
+	}
+
+
+	/**
+	* Creates the list of corner points in a route from the downloaded JSON values
+	* @param {Array} totalRoutePoints
+	*/
+	initiateRouteFromJourneyJSON(totalRoutePoints){
+		let positions = totalRoutePoints;
+		// iterate over the objects
+		for (var i = 0; i < positions.length; i++) {
+			// create the positions
+			let tmpPos = new Position(Number(positions[i].lat), Number(positions[i].lon));
+			// add them to the collection
+			this.routePoints.push(tmpPos);
+		}
+		// create the segments
+		this.segments =  this.makeSegments();
+		// message
+		//console.log("Route " + this.id + " initialized.  Route points: " + this.routePoints.length + ", segments: " + this.segments.length +  ", loop: " + this.loop);
 	}
 
 

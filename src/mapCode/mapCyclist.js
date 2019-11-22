@@ -44,7 +44,6 @@
     plotMarker(theMap){
       // for the first marker
       if (!this.marker){
-
         this.marker = L.marker([this.cyclist.position.lat,this.cyclist.position.lon], {icon: this.blueIcon}).addTo(theMap);
 
 
@@ -82,7 +81,6 @@
     }
 
     plotGhost(theMap){
-
       // for the first marker
       if (!this.marker){
 

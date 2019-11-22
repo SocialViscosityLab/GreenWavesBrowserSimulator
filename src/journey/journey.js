@@ -11,7 +11,7 @@ class Journey{
 		this.id = id;
 		this.referenceRoute = route;
 		this.sessions = [];
-		console.log("Journey " + this.id + " initialized" );
+		//console.log("Journey " + this.id + " initialized" );
 	}
 
 	/**

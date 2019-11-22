@@ -191,11 +191,8 @@ class Cartography{
 	*/
 	plotCyclists(){
 		for (let c of this.mapCyclists) {
-
-			if (c.cyclist.id.id == "0_ghost"){
-
+			if (c.cyclist.id.id == "0_ghost" || c.cyclist.id.id == "ghost"){
 				c.plotGhost(this.map);
-
 			}else{
 				c.plotMarker(this.map);
 			}

@@ -44,15 +44,13 @@ class RouteManager{
  setupSingleRoute(cornerPoints, currentMap){
   let routeTmp;
   if (cornerPoints.length > 0){
-    for (let points of cornerPoints){
-      // Instantiate objects
-      routeTmp = new Route(points.properties.name);
-      routeTmp.initiateRouteFromGeoJSON (points);
-      // add route to map
-      currentMap.setupRoute(routeTmp);
-      // store route
-      this.routes.push(routeTmp);
-    }
+    // Instantiate objects
+    routeTmp = new Route('reference route');
+    routeTmp.initiateRouteFromJourneyJSON(cornerPoints);
+    // add route to map
+    currentMap.setupRoute(routeTmp);
+    // store route
+    this.routes.push(routeTmp);
     currentMap.recenter(this.routes[this.routes.length-1].routePoints[0]);
   }
 }

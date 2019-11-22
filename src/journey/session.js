@@ -83,6 +83,14 @@ class Session{
 
 		return dataPoints;
 	}
+	
+	/**
+	 * @param DataPoint
+	 * Add a new datapoint to the list
+	 */
+	addDataPoin(data_point){
+		this.dataPoints.push(data_point)
+	}
 
 	/**
 	* Returns a collection of lat,lon pairs of the current route
