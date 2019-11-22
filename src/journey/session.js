@@ -2,8 +2,8 @@
 * A session is an instance of a cyclist running on a Journey.
 * @param {string} id The user id session identifier
 */
-class Session{
-	constructor(id, cyclistId){
+class Session {
+	constructor(id, cyclistId) {
 		this.id_session = {
 			id: id,
 			cyclistId: cyclistId
@@ -15,7 +15,7 @@ class Session{
 	/**
 	* The observer notify() function. Instances of this class observe an instance of Cyclist class
 	*/
-	notify(data){
+	notify(data) {
 		// add the datapoint
 		this.dataPoints.push(data);
 	}
@@ -28,22 +28,22 @@ class Session{
 	* @param {number} sampleRate Integer number in seconds
 	* @return {Array} a collection of datapoints
 	*/
-	static setSessionPoints (route, speed, sampleRate){
+	static setSessionPoints(route, speed, sampleRate) {
 
 		let lastTimeStamp;
 
 		let dataPoints = [];
 
-		for (var i = 0; i < route.routePoints.length-1; i++) {
+		for (var i = 0; i < route.routePoints.length - 1; i++) {
 
 			let startCoords = new Position(route.routePoints[i].lat, route.routePoints[i].lon);
 
-			let endCoords = new Position(route.routePoints[i+1].lat, route.routePoints[i+1].lon);
+			let endCoords = new Position(route.routePoints[i + 1].lat, route.routePoints[i + 1].lon);
 
 
-			if (dataPoints.length > 0 ){
+			if (dataPoints.length > 0) {
 
-				lastTimeStamp = dataPoints[dataPoints.length-1].time + +sampleRate;
+				lastTimeStamp = dataPoints[dataPoints.length - 1].time + +sampleRate;
 
 			} else {
 
@@ -52,34 +52,34 @@ class Session{
 			}
 
 			// add cornerPoint
-			let tmpDataPoints =  GeometryUtils.calculateStepsBetweenPositions(startCoords, endCoords, speed, sampleRate, lastTimeStamp);
+			let tmpDataPoints = GeometryUtils.calculateStepsBetweenPositions(startCoords, endCoords, speed, sampleRate, lastTimeStamp);
 
-			dataPoints.push.apply(dataPoints,tmpDataPoints);
+			dataPoints.push.apply(dataPoints, tmpDataPoints);
 
 		}
 
-		if (route.loop){
+		if (route.loop) {
 
-			let startCoords = new Position(route.routePoints[route.routePoints.length-1].lat, route.routePoints[route.routePoints.length-1].lon);
+			let startCoords = new Position(route.routePoints[route.routePoints.length - 1].lat, route.routePoints[route.routePoints.length - 1].lon);
 
 			let endCoords = new Position(route.routePoints[0].lat, route.routePoints[0].lon);
 
-			lastTimeStamp = dataPoints[dataPoints.length-1].time + +sampleRate;
+			lastTimeStamp = dataPoints[dataPoints.length - 1].time + +sampleRate;
 
 			// Using utils/geometryUtils.js
-			let tmpDataPoints =  GeometryUtils.calculateStepsBetweenPositions(startCoords, endCoords, speed, sampleRate, lastTimeStamp);
+			let tmpDataPoints = GeometryUtils.calculateStepsBetweenPositions(startCoords, endCoords, speed, sampleRate, lastTimeStamp);
 
-			dataPoints.push.apply(dataPoints,tmpDataPoints);
+			dataPoints.push.apply(dataPoints, tmpDataPoints);
 
 			// add last position point
-			lastTimeStamp = dataPoints[dataPoints.length-1].time + +sampleRate;
+			lastTimeStamp = dataPoints[dataPoints.length - 1].time + +sampleRate;
 
 			let tmpDP = new DataPoint(0, endCoords, speed, lastTimeStamp);
 
 			dataPoints.push(tmpDP);
 		}
 
-		console.log(dataPoints.length+ " dataPoints created session");
+		console.log(dataPoints.length + " dataPoints created session");
 
 		return dataPoints;
 	}
@@ -96,11 +96,11 @@ class Session{
 	* Returns a collection of lat,lon pairs of the current route
 	* @return {Object} A collection of the  lat,lng pairs of all datapoints in this session
 	*/
-	getSessionLatLongs(){
+	getSessionLatLongs() {
 		var rtn = [];
 
 		for (let dp of this.dataPoints) {
-			if (dp != undefined){
+			if (dp != undefined) {
 				rtn.push([dp.position.lat, dp.position.lon]);
 			}
 		}
@@ -113,13 +113,13 @@ class Session{
 	*@param {Number} ticks the number of latest positions to be retrieved from the datapoints collection
 	*@return collection of dataPoints
 	*/
-	getLatestDataPoints(ticks){
+	getLatestDataPoints(ticks) {
 
-		if (ticks > this.dataPoints.length){
+		if (ticks > this.dataPoints.length) {
 
 			return this.dataPoints;
 
-		}else{
+		} else {
 
 			return this.dataPoints.slice(this.dataPoints.length - ticks, this.dataPoints.length);
 		}
@@ -133,9 +133,9 @@ class Session{
 		const MIME_TYPE = 'text/plain';
 
 		// fileName
-		let fileName = this.id_session.cyclistId.id +'_'+this.id_session.cyclistId.journey +'_'+ this.id_session.cyclistId.route;
+		let fileName = this.id_session.cyclistId.id + '_' + this.id_session.cyclistId.journey + '_' + this.id_session.cyclistId.route;
 
-		let output = {'id_session':this.id_session.id, 'id_cyclist':this.id_session.cyclistId.id, 'journey':this.id_session.cyclistId.journey, 'route':this.id_session.cyclistId.route};
+		let output = { 'id_session': this.id_session.id, 'id_cyclist': this.id_session.cyclistId.id, 'journey': this.id_session.cyclistId.journey, 'route': this.id_session.cyclistId.route };
 
 		output.startTime = this.startTime;
 
@@ -148,7 +148,7 @@ class Session{
 		var blob;
 		// Create blog Object
 
-		blob = new Blob([outputString], {type : 'application/json'});
+		blob = new Blob([outputString], { type: 'application/json' });
 
 		var a = document.createElement("a"); //document.getElementById('getFile');
 
@@ -158,7 +158,7 @@ class Session{
 
 		a.href = window.URL.createObjectURL(blob);
 
-		a.textContent = 'Output of '+ fileName;
+		a.textContent = 'Output of ' + fileName;
 
 		a.dataset.downloadurl = [MIME_TYPE, a.download, a.href].join(':');
 
@@ -171,7 +171,7 @@ class Session{
 
 	}
 
-	getLastDataPoint(){
-		return this.dataPoints[this.dataPoints.length-1];
+	getLastDataPoint() {
+		return this.dataPoints[this.dataPoints.length - 1];
 	}
 }
