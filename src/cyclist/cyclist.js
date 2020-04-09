@@ -65,6 +65,7 @@ class Cyclist{
     this.designKSimple = 0.35;// the lower the value, the slower the
     this.designKAdaptive = 0.1;
 
+    this.ciclistStarted = false; 
   }
 
   /** Private Makes a datapoint with current properties of this cyclists
@@ -127,40 +128,58 @@ class Cyclist{
 
   run(sampleRate){
     // If the route is not completed and the cyclists is enabled
-    if (this.position !== this.myRoute.getLastSegment().end && this.status == "enabled"){
-
+    //if (this.position !== this.myRoute.getLastSegment().end && this.status == "enabled"){
+      if (this.status == "enabled"){
       if(this.isSimulated){
-        // get the stepLength
-        let step = this.getStep(sampleRate);
-        // Ask the route for the location of the step
-        let tmpPosition = this.myRoute.getPosition(this.position, step);
-        // update position
-        this.position = tmpPosition;
-        // update speed
-        this.mySpeed = step * sampleRate;
-        let dpTemp = this.generateDataPoint();
-        // notify
-        this.notifyObservers(dpTemp);
-        // broadcasting on OSC
-        let tmp = Number(this.mySpeed.toPrecision(4));
-        // myOsc is a global instance constructed in the main.js
+        if(this.myRoute.loop){
+          // get the stepLength
+          let step = this.getStep(sampleRate);
+          // Ask the route for the location of the step
+          let tmpPosition = this.myRoute.getPosition(this.position, step);
+          // update position
+          this.position = tmpPosition;
+          // update speed
+          this.mySpeed = step * sampleRate;
+          let dpTemp = this.generateDataPoint();
+          // notify
+          this.notifyObservers(dpTemp);
+          // broadcasting on OSC
+          let tmp = Number(this.mySpeed.toPrecision(4));
+          // myOsc is a global instance constructed in the main.js
+        }else{
+          if (this.position !== this.myRoute.getLastSegment().end){
+            // get the stepLength
+            let step = this.getStep(sampleRate);
+            // Ask the route for the location of the step
+            let tmpPosition = this.myRoute.getPosition(this.position, step);
+            // update position
+            this.position = tmpPosition;
+            // update speed
+            this.mySpeed = step * sampleRate;
+            let dpTemp = this.generateDataPoint();
+            // notify
+            this.notifyObservers(dpTemp);
+            // broadcasting on OSC
+            let tmp = Number(this.mySpeed.toPrecision(4));
+          }else{
+            this.status = "disabled";
+            console.log("Session completed for cyclist: " , this.id );
+            for (let observer of this.observers) {
+              if (observer instanceof Session){
+                observer.saveToJSON();
+              }
+            }
+          }
+        }
+        
       }else{
         //  console.log(this.currentDataPoint)
         if (this.currentDataPoint != undefined){
           this.notifyObservers(this.currentDataPoint);
         }
       }
-
-    } else if (this.status != 'disabled'){
-      this.status = "disabled";
-      console.log("Session completed for cyclist: " , this.id );
-      for (let observer of this.observers) {
-        if (observer instanceof Session){
-          observer.saveToJSON();
-        }
-      }
-    }
   }
+}
 
 
 

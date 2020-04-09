@@ -195,6 +195,7 @@ class JourneyManager {
 
     } else {
       //Creates a session if it doesn't exist
+      console.log(event)
       let eventLocation = new Position(event.current_position.latitude, event.current_position.longitude);
       // temp id
       let idTmp = { id: event.id_user, journey: journeyTmp.id, route: journeyTmp.referenceRoute.id };

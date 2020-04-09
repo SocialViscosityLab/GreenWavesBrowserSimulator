@@ -85,6 +85,7 @@ class Route {
 					let remainingDistForNextSegment = accumDistanceOnSegment - currentSegment.length;
 					// retrieve the next segment
 					index = index + 1;
+					console.log(index)
 					// if the index is greater than the number of segments
 					if (index >= this.segments.length){
 						// reset index if this route is a loop

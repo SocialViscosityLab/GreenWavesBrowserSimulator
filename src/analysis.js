@@ -118,7 +118,7 @@ function getFirebaseData() {
 		let idJourney = document.getElementById("idJourney").value;
 		//let idJourney = '00195';
 		Promise.resolve(comm.getJourney(idJourney)).then(journey => {
-			//saveJSON(journey, idJourney+".json")
+			saveJSON(journey, idJourney+".json")
 			// Creates the route for the retrieved journey
 			routeM.setupSingleRoute(journey.ref_route,currentMap)
 			// Updates the current route
