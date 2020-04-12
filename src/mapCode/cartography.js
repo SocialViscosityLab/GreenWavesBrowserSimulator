@@ -108,7 +108,7 @@ class Cartography {
         //     accessToken: 'sk.eyJ1IjoianNhbGFtIiwiYSI6ImNqcDI3eG9yaDAyYzMzcXJ0ZWd3d3g3bTcifQ.o2q4YfWOqzAg9rak5ua-MA'
         // });
 
-        console.log(tiles)
+        //console.log(tiles)
 
         tiles.addTo(this.map)
     }
