@@ -103,10 +103,11 @@ class Communication{
   getJourney(journeyId){
     let journey 
     let routeRef
-    let sessions = []
     let journeyRef = db.collection('journeys').doc(journeyId)
 
     return journeyRef.get().then(doc => {
+      routeRef = doc.data().reference_route.id
+      console.log(routeRef)
       return doc.data().reference_route.collection('position_points').get()
       })
       .then(snapshot => {
@@ -115,7 +116,7 @@ class Communication{
           let coord = doc.data()
           position_points.push({lat : coord.latitude, lon : coord.longitude})
         });
-        journey = {ref_route: position_points, sessions: []}
+        journey = {ref_route: {name: routeRef, 'position_points': position_points}, sessions: []}
         return journeyRef.collection('sessions').get()
       })
       .then(snapshot => {
@@ -220,7 +221,7 @@ class Communication{
   addNewGhostSession(jId){
     let journeyId = ""+jId;
     let time = new Date();
-    let startTime = time.getFullYear()+"/"+time.getMonth()+"/"+time.getDate()+" - "+time.getHours()+":"+time.getMinutes()+":"+time.getSeconds();
+    let startTime = time.getFullYear()+"/"+(time.getMonth()+1)+"/"+time.getDate()+" - "+time.getHours()+":"+time.getMinutes()+":"+time.getSeconds();
     let metaData = {
       id_user:"ghost",
       start_time:startTime
