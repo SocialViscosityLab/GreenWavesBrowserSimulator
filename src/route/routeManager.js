@@ -47,7 +47,7 @@ class RouteManager {
     }
 
     /**
-     * Creates a single route from JSON cornerpoints. It is ussually used to import routes into the analysis tool
+     * Creates a single route from JSON cornerpoints. It is usually used to import routes into the analysis tool
      */
     setupSingleRoute(cornerPoints, currentMap) {
         let routeTmp;
@@ -60,6 +60,8 @@ class RouteManager {
             // store route
             this.routes.push(routeTmp);
             currentMap.recenter(this.routes[this.routes.length - 1].routePoints[0]);
+        } else {
+            alert("No corner points in route");
         }
     }
 

@@ -1,4 +1,3 @@
-
 // The journey manager in this simulation
 let journeyM;
 // The routes manager in this simulation
@@ -26,140 +25,161 @@ Setup. It setups variables and initializes instances
 */
 function setup() {
 
-	//Set up to connect or not connect to the database
-	connect = false;
-	//osc. This is currently used in the cyclcist's run() function.
-	//myOsc = new OSCSender();
-	//myOsc.enable(false);
-	// GUI elements
-	document.getElementById("connectFirebase").onclick = connectFirebase;
-	document.getElementById("getSessionData").onclick = getFirebaseData;
-	document.getElementById("showJourney").onclick = createAndActivateJourney;
-	/**
-	 * @todo: 
-	 * 1. with the route reference we should create a query to get the route and create a route object with it
-	 * 2. With the journeyManager, we will import the journey data
-	 */
+    //Set up to connect or not connect to the database
+    connect = false;
+    //osc. This is currently used in the cyclcist's run() function.
+    //myOsc = new OSCSender();
+    //myOsc.enable(false);
+    // GUI elements
+    document.getElementById("connectFirebase").onclick = connectFirebase;
+    document.getElementById("getJourneyData").onclick = getFirebaseData;
+    document.getElementById("showJourney").onclick = createAndActivateJourney;
+    /**
+     * @todo: 
+     * 1. with the route reference we should create a query to get the route and create a route object with it
+     * 2. With the journeyManager, we will import the journey data
+     */
 
-	// Instantiate and initialize the map
-	currentMap = new Cartography();
-	// Instantiate RouteManager
-	routeM = new RouteManager();
-	// Instantiate JourneyManager
-	journeyM = new JourneyManager();
-	// instance made to read and write files to this computer from the browser
-	directory = new DirectoryReader();
-	// activate cyclist addition listener
-	this.addCyclistListener();
+    // Instantiate and initialize the map
+    currentMap = new Cartography();
+    // Instantiate RouteManager
+    routeM = new RouteManager();
+    // Instantiate JourneyManager
+    journeyM = new JourneyManager();
+    // instance made to read and write files to this computer from the browser
+    directory = new DirectoryReader();
+    // activate cyclist addition listener
+    // this.addCyclistListener();
 }
 
 /**
-* On HTML button click event it create the route markers of the cornerpoints on the map
-*/
-function setupRoutes() {
-	// Get routes from directory and set them up.
-	routeM.setupRoutes(directory, currentMap);
-	/**** Visualization  of route on Map *****/
-	// plot route path on map
-	currentMap.plotRoutes();
-	// plot route corner points on map
-	currentMap.plotRoutesCornerPoints();
-	currentRoute = routeM.routes[routeM.routes.length - 1];
-	if (connect) {
-		// adds route to firebase
-		comm.addNewRoute(currentRoute.id, currentRoute.getPositionPoints());
-	}
-}
+ * On HTML button click event it creates the route markers of the cornerpoints on the map
+ */
+// function setupRoutes() {
+//     // Get routes from directory and set them up.
+//     routeM.setupRoutes(directory, currentMap);
+//     /**** Visualization  of route on Map *****/
+//     // plot route path on map
+//     currentMap.plotRoutes();
+//     // plot route corner points on map
+//     currentMap.plotRoutesCornerPoints();
+//     currentRoute = routeM.routes[routeM.routes.length - 1];
+//     if (connect) {
+//         // adds route to firebase
+//         comm.addNewRoute(currentRoute.id, currentRoute.getPositionPoints());
+//     }
+// }
 
 function createAndActivateJourney() {
-		activateJourneys();
+    // Creates the route for the uploaded journey
+    createRouteInJourneyManagerFromImportedJSON(jsonObjects[0]);
+    activateJourneys();
 }
 /**
-* On HTML button click event it opens or closes the route loop
-*/
-function switchRouteLoop() {
-	routeM.switchRouteLoop(0, document.getElementById("loopButton"));
-	// plot route path on map
-	currentMap.plotRoutes();
-	if (connect) {
-		comm.setRouteLoop(currentRoute.id, currentRoute.loop);
-	}
-}
+ * On HTML button click event it opens or closes the route loop
+ */
+// function switchRouteLoop() {
+//     routeM.switchRouteLoop(0, document.getElementById("loopButton"));
+//     // plot route path on map
+//     currentMap.plotRoutes();
+//     if (connect) {
+//         comm.setRouteLoop(currentRoute.id, currentRoute.loop);
+//     }
+// }
 
 /**
-* On HTML button click event it  activates journeys in the Journey Manager
-*/
+ * On HTML button click event it  activates journeys in the Journey Manager
+ */
 function activateJourneys() {
-	// activate all the journeys
-	if (routeM.routes.length > 0) {
-		journeyM.setCurrentJourneyId("00000");
-		// Activate all journeys
-		//journeyM.activate(routeM.routes, Number(0), 0, currentMap);
-		// Execute the run function at the frequency of the sampleRate
-		clicker = setInterval(run, (1000));
-	} else {
-		alert("Setup routes first")
-	}
+    // activate all the journeys
+    if (routeM.routes.length > 0) {
+        journeyM.setCurrentJourneyId("00000");
+        // Activate all journeys
+        // journeyM.activate(routeM.routes, Number(0), 0, currentMap);
+        // Execute the run function at the frequency of the sampleRate
+        clicker = setInterval(run, (1000));
+    } else {
+        alert("Setup routes first")
+    }
 }
 
 function connectFirebase() {
-	comm = new Communication();
-	connect = !connect;
-	if (connect) {
-		document.getElementById("databaseConnection").innerHTML = "connected";
-	} else {
-		comm = undefined;
-		document.getElementById("databaseConnection").innerHTML = "disconnected";
-	}
+    comm = new Communication();
+    connect = !connect;
+    if (connect) {
+        document.getElementById("connectFirebase").innerHTML = "Firebase enabled";
+        document.getElementById("connectFirebase").style.background = "red";
+    } else {
+        comm = undefined;
+        document.getElementById("connectFirebase").innerHTML = "Firebase disabled";
+        document.getElementById("connectFirebase").style.background = "brown";
+    }
 }
 
 function getFirebaseData() {
-	if (connect) {
-		let idJourney = document.getElementById("idJourney").value;
-		//let idJourney = '00195';
-		Promise.resolve(comm.getJourney(idJourney)).then(journey => {
-			saveJSON(journey, idJourney+".json")
-			// Creates the route for the retrieved journey
-			routeM.setupSingleRoute(journey.ref_route,currentMap)
-			// Updates the current route
-			currentRoute = routeM.routes[routeM.routes.length - 1];
-			// Creates a journey from the retrieved journey data 
-			journeyM.importJourney(idJourney,currentRoute,journey.sessions,currentMap)
-			console.log(journey)
-		})
-	} else {
-		alert("It seems that the connection to Firebase is dissabled. Connect to Firebase and try again")
-	}
+    if (connect) {
+        let idJourney = document.getElementById("idJourney").value;
+        //let idJourney = '00195';
+        try {
+            Promise.resolve(comm.getJourney(idJourney)).then(journey => {
+                saveJSON(journey, idJourney + ".json");
+                // Creates the route for the retrieved journey
+                createRouteInJourneyManager(journey);
+            })
+        } catch (err) {
+            alert("No journey ID")
+        }
+    } else {
+        alert("It seems that the connection to Firebase is dissabled. Connect to Firebase and try again")
+    }
+}
+
+function createRouteInJourneyManager(journey) {
+    routeM.setupSingleRoute(journey.ref_route.position_points, currentMap);
+    document.getElementById("ruteName").innerHTML = journey.ref_route.name;
+    // Updates the current route
+    currentRoute = routeM.routes[routeM.routes.length - 1];
+    // Creates a journey from the retrieved journey data 
+    journeyM.importJourney(idJourney, currentRoute, journey.sessions, currentMap)
+}
+
+function createRouteInJourneyManagerFromImportedJSON(journey) {
+    routeM.setupSingleRoute(journey.ref_route, currentMap);
+    document.getElementById("ruteName").innerHTML = journey.ref_route.name;
+    // Updates the current route
+    currentRoute = routeM.routes[routeM.routes.length - 1];
+    // Creates a journey from the retrieved journey data 
+    journeyM.importJourney(idJourney, currentRoute, journey.sessions, currentMap)
 }
 
 
 /**
-* Add session to journey with nearest route
-*/
-function addCyclistListener() {
-	currentMap.map.on('click', function (event) {
-		// add ciclists
-		if (journeyM.addCyclist(event)) {
-			// update mapJourneys
-			currentMap.updateJourney();
-		}
-	});
-}
+ * Add session to journey with nearest route
+ */
+// function addCyclistListener() {
+//     currentMap.map.on('click', function(event) {
+//         // add ciclists
+//         if (journeyM.addCyclist(event)) {
+//             // update mapJourneys
+//             currentMap.updateJourney();
+//         }
+//     });
+// }
 
 
 /**
-* Run the simulation
-*/
+ * Run the simulation
+ */
 function run() {
-	// Run cyclists
-	journeyM.runCyclists(sampleRate);
-	//plot all journeys
-	currentMap.plotJourneys();
-	//plot dataPoints
-	//currentMap.displaySessionMarker[0,0];
-	// plot green waves
-	currentMap.plotGreenWaves();
-	// plot cyclists
-	currentMap.plotCyclists();
-	clearInterval(clicker);
+    // Run cyclists
+    journeyM.runCyclists(sampleRate);
+    //plot all journeys
+    currentMap.plotJourneys();
+    //plot dataPoints
+    //currentMap.displaySessionMarker[0, 0];
+    // plot green waves
+    currentMap.plotGreenWaves();
+    // plot cyclists
+    currentMap.plotCyclists();
+    clearInterval(clicker);
 }

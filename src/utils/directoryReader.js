@@ -26,6 +26,7 @@ class DirectoryReader {
     handleFileSelect(evt) {
         //reset global variable
         jsonObjects = [];
+
         // FileList object files is a FileList of File objects. List some properties.
         let files = evt.target.files;
 
@@ -33,7 +34,7 @@ class DirectoryReader {
         // iterate over the selected fil
         for (let i = 0, f; f = files[i]; i++) {
             // update GUI
-            htmlOutput.push('<li><strong>', escape(f.name), '</strong> ', '</li>');
+            htmlOutput.push('<li>', escape(f.name), '</li>');
             // Only process geojson files.
             if (!f.type.match('json')) {
                 continue;
@@ -45,15 +46,24 @@ class DirectoryReader {
                 return function(e) {
                     //read file content
                     let tmp = JSON.parse(e.target.result);
-                    jsonObjects.push(tmp.features);
-                    //console.log(tmp);
+                    // *** NOTE This line was jsonObjects.push(tmp.features) but it was changed to match imported JSON format on May 2, 2020
+                    jsonObjects.push(tmp);
+                    // console.log(tmp);
                 };
             })(f);
             // Read in the file
             reader.readAsText(f);
         }
         // GUI
-        document.getElementById('list').innerHTML = '<ul>' + htmlOutput.join('') + '</ul>';
+        try {
+            if (htmlOutput.length > 2) {
+                document.getElementById('list').innerHTML = '<ul>' + htmlOutput.join('') + '</ul>';
+            } else {
+                document.getElementById('list').innerHTML = htmlOutput[0];
+            }
+        } catch (err) {
+            console.log("List element missing");
+        }
     }
 
     /**
