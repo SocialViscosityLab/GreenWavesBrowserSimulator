@@ -161,10 +161,24 @@ class Cartography {
         }
     }
 
-    displaySessionMarkers(journeyID, sessionID) {
-        let tmp = this.mapJourneys[journeyID];
-        let tmp2 = tmp.mapSessions[sessionID];
-        tmp2.markSessionAllDataPoints(this.map);
+    /**
+     * Plots a marker on top of each datapoint on the map. The marker contains the id and time of the datapoint.
+     * The content could be extended to display additional data. Changes need to be done in MapSession class
+     * @param {Number} sessionID 00000 format
+     * @param {Number} frequency Integer number representing the frequency in seconds.
+     * It can be interpreted as:"Put a label on each datapoint at a frequency of X seconds"
+     */
+    displaySessionMarkers(frequency, sessionID) {
+        if (sessionID) {
+            console.log("here")
+            let tmp = this.mapJourneys[0];
+            tmp.plotMarkers(this.map, frequency, sessionID)
+        } else {
+            console.log("here2")
+            for (let j of this.mapJourneys) {
+                j.plotMarkers(this.map, frequency);
+            }
+        }
     }
 
     /**

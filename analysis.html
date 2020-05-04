@@ -21,6 +21,7 @@
     <!-- js main codes -->
     <script src="libs/p5.min.js" type="text/javascript"></script>
     <script src="src/analysis.js" type="text/javascript"></script>
+
     <!-- js route codes -->
     <script src="src/route/routeManager.js" type="text/javascript"></script>
     <script src="src/route/position.js" type="text/javascript"></script>
@@ -86,7 +87,7 @@
         </div>
         <div class="row" style="padding-top: 2vh;">
             <div>
-                <h1>Smart bicycles | Analysis tool</h1>
+                <h2>Smart bicycles | Analysis tool</h2>
             </div>
         </div>
         <div class="row" style="padding-top: 2vh;">
@@ -94,8 +95,8 @@
                 <button type="button" class="btn btn-secondary btn-sm" id="connectFirebase">Connect to Firebase</button>
             </div>
             <div class="col-sm-10">
-                <span style="font-family: 'Gill Sans'; font-size: small;">Current route on map:</span>
-                <span style="font-family: 'Gill Sans'; font-size: large;" id="ruteName">No route yet</span>
+                <span class="itemLabel">Current route on map:</span>
+                <span style="font-family: 'Gill Sans'; font-size: large;" id="routeName1">No route yet</span>
             </div>
             <hr>
         </div>
@@ -120,7 +121,7 @@
                     <div class="input-group-append">
                         <span class="input-group-text" id="getJourneyData">Retrieve journey</span>
                     </div>
-                    <div style="font-family: 'Gill Sans'; font-size: small;">The journey ID in Firebase database. It has the form 00000</div>
+                    <div class="itemLabel">The journey ID in Firebase database. It has the form 00000</div>
                 </div>
             </div>
             <!-- Close column -->
@@ -132,7 +133,7 @@
                     <input type="file" class="custom-file-input" id="files">
                     <label class="custom-file-label" for="files" id="list">Choose file</label>
                 </div>
-                <div style="font-family: 'Gill Sans'; font-size: small;">The journey JSON file</div>
+                <div class="itemLabel">The journey JSON file</div>
             </div>
 
             <!-- Close column -->
@@ -146,12 +147,15 @@
 
     <div class="container">
         <h5>B. Analyze data</h5>
-        <!-- <div class="row">
-            <div class="col-sm-4">
-                <h4>2. Journey's analysis</h4>
+        <div class="row">
+            <div class="col">
+                <div>
+                    <span class="itemLabel">Route Name:</span>&nbsp<span id="routeName2">Unknown</span>,&nbsp
+                    <span class="itemLabel">route length:</span>&nbsp<span id="routeLength">Unkown</span>&nbsp<span class="itemLabel">meters.</span>
+                </div>
             </div>
 
-        </div> -->
+        </div>
         <!-- 
         <div class="row">
             <div class="col-sm-12">
@@ -186,7 +190,8 @@
                 </div>
             </div>
         </div> -->
-
+    <!-- GUI Elements -->
+    <script src="src/GUI/GUIAnalysis.js" type="text/javascript"></script>
 </body>
 
 </html>

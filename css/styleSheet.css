@@ -1,9 +1,16 @@
-#mapid { height: 350px; }
+#mapid {
+    height: 350px;
+}
 
-section{
-	width: 100%; 
-	height: 450px;
-	background-position: top center; 
-	background-attachment: fixed; 
-	background-repeat: repeat-x;
+section {
+    width: 100%;
+    height: 450px;
+    background-position: top center;
+    background-attachment: fixed;
+    background-repeat: repeat-x;
+}
+
+.itemLabel {
+    font-family: 'Gill Sans', 'Gill Sans MT';
+    font-size: small;
 }

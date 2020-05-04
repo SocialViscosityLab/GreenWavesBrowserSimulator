@@ -48,12 +48,18 @@ class RouteManager {
 
     /**
      * Creates a single route from JSON cornerpoints. It is usually used to import routes into the analysis tool
+     * @param {Array} cornerPoints Array of lat lon points
+     * @param {Cartography} currentMap An instance of Cartography currently displayed on canvas
      */
-    setupSingleRoute(cornerPoints, currentMap) {
+    setupSingleRoute(name, cornerPoints, currentMap) {
         let routeTmp;
         if (cornerPoints.length > 0) {
             // Instantiate objects
-            routeTmp = new Route('reference route');
+            if (name) {
+                routeTmp = new Route(name);
+            } else {
+                routeTmp = new Route('reference route');
+            }
             routeTmp.initiateRouteFromJourneyJSON(cornerPoints);
             // add route to map
             currentMap.setupRoute(routeTmp);

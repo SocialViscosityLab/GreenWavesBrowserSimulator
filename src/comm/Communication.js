@@ -35,22 +35,38 @@ class Communication {
      * @returns {Promise,JSON} Session_json
      */
     getSession(id_journey, id_session) {
-        let session_json
+        console.log("getting session" + id_session);
+        let session_json;
+        let data_points_array = {};
         let doc_ref = db.collection('journeys').doc(id_journey).collection('sessions').doc(id_session);
 
         return doc_ref.get().then(doc => {
-            let session_data = doc.data()
-            let user_id = session_data.id_user
-            let start_time = session_data.start_time
-            let dp_array = session_data.data_points
-
-            session_json = {
-                'user_id': user_id,
-                'start_time': start_time,
-                'data_points': dp_array
-            }
-            return session_json
-        });
+                let session_data = doc.data()
+                let user_id = session_data.id_user
+                let start_time = session_data.start_time
+                let dp_array = session_data.data_points
+                console.log(session_data)
+                session_json = {
+                    'user_id': user_id,
+                    'start_time': start_time,
+                    'data_points': dp_array
+                }
+                return doc_ref.collection('data_points').get()
+            })
+            .then(snapshot => {
+                snapshot.forEach(dp => {
+                    data_points_array[dp.id] = {
+                        'acceleration': dp.data().acceleration,
+                        'latitude': dp.data().latitude,
+                        'longitude': dp.data().longitude,
+                        'speed': dp.data().speed,
+                        'suggestion': dp.data().suggestion,
+                        'time': dp.data().time
+                    }
+                })
+                session_json.data_points = data_points_array
+                return session_json
+            });
     }
 
 
@@ -134,9 +150,11 @@ class Communication {
                         )
                     }
                 });
+                console.log(sessions_promises);
                 return Promise.all(sessions_promises)
             })
             .then(sessions_docs => {
+                console.log(sessions_docs);
                 journey.sessions = sessions_docs
                 return journey
             });
