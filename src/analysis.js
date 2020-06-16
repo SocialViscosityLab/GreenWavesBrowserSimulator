@@ -53,7 +53,8 @@ function setup() {
 }
 
 function createAndActivateJourney() {
-    // Creates the route for the uploaded journey
+    console.log("here")
+        // Creates the route for the uploaded journey
     if (jsonObjects[0]) {
         createRouteAndJourneys(jsonObjects[0]);
         activateJourneys();
@@ -152,6 +153,5 @@ function displayJourney() {
     //**plot cyclists
     currentMap.plotCyclists();
     //**plot markers on top of datapoints
-    currentMap.displaySessionMarkers(20000, 'ghost');
-    currentMap.displaySessionMarkers(20, '4a3idwlcucsk7ylipq9osq');
+    currentMap.displaySessionMarkers(30000);
 }

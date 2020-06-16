@@ -170,11 +170,9 @@ class Cartography {
      */
     displaySessionMarkers(frequency, sessionID) {
         if (sessionID) {
-            console.log("here")
             let tmp = this.mapJourneys[0];
             tmp.plotMarkers(this.map, frequency, sessionID)
         } else {
-            console.log("here2")
             for (let j of this.mapJourneys) {
                 j.plotMarkers(this.map, frequency);
             }

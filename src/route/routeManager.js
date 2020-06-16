@@ -18,9 +18,8 @@ class RouteManager {
         if (jSONroutes.length > 0) {
             for (let points of jSONroutes) {
                 // Instantiate objects
-                console.log(points[0])
-                routeTmp = new Route(points[0].properties.name);
-                routeTmp.initiateRouteFromGeoJSON(points[0]);
+                routeTmp = new Route(points.features[0].properties.name);
+                routeTmp.initiateRouteFromGeoJSON(points.features[0]);
                 // add route to map
                 currentMap.setupRoute(routeTmp);
                 // store route

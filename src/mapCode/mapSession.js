@@ -11,7 +11,7 @@ class MapSession {
     }
 
     getID() {
-        return this.session.id_user;
+        return this.session.id_session.id;
     }
 
     /**
@@ -37,22 +37,50 @@ class MapSession {
         /**
          * Adds markers for all datapoints of the session
          * @param {Cartography} theMap An instance of Leaflet map
-         * @param {Number} frequency Integer number representing the frequency in seconds. It can be interpreted as:"Put a label on each datapoint at a frequency of X seconds"
+         * @param {Number} frequency Integer number representing the frequency in miliseconds. It can be interpreted as:"Put a label on each datapoint at a frequency of X seconds"
          */
     markSessionAllDataPoints(theMap, frequency) {
+        console.log(this.session.dataPoints.length + " datapoints for " + this.getID())
         for (var i = 0; i < this.session.dataPoints.length; i++) { //this.session.dataPoints.length
+            // If there are no markers in this session
             if (this.sessionMarkers[i] == undefined) {
-                if (Math.round(this.session.dataPoints[i].time) % frequency == 0) {
-                    this.sessionMarkers[i] = L.marker([this.session.dataPoints[i].position.lat, this.session.dataPoints[i].position.lon]).addTo(theMap);
-                    let label = this.session.id_session.id + ": " + this.session.dataPoints[i].time + " ms";
+
+                if (i < 100) {
+                    console.log(Math.round(this.session.dataPoints[i].time) % frequency)
+                }
+                //https://github.com/pointhi/leaflet-color-markers
+                var icon = new L.Icon({
+                    iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
+                    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                    iconSize: [20, 36],
+                    iconAnchor: [7, 36],
+                    popupAnchor: [1, -34],
+                    shadowSize: [36, 36]
+                });
+                if (this.getID() != "ghost") {
+                    icon = new L.Icon({
+                        iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-gold.png',
+                        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                        iconSize: [20, 36],
+                        iconAnchor: [7, 36],
+                        popupAnchor: [1, -34],
+                        shadowSize: [36, 36]
+                    });
+                }
+
+                if (Math.round(this.session.dataPoints[i].time) % frequency < 1000) {
+                    this.sessionMarkers[i] = L.marker([this.session.dataPoints[i].position.lat, this.session.dataPoints[i].position.lon], { icon: icon }).addTo(theMap);
+                    let label = this.getID().slice(0, 5) + "...: " + i + " | " + this.session.dataPoints[i].time + " ms";
                     this.sessionMarkers[i].bindPopup(label).openPopup();
                 }
-            } else {
-                if (Math.round(this.session.dataPoints[i].time) % frequency == 0) {
-                    let newLatLng = new L.LatLng(this.session.dataPoints[i].position.lat, this.session.dataPoints[i].position.lon);
-                    this.sessionMarkers[i].setLatLng(newLatLng);
-                }
+
             }
+            //  else {
+            //     if (Math.round(this.session.dataPoints[i].time) % frequency == 0) {
+            //         let newLatLng = new L.LatLng(this.session.dataPoints[i].position.lat, this.session.dataPoints[i].position.lon);
+            //         this.sessionMarkers[i].setLatLng(newLatLng);
+            //     }
+            // }
         }
     }
 
@@ -77,7 +105,7 @@ class MapSession {
             this.sessionMarkers[0].setLatLng(newLatLng);
         }
         // Update marker label
-        let label = "ID: " + this.session.id_session.id + " Tick: " + last.time;
+        let label = "ID: " + this.getID() + " Tick: " + last.time;
 
         this.sessionMarkers[0].bindPopup(label).openPopup();
 

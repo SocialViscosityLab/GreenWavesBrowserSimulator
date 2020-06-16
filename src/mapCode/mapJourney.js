@@ -24,8 +24,10 @@ class MapJourney {
             if (!Object.keys(this.mapSessions).includes(tmpSessionName)) {
                 // if not, add this session
                 this.mapSessions[tmpSessionName] = tmp;
+                // console.log("added");
+                // console.log(tmp);
             } else {
-                console.log('MapJourney rejected duplicated ' + tmpSessionName + " session on map for journey on " + this.journey.id)
+                console.log('MapJourney. Rejected duplicated ' + tmpSessionName + " session on map for journey on " + this.journey.id)
             }
         }
     }
@@ -55,8 +57,11 @@ class MapJourney {
      * @param {Number} frequency Integer number representing the frequency in seconds. It can be interpreted as:"Put a label on each datapoint at a frequency of X seconds"
      */
     plotMarkers(theMap, frequency, sessionID) {
-        for (let ssn of Object.keys(this.mapSessions)) {
-            if (ssn == sessionID) {
+        if (sessionID) {
+            this.mapSessions[sessionID].markSessionAllDataPoints(theMap, frequency);
+        } else {
+            for (let ssn of Object.keys(this.mapSessions)) {
+                console.log(ssn)
                 this.mapSessions[ssn].markSessionAllDataPoints(theMap, frequency);
             }
         }

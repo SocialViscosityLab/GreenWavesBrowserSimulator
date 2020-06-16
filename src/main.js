@@ -1,4 +1,3 @@
-
 // The journey manager in this simulation
 let journeyM;
 // The routes manager in this simulation
@@ -26,156 +25,165 @@ Setup. It setups variables and initializes instances
 */
 function setup() {
 
-	//Set up to connect or not connect to the database
-	connect = false;
-	//osc. This is currently used in the cyclcist's run() function.
-	//myOsc = new OSCSender();
-	//myOsc.enable(false);
-	// GUI elements
-	document.getElementById("routeButton").onclick = setupRoutes;
-	document.getElementById("loopButton").onclick = switchRouteLoop;
-	document.getElementById("activateJourney").onclick = createAndActivateJourney;
-	document.getElementById("connectFirebase").onclick = connectFirebase;
+    //Set up to connect or not connect to the database
+    connect = false;
+    //osc. This is currently used in the cyclcist's run() function.
+    //myOsc = new OSCSender();
+    //myOsc.enable(false);
+    // GUI elements
+    GUI.routeButton.onclick = setupRoutes;
+    GUI.loopButton.onclick = switchRouteLoop;
+    GUI.activateJourney.onclick = createAndActivateJourney;
+    GUI.connectFirebase.onclick = connectFirebase;
 
-	// Instantiate and initialize the map
-	currentMap = new Cartography();
-	// Instantiate RouteManager
-	routeM = new RouteManager();
-	// Instantiate JourneyManager
-	journeyM = new JourneyManager();
-	// instance made to read and write files to this computer from the browser
-	directory = new DirectoryReader();
-	// activate cyclist addition listener
-	this.addCyclistListener();
+    // Instantiate and initialize the map
+    currentMap = new Cartography();
+    // Instantiate RouteManager
+    routeM = new RouteManager();
+    // Instantiate JourneyManager
+    journeyM = new JourneyManager();
+    // instance made to read and write files to this computer from the browser
+    directory = new DirectoryReader();
+    // activate cyclist addition listener
+    this.addCyclistListener();
 }
 
 /**
-* On HTML button click event it create the route markers of the cornerpoints on the map
-*/
+ * On HTML button click event it create the route markers of the cornerpoints on the map
+ */
 function setupRoutes() {
-	// Get routes from directory and set them up.
-	routeM.setupRoutes(directory, currentMap);
-	/**** Visualization  of route on Map *****/
-	// plot route path on map
-	currentMap.plotRoutes();
-	// plot route corner points on map
-	currentMap.plotRoutesCornerPoints();
-	// Updates the current route with the last uploaded route
-	currentRoute = routeM.routes[routeM.routes.length - 1];
-	if (connect) {
-		// adds route to firebase
-		comm.addNewRoute(currentRoute.id, currentRoute.getPositionPoints());
-	}
+    // Get routes from directory and set them up.
+    routeM.setupRoutes(directory, currentMap);
+    /**** Visualization  of route on Map *****/
+    // plot route path on map
+    currentMap.plotRoutes();
+    // plot route corner points on map
+    currentMap.plotRoutesCornerPoints();
+    // Updates the current route with the last uploaded route
+    currentRoute = routeM.routes[routeM.routes.length - 1];
+    if (connect) {
+        // adds route to firebase
+        comm.addNewRoute(currentRoute.id, currentRoute.getPositionPoints());
+    }
 }
 
 function createAndActivateJourney() {
-	if (connect) {
-		comm.getNewJourneyId().then(activateJourneys);
-	} else {
-		activateJourneys();
-	}
+    if (connect) {
+        comm.getNewJourneyId().then(activateJourneys);
+    } else {
+        activateJourneys();
+    }
 }
 /**
-* On HTML button click event it opens or closes the route loop
-*/
+ * On HTML button click event it opens or closes the route loop
+ */
 function switchRouteLoop() {
-	routeM.switchRouteLoop(0, document.getElementById("loopButton"));
-	// plot route path on map
-	currentMap.plotRoutes();
-	if (connect) {
-		comm.setRouteLoop(currentRoute.id, currentRoute.loop);
-	}
+    routeM.switchRouteLoop(0, GUI.loopButton);
+    // plot route path on map
+    currentMap.plotRoutes();
+    if (connect) {
+        comm.setRouteLoop(currentRoute.id, currentRoute.loop);
+    }
 }
 
 /**
-* On HTML button click event it  activates journeys in the Journey Manager
-*/
+ * On HTML button click event it  activates journeys in the Journey Manager
+ */
 function activateJourneys() {
-	// activate all the journeys
-	let ghostSpeed = Number(document.getElementById("speed").value);
-	sampleRate = Number(document.getElementById("sampleRate").value);
-	if (routeM.routes.length > 0) {
-		if (connect) {
-			journeyM.setCurrentJourneyId(comm.newJourneyId);
-		} else {
-			journeyM.setCurrentJourneyId("00000");
-		}
-		// Activate all journeys
-		journeyM.activate(routeM.routes, ghostSpeed, sampleRate, currentMap);
-		// Execute the run function at the frequency of the sampleRate
-		clicker = setInterval(run, (1000 * sampleRate));
-		currentJourney = journeyM.getCurrentJourney();
+    // activate all the journeys
+    let ghostSpeed = Number(GUI.speed.value);
+    sampleRate = Number(GUI.sampleRate.value);
+    if (routeM.routes.length > 0) {
+        if (connect) {
+            journeyM.setCurrentJourneyId(comm.newJourneyId);
+        } else {
+            journeyM.setCurrentJourneyId("00000");
+        }
+        // Activate all journeys
+        journeyM.activate(routeM.routes, ghostSpeed, sampleRate, currentMap);
+        // Execute the run function at the frequency of the sampleRate
+        clicker = setInterval(run, (1000 * sampleRate));
+        currentJourney = journeyM.getCurrentJourney();
 
-		if (connect) {
-			// Adds new journey to firebase
-			comm.addNewJourney(currentJourney.id, currentRoute.id);
-			// Adds new session to firebase
-			comm.addNewGhostSession(currentJourney.id);
-			// Activates session change listener in firebase
-			comm.listenToJourenysSessions(currentJourney.id);
-		}
-	} else {
-		alert("Setup routes first")
-	}
+        if (connect) {
+            // Adds new journey to firebase
+            comm.addNewJourney(currentJourney.id, currentRoute.id);
+            // Adds new session to firebase
+            comm.addNewGhostSession(currentJourney.id);
+            // Activates session change listener in firebase
+            comm.listenToJourenysSessions(currentJourney.id);
+        }
+        // Route computations
+        GUI.routeDistance.innerHTML = "<b>Total length: </b>" + currentRoute.getTotalLength() + ' m,';
+        GUI.estimatedDuration.innerHTML = "<b>Anticipated duration: </b>" + currentRoute.getDuration(GUI.speed.value, 'min').toFixed(2) + ' min,';
+        GUI.startTime.innerHTML = "<b>Start time: </b>" + currentJourney.sessions[0].startTime + ' ,';
+    } else {
+        alert("Setup routes first")
+    }
 }
 
 function connectFirebase() {
-	comm = new Communication();
-	connect = !connect;
-	if (connect) {
-		document.getElementById("databaseConnection").innerHTML = "connected";
-	} else {
-		comm = undefined;
-		document.getElementById("databaseConnection").innerHTML = "disconnected";
-	}
+    comm = new Communication();
+    connect = !connect;
+    if (connect) {
+        GUI.connectFirebase.textContent = "Connected";
+        GUI.connectFirebase.style.color = "red";
+    } else {
+        comm = undefined;
+        GUI.connectFirebase.textContent = "Disconnected";
+        GUI.connectFirebase.style.color = "black";
+    }
 }
 
 /**
  * Save Jsons files
  */
-function saveSessionOnJson(){
+function saveSessionOnJson() {
 
 }
 
 /**
-* Add session to journey with nearest route
-*/
+ * Add session to journey with nearest route
+ */
 function addCyclistListener() {
-	currentMap.map.on('click', function (event) {
-		// add ciclists
-		if (journeyM.addCyclist(event)) {
-			// update mapJourneys
-			currentMap.updateJourney();
-		}
-	});
+    currentMap.map.on('click', function(event) {
+        // add ciclists
+        if (journeyM.addCyclist(event)) {
+            // update mapJourneys
+            currentMap.updateJourney();
+        }
+    });
 }
 
 
 /**
-* Run the simulation
-*/
+ * Run the simulation
+ */
 function run() {
-	for (let routeTmp of routeM.routes) {
-		if (!routeTmp.status) {
-			clearInterval(clicker);
-			alert("Route finalized");
-		} else {
-			let tempDP = journeyM.getCurrentJourney().sessions[0].getLastDataPoint()
-			if (connect) {
-				comm.updateCurrentGhostPosition(currentJourney.id, currentJourney.sessions[0].getLastDataPoint().getDoc())
-				comm.addNewDataPointInSession(currentJourney.id, "00000", currentJourney.sessions[0].dataPoints.length - 1, currentJourney.sessions[0].getLastDataPoint().getDoc());
-			}
-		}
-	}
-	// Run cyclists
-	journeyM.runCyclists(sampleRate);
-	//plot all journeys
-	currentMap.plotJourneys();
-	//plot dataPoints
-	//currentMap.displaySessionMarker[0,0];
-	// plot green waves
-	currentMap.plotGreenWaves();
-	// plot cyclists
-	currentMap.plotCyclists();
+    for (let routeTmp of routeM.routes) {
+        if (!routeTmp.status) {
+            clearInterval(clicker);
+            alert("Route finalized");
+        } else {
+            //let tempDP = journeyM.getCurrentJourney().sessions[0].getLastDataPoint()
+            if (connect) {
+                comm.updateCurrentGhostPosition(currentJourney.id, currentJourney.sessions[0].getLastDataPoint().getDoc())
+                comm.addNewDataPointInSession(currentJourney.id, "00000", currentJourney.sessions[0].dataPoints.length - 1, currentJourney.sessions[0].getLastDataPoint().getDoc());
+            }
+        }
+    }
+    // Run cyclists
+    journeyM.runCyclists(sampleRate);
+    //plot all journeys
+    currentMap.plotJourneys();
+    //plot dataPoints
+    //currentMap.displaySessionMarker[0,0];
+    // plot green waves
+    currentMap.plotGreenWaves();
+    // plot cyclists
+    currentMap.plotCyclists();
 
+    if (journeyM.leaders[0].status == "enabled") {
+        GUI.ellapsedTime.innerHTML = "<b>Ellapsed time: </b>" + (((Date.now() - currentJourney.sessions[0].startTime) / 1000) / 60).toFixed(2) + ' min,';
+    }
 }

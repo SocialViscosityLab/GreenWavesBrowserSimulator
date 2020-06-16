@@ -11,10 +11,9 @@ class JourneyManager {
         this.followers = [];
         /** The green waves*/
         this.greenWaves = [];
-        //  temporal to simulate new cyclists id_user
-        this.appID = 0;
         // Id of the current active journey
         this.currentJourneyId = 0;
+        this.nextJourneyId = this.currentJourneyId;
     }
 
     /**
@@ -24,24 +23,24 @@ class JourneyManager {
         for (let routeTmp of currentRoutes) {
             if (routeTmp != undefined) {
                 // Instantiate journey
-                let journeyTmp = new Journey(this.currentJourneyId, routeTmp);
+                let journeyTmp = new Journey(this.nextJourneyId, routeTmp);
+                // set a new journey ID for the next route
+                this.getNextJourneyId();
                 // make route active
                 journeyTmp.activateRoute(true);
                 // cyclist temp id
-                let idTmp = { id: this.appID + '_ghost', journey: journeyTmp.id, route: routeTmp.id };
+                let idTmp = { id: 0 + '_ghost', journey: journeyTmp.id, route: routeTmp.id };
                 // ghost cyclist
                 let ghostCyclist = new Cyclist(idTmp, journeyTmp.referenceRoute, journeyTmp.referenceRoute.routePoints[0], ghostSpeed, true);
-                // set ghosts target speed
+                // set ghost's target speed
                 ghostCyclist.targetSpeed = ghostSpeed;
-                // increase id for next cyclist
-                this.appID++;
                 // Create a session for this cyclist
                 let tmpS = new Session("00000", ghostCyclist.id);
                 // Insert the session at the begining of journey sessions
                 journeyTmp.sessions.unshift(tmpS);
                 // GreenWave GUI value
-                let w = document.getElementById("greenWave")
-                    // Create a green wave for this ghost
+                let w = document.getElementById("greenWave");
+                // Create a green wave for this ghost
                 let tmpGW = new GreenWave(journeyTmp, Number(w.value));
                 // Subscribe the session as observer to the cyclists
                 ghostCyclist.subscribe(tmpS);
@@ -51,6 +50,7 @@ class JourneyManager {
                 this.leaders.unshift(ghostCyclist);
                 // greenWaves
                 this.greenWaves.push(tmpGW);
+
 
                 /**** Visualization  of journey on map *****/
                 // add journey to map
@@ -132,13 +132,11 @@ class JourneyManager {
         // If there is a journey with a route nearby
         if (journeyTmp) {
             // temp id
-            let idTmp = { id: this.appID + '_follower', journey: journeyTmp.id, route: journeyTmp.referenceRoute.id };
+            let idTmp = { id: journeyTmp.sessions.length + '_follower', journey: journeyTmp.id, route: journeyTmp.referenceRoute.id };
             // create a cyclists
             let cyclistTmp = new Cyclist(idTmp, journeyTmp.referenceRoute, eventLocation, 3, true); // 3 is the default speed
             // set leader
             cyclistTmp.setLeader(this.getLeaderForJourney(journeyTmp));
-            // increase for next cyclist id
-            this.appID++;
             // Create a session for this cyclist
             let tmpS = new Session(cyclistTmp.id.id, cyclistTmp.id); //session id, cyclist id
             // Insert the session at the begining of journey sessions
@@ -357,6 +355,8 @@ class JourneyManager {
 
     getCurrentJourney() {
         for (let journeyTmp of this.journeys) {
+            // console.log(journeyTmp)
+            // console.log(this.currentJourneyId)
 
             if (journeyTmp.id == this.currentJourneyId) {
                 return journeyTmp;
@@ -365,5 +365,20 @@ class JourneyManager {
     }
     setCurrentJourneyId(id) {
         this.currentJourneyId = id;
+        this.nextJourneyId = this.currentJourneyId;
+    }
+
+    getNextJourneyId() {
+        this.currentJourneyId = this.nextJourneyId;
+        // convert from string to number
+        let num = Number(this.currentJourneyId);
+        // increase numbre by 1
+        num++;
+        // trim string's tail by the decimal places of num
+        let tmp = this.currentJourneyId.slice(0, -String(num).length);
+        // update current ID
+        this.nextJourneyId = tmp + num;
+        // show ID
+        //console.log(this.currentJourneyId);
     }
 }
