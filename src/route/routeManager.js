@@ -13,10 +13,17 @@ class RouteManager {
      */
     setupRoutes(directory, currentMap) {
         this.routes = [];
+        // These are the files read from the directory. They might not be route files, yet they might all be JSON files.
         let jSONroutes = directory.getJsonObjects();
         let routeTmp;
         if (jSONroutes.length > 0) {
             for (let points of jSONroutes) {
+
+                // Skip files with no route info
+                if (points.features == undefined || points.features.length < 1) {
+                    continue;
+                }
+
                 // Instantiate objects
                 routeTmp = new Route(points.features[0].properties.name);
                 routeTmp.initiateRouteFromGeoJSON(points.features[0]);
@@ -25,7 +32,11 @@ class RouteManager {
                 // store route
                 this.routes.push(routeTmp);
             }
-            currentMap.recenter(this.routes[this.routes.length - 1].routePoints[0]);
+            if (this.routes.length > 0) {
+                currentMap.recenter(this.routes[this.routes.length - 1].routePoints[0]);
+            } else {
+                alert("No route activated. Files do not contain routes in the right format. See route.js class documentation")
+            }
         } else {
             // The route points
             let points = [

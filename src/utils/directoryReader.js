@@ -29,7 +29,7 @@ class DirectoryReader {
 
         // FileList object files is a FileList of File objects. List some properties.
         let files = evt.target.files;
-
+        console.log(files)
         let htmlOutput = [];
         // iterate over the selected fil
         for (let i = 0, f; f = files[i]; i++) {
@@ -37,6 +37,7 @@ class DirectoryReader {
             htmlOutput.push('<li>', escape(f.name), '</li>');
             // Only process geojson files.
             if (!f.type.match('json')) {
+                alert("One of the selected files does not have a JSON extension. Double check your file choice");
                 continue;
             }
             //Instantiate the file reader
