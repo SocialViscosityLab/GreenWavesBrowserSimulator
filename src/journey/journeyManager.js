@@ -1,5 +1,5 @@
 /**
- * Convenient class to manage all the journeys
+ * Convenience class to manage all the journeys
  */
 class JourneyManager {
     constructor() {
@@ -42,6 +42,8 @@ class JourneyManager {
                 let w = document.getElementById("greenWave");
                 // Create a green wave for this ghost
                 let tmpGW = new GreenWave(journeyTmp, Number(w.value));
+                // Subscribe the journey as observer to the cyclists
+                ghostCyclist.subscribe(journeyTmp);
                 // Subscribe the session as observer to the cyclists
                 ghostCyclist.subscribe(tmpS);
                 // Subscribe the green wave as observer to the cyclists
@@ -141,6 +143,8 @@ class JourneyManager {
             let tmpS = new Session(cyclistTmp.id.id, cyclistTmp.id); //session id, cyclist id
             // Insert the session at the begining of journey sessions
             journeyTmp.sessions.push(tmpS);
+            // Subscribe the journey as observer to the cyclists
+            cyclistTmp.subscribe(journeyTmp);
             // Subscribe the session as observer to the cyclists
             cyclistTmp.subscribe(tmpS);
             // add cyclist to cyclist collection
@@ -276,9 +280,6 @@ class JourneyManager {
         }
     }
 
-
-
-
     /**
     * Gets the session points for a given journey
     @param {} journeyID the ID of the journey
@@ -312,6 +313,64 @@ class JourneyManager {
             //if (cyclist.isSimulated){
             cyclist.run(sampleRate); // sampleRate
             //}
+        }
+    }
+
+    /**
+     * Records Leaders data on Firebase as long they are "enabled", i.e. they have not reached the final route point. The recording sample rate is specified by the user on the GUI
+     * @param {Object} connectionToFirebase An instance of Communication
+     */
+    recordLeadersDataOnDataBase(connectionToFirebase) {
+        // for leaders
+        for (let cyclist of this.leaders) {
+            if (cyclist.status == "enabled") {
+
+                // Parameter to send to Firebase
+                // const journeyId = currentJourney.id;
+                // const dataPointDoc = currentJourney.sessions[0].getLastDataPoint().getDoc()
+                // const sessionId = "00000";
+                // const dataPointId = currentJourney.sessions[0].dataPoints.length - 1;
+
+                const journeyId = cyclist.getJourney().id;
+                const dataPointDoc = cyclist.getSession().getLastDataPoint().getDoc()
+                const sessionId = cyclist.getSession().id_session.id;
+                const dataPointId = cyclist.getSession().dataPoints.length - 1;
+
+                //record
+                console.log('recorded for ' + cyclist.id.id + " on journey:" + journeyId + " on session: " + sessionId + " on route: " + cyclist.getJourney().referenceRoute.id);
+
+                // this is to get the latest ghost position. Otherwise it would be necessary to retrieve the entire history of ghost position and select the latest
+                connectionToFirebase.updateCurrentGhostPosition(journeyId, dataPointDoc);
+
+                // this is to update the ghost's history of posititons
+                connectionToFirebase.addNewDataPointInSession(journeyId, sessionId, dataPointId, dataPointDoc);
+            }
+        }
+    }
+
+    /**
+     * Records followers data on Firebase as long they are "enabled", i.e. they have not reached the final route point. The recording sample rate is specified by the user on the GUI
+     * @param {Object} connectionToFirebase An instance of Communication
+     */
+    recordFollowersDataOnDataBase(connectionToFirebase) {
+
+        if (recordFollowers) {
+            // for followers
+            for (let cyclist of this.followers) {
+                if (cyclist.status == "enabled") {
+
+                    const journeyId = cyclist.getJourney().id;
+                    const dataPointDoc = cyclist.getSession().getLastDataPoint().getDoc()
+                    const sessionId = cyclist.getSession().id_session.id;
+                    const dataPointId = cyclist.getSession().dataPoints.length - 1;
+
+                    //record
+                    console.log('recorded for ' + cyclist.id.id + " on journey:" + journeyId + " on session: " + sessionId + " on route: " + cyclist.getJourney().referenceRoute.id);
+
+                    // this is to update the ghost's history of posititons
+                    connectionToFirebase.addNewDataPointInSession(journeyId, sessionId, dataPointId, dataPointDoc);
+                }
+            }
         }
     }
 
@@ -380,5 +439,16 @@ class JourneyManager {
         this.nextJourneyId = tmp + num;
         // show ID
         //console.log(this.currentJourneyId);
+    }
+
+    /** 
+     * Returns true when all journeys are completed
+     */
+    areJourneysCompleted() {
+        let rtn = true;
+        for (let cyclist of this.leaders) {
+            rtn = rtn && cyclist.status != "enabled";
+        }
+        return rtn;
     }
 }

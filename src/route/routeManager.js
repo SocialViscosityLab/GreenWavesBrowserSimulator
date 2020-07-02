@@ -23,7 +23,6 @@ class RouteManager {
                 if (points.features == undefined || points.features.length < 1) {
                     continue;
                 }
-
                 // Instantiate objects
                 routeTmp = new Route(points.features[0].properties.name);
                 routeTmp.initiateRouteFromGeoJSON(points.features[0]);

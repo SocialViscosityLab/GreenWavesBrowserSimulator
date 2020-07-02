@@ -1,7 +1,7 @@
 /**
 *A route is a collection of corner points defined as instances of the Position class. The collection describes a trajectory
 that could be a closed loop. By default routes are not loops. The route is labeled with an ID. If the route is active, then
-is can be used by the journey and its sessions.
+is can be used by a journey and its sessions.
 
 The distance operations on the route are based on its segments. A segment is a portion of the route defined by two route points,
 often named as cornerPoints.
@@ -19,7 +19,7 @@ class Route {
         this.id = id;
         /** The corner points of the route */
         this.routePoints = [];
-        /** True is the route is active */
+        /** True if the route is active */
         this.status = false;
         /** The segments of the route*/
         this.segments = [];
@@ -56,7 +56,7 @@ class Route {
     Process: to DETERMINE TRAVELED DISTANCE the idea is to get the distance to the current point and then add the step distance
     * @param {Position} position The insertion position on the route
     * @param {Number} stepLength The distance traveled for the duration of a sample rate at a given speed. It is defined in meters.
-    * @return {Position} Returns the position where the cyclsist should be after traveling the stepLength on the route.
+    * @return {Position} Returns the position where the cyclist should be after traveling the stepLength on the route.
     * If the position falls beyond the last cornerpoint of this route, then the last cornerpoint is returned.
     */
     getPosition(position, stepLength) {
@@ -85,14 +85,16 @@ class Route {
                     let remainingDistForNextSegment = accumDistanceOnSegment - currentSegment.length;
                     // retrieve the next segment
                     index = index + 1;
-                    console.log(index)
-                        // if the index is greater than the number of segments
+                    console.log('Route corner point: ' + index);
+                    // if the index is greater than the number of segments
                     if (index >= this.segments.length) {
                         // reset index if this route is a loop
                         if (this.loop) {
                             index = 0;
                         } else {
                             // Route completed
+                            console.log("WARNING!!! Route exhausted");
+                            // Return the last point if the route
                             return this.segments[this.segments.length - 1].end;
                         }
                     }

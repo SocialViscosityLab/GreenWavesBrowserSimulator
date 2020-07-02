@@ -63,8 +63,8 @@
   <script src="https://www.gstatic.com/firebasejs/5.7.0/firebase-firestore.js"></script-->
 
     <!-- OSC -->
-    <script src="libs/osc.min.js" type="text/javascript"></script>
-    <script src="node_osc/oscSender.js" type="text/javascript"></script>
+    <!-- <script src="libs/osc.min.js" type="text/javascript"></script>
+    <script src="node_osc/oscSender.js" type="text/javascript"></script> -->
 
     <!--- Directory access -->
     <script src="src/utils/directoryReader.js" type="text/javascript"></script>
@@ -96,7 +96,12 @@
 
                 </section>
                 <br>
-                <span id="routeDistance"></span> <span id="ellapsedTime"></span> <span id="estimatedDuration"></span> <span id="startTime"></span>
+                <p>
+                    <span id="routeName"></span> <span id="journeyID"></span>
+                </p>
+                <h6>
+                    <span id="routeDistance"></span> <span id="ellapsedTime"></span> <span id="estimatedDuration"></span> <span id="startTime"></span>
+                </h6>
             </div>
         </div>
     </div>
@@ -132,7 +137,7 @@
                 <h4>2. Set up leader/ghost parameters</h4>
                 Sample rate<br>
                 <input id="sampleRate" type="number" name="sampleRate" value="1" min="0"> secs.
-                <h6>It defines how often the system triggers an event that activates one action step on all agents</h6>
+                <h6>How often the system triggers an event that activates one action step on all agents</h6>
                 <br> Ghost speed:<br>
                 <input id="speed" type="number" name="speed" value="7" min="0"> m/s.
                 <h6>The global speed of all ghost leaders</h6>
@@ -146,6 +151,10 @@
 
             <div class="col-sm-4">
                 <h4>3. Activate journey and add followers</h4>
+                Start delay<br>
+                <input id="startDelay" type="number" name="sampleRate" value="0" min="0"> secs.
+                <h6>Ghost release delay</h6>
+                <br>
                 <button id="activateJourney" type="submit"> Activate Journey</button>
                 <button id="loopButton" type="button">Enable loop</button>
                 <br>

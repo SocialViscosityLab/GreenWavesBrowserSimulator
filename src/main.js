@@ -33,7 +33,7 @@ function setup() {
     // GUI elements
     GUI.routeButton.onclick = setupRoutes;
     GUI.loopButton.onclick = switchRouteLoop;
-    GUI.activateJourney.onclick = createAndActivateJourney;
+    GUI.activateJourney.onclick = activateJourneyDelayed;
     GUI.connectFirebase.onclick = connectFirebase;
 
     // Instantiate and initialize the map
@@ -67,11 +67,15 @@ function setupRoutes() {
     }
 }
 
+function activateJourneyDelayed() {
+    window.setTimeout(createAndActivateJourney, GUI.ghostDelay.value * 1000);
+}
+
 function createAndActivateJourney() {
     if (connect) {
         comm.getNewJourneyId().then(activateJourneys);
     } else {
-        activateJourneys();
+        window.setTimeout(activateJourneys, GUI.ghostDelay.value * 1000);
     }
 }
 /**
@@ -114,9 +118,11 @@ function activateJourneys() {
             comm.listenToJourenysSessions(currentJourney.id);
         }
         // Route computations
-        GUI.routeDistance.innerHTML = "<b>Total length: </b>" + currentRoute.getTotalLength() + ' m,';
+        GUI.routeName.innerHTML = "<b>Route Name: </b>" + currentJourney.referenceRoute.id + ', ';
+        GUI.journeyID.innerHTML = "<b>Journey ID: </b>" + currentJourney.id;
+        GUI.routeDistance.innerHTML = "<b>- Total length: </b>" + currentRoute.getTotalLength() + ' m,';
         GUI.estimatedDuration.innerHTML = "<b>Anticipated duration: </b>" + currentRoute.getDuration(GUI.speed.value, 'min').toFixed(2) + ' min,';
-        GUI.startTime.innerHTML = "<b>Start time: </b>" + currentJourney.sessions[0].startTime + ' ,';
+        GUI.startTime.innerHTML = "<b>Start time: </b>" + currentJourney.sessions[0].startTime;
     } else {
         alert("Setup routes first")
     }
@@ -160,17 +166,20 @@ function addCyclistListener() {
  * Run the simulation
  */
 function run() {
-    for (let routeTmp of routeM.routes) {
-        if (!routeTmp.status) {
-            clearInterval(clicker);
-            alert("Route finalized");
-        } else {
-            //let tempDP = journeyM.getCurrentJourney().sessions[0].getLastDataPoint()
-            if (connect) {
-                comm.updateCurrentGhostPosition(currentJourney.id, currentJourney.sessions[0].getLastDataPoint().getDoc())
-                comm.addNewDataPointInSession(currentJourney.id, "00000", currentJourney.sessions[0].dataPoints.length - 1, currentJourney.sessions[0].getLastDataPoint().getDoc());
-            }
-        }
+
+    // This chunk of code records ghost data in the database while the route is active
+
+    if (journeyM.areJourneysCompleted()) {
+        clearInterval(clicker);
+        alert("All journeys finalized");
+    }
+
+    // Record data on database
+    if (connect) {
+        //This is for leaders
+        journeyM.recordLeadersDataOnDataBase(comm);
+        //This is for simulated followers
+        journeyM.recordFollowersDataOnDataBase(comm);
     }
     // Run cyclists
     journeyM.runCyclists(sampleRate);
