@@ -75,7 +75,7 @@ class MapCyclist {
         // Update marker label
         let label = "C: " + this.cyclist.id.id + " Tick: " + this.cyclist.timeCounter;
 
-        //  this.marker.bindPopup(label).openPopup();
+        this.marker.bindPopup(label);
 
     }
 
@@ -95,6 +95,10 @@ class MapCyclist {
             }
 
             this.marker.setLatLng(newLatLng);
+
+            let greenWaveCount = String(this.cyclist.getFollowersInGreenWave().length) + "/" + String(this.cyclist.getFollowers().length);
+
+            this.marker.bindPopup(greenWaveCount);
         }
 
     }

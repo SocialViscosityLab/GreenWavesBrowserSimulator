@@ -27,7 +27,7 @@ class MapJourney {
                 // console.log("added");
                 // console.log(tmp);
             } else {
-                console.log('MapJourney. Rejected duplicated ' + tmpSessionName + " session on map for journey on " + this.journey.id)
+                //console.log('Rejected duplicated session: ' + tmpSessionName + " on MapJourney for journey on " + this.journey.id)
             }
         }
     }

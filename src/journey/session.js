@@ -17,7 +17,9 @@ class Session {
      */
     notify(data) {
         // add the datapoint
-        this.dataPoints.push(data);
+        if (data instanceof DataPoint) {
+            this.dataPoints.push(data);
+        }
     }
 
     /**

@@ -37,7 +37,7 @@ class Cyclist {
         this.myAcceleration = 0; // the agent's current acceleration
         //this.distance = 0; // the distance elapsed from the origin
         this.step = 0; // the distance to move from current position
-        // this.expectedAcc; // the expected acceleration
+        this.latestSuggestion = 'up'; // String: up, down, mantain 
         this.targetSpeed = GUI.speed; // the leader's target. The leader gets its target speed from user input
         // relative time
         this.timeCounter = 0;
@@ -72,7 +72,7 @@ class Cyclist {
     generateDataPoint() {
         let datapoint = new DataPoint(this.myAcceleration, this.position, this.mySpeed, this.timeCounter);
         this.timeCounter += (sampleRate * 1000);
-        return (datapoint);
+        return (datapoint)
     }
 
     setDataPoint(acc, pos, speed, time) {
@@ -80,7 +80,7 @@ class Cyclist {
         this.position = pos;
         this.mySpeed = speed;
         this.timeCounter = time;
-        this.currentDataPoint = new DataPoint(acc, pos, speed, time);
+        this.currentDataPoint = new DataPoint(acc, pos, speed, time)
     }
 
     /** Subscribe as observer to this cyclist
@@ -94,7 +94,6 @@ class Cyclist {
         } else {
             this.notifyObservers(this.currentDataPoint);
         }
-
     }
 
     /** Unubscribe from this cyclist
@@ -104,15 +103,18 @@ class Cyclist {
         this.observers = this.observers.filter(subscriber => subscriber !== observer);
     }
 
+    notify() {
+        // do something
+    }
+
     /*
     * Notify all observers of this cyclist
     https://pawelgrzybek.com/the-observer-pattern-in-javascript-explained/
     **/
     notifyObservers(data) {
         this.observers.forEach(function(element) {
-                element.notify(data);
-            })
-            //observer => observer.notify(data));
+            element.notify(data);
+        });
     }
 
     /**
@@ -159,11 +161,53 @@ class Cyclist {
         }
     }
 
+    /**
+     * If this is a leader, returns the collection od followers
+     */
+    getFollowers() {
+        let rtn = [];
+        if (this.isLeader) {
+            for (const observer of this.observers) {
+                if (observer instanceof Cyclist) {
+                    rtn.push(observer);
+                }
+            }
+        }
+        return rtn;
+    }
+
+    /**
+     * If this is a leader, returns the collection of followers in green wave scope
+     */
+    getFollowersInGreenWave() {
+        let rtn = [];
+        for (const cyclist of this.getFollowers()) {
+            if (cyclist.greenWave) {
+                rtn.push(cyclist);
+            }
+        }
+        return rtn;
+    }
+
     getProximityToLeader() {
         if (!this.isLeader) {
             return this.myRoute.getAtoBDistance(this.leaderCyclist.position, this.position);
         }
         return undefined;
+    }
+
+    getSuggestion(initial, suggested) {
+        const rtn;
+        if (initial && suggested) {
+            if (initial < suggested) {
+                rtn = 'up';
+            } else if (initial > suggested) {
+                rtn = 'down'
+            } else {
+                rtn = 'mantain'
+            }
+        }
+        return rtn;
     }
 
     run(sampleRate) {
@@ -181,13 +225,15 @@ class Cyclist {
                     // update speed
                     this.mySpeed = step / sampleRate;
                     let dpTemp = this.generateDataPoint();
-                    // notify
-                    this.notifyObservers(dpTemp);
+                    // update suggestion
+                    dpTemp.suggestion = this.latestSuggestion;
                     // update greenWave
-                    if (this.leaderCyclist) {
+                    if (!this.isLeader) {
                         const gw = this.leaderCyclist.getGreenWave();
                         this.greenWave = this.getProximityToLeader() > 0 && this.getProximityToLeader() < gw.getScopeInMeters();
                     }
+                    // notify
+                    this.notifyObservers(dpTemp);
                 } else {
                     if (this.position !== this.myRoute.getLastSegment().end) {
                         // get the stepLength
@@ -199,14 +245,15 @@ class Cyclist {
                         // update speed
                         this.mySpeed = step / sampleRate;
                         let dpTemp = this.generateDataPoint();
-                        // notify
-                        this.notifyObservers(dpTemp);
+                        // update suggestion
+                        dpTemp.suggestion = this.latestSuggestion;
                         // update greenWave
-                        if (this.leaderCyclist) {
+                        if (!this.isLeader) {
                             const gw = this.leaderCyclist.getGreenWave();
                             this.greenWave = this.getProximityToLeader() > 0 && this.getProximityToLeader() < gw.getScopeInMeters();
                         }
-
+                        // notify
+                        this.notifyObservers(dpTemp);
                     } else {
                         this.status = "disabled";
                         console.log("Session completed for cyclist: ", this.id);
@@ -217,7 +264,6 @@ class Cyclist {
                         }
                     }
                 }
-
             } else {
                 //  console.log(this.currentDataPoint)
                 if (this.currentDataPoint != undefined) {
@@ -240,7 +286,7 @@ class Cyclist {
         // If leader, accelerate with simpleCruiseControl
         if (this.isLeader) {
             // simple acceleration
-            this.simpleCC();
+            this.myAcceleration = this.simpleCC();
             // for all other cyclsist
         } else {
             // THIS DISABLES THE CONVOY FUNCTIONALITY BECAUSE EVERYONE IS FOLLOWING THE LEADER
@@ -254,10 +300,11 @@ class Cyclist {
              */
             if (gap > this.desiredIVSpacing) {
                 // apply acceleration algorithm
-                this.collaborativeACC(gap);
-                //this.simpleCC();
+                const tmp = this.collaborativeACC(gap);
+                this.latestSuggestion = getSuggestion(this.myAcceleration, tmp);
+                this.myAcceleration = tmp;
+                //this.myAcceleration = this.simpleCC();
             } else {
-
                 // display negative acceleration since the bicycle is already in the gap. 
                 this.myAcceleration = Utilities.map(gap, 0, this.desiredIVSpacing, 0.01, -this.designKSimple);
             }
@@ -278,8 +325,8 @@ class Cyclist {
      */
     simpleCC() {
         //console.log("k: " + this.designKSimple + ", target: " + this.targetSpeed);
-        this.myAcceleration = -this.designKSimple * (this.mySpeed - this.targetSpeed);
-        return this.myAcceleration;
+        const tmp = -this.designKSimple * (this.mySpeed - this.targetSpeed);
+        return tmp;
     }
 
     /**
@@ -339,7 +386,6 @@ class Cyclist {
         let a_des_lag = (this.alphaLag * a_des) + ((1 - this.alphaLag) * this.lastAccelerationPlatoon);
         //console.log("a_des_lag "+ a_des_lag)
         this.lastAccelerationPlatoon = a_des_lag;
-        this.myAcceleration = a_des_lag;
         //console.log("a_des_lag " + this.myAcceleration.toFixed(3))
         return a_des_lag;
     }

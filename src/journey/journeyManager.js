@@ -147,6 +147,8 @@ class JourneyManager {
             cyclistTmp.subscribe(journeyTmp);
             // Subscribe the session as observer to the cyclists
             cyclistTmp.subscribe(tmpS);
+            // Subscribe this cyclist as observer of the leader's
+            this.getLeaderForJourney(journeyTmp).subscribe(cyclistTmp);
             // add cyclist to cyclist collection
             this.followers.push(cyclistTmp);
 
@@ -381,7 +383,7 @@ class JourneyManager {
             let nextD = this.journeys[i].referenceRoute.getIndexAndProximityToClosestSegmentTo(eventLocation).proximity;
             if (currentD > nextD) {
                 currentD = nextD;
-                console.log("here inside " + currentD);
+                //console.log("here inside " + currentD);
                 rtn = this.journeys[i];
             }
         }
@@ -399,10 +401,11 @@ class JourneyManager {
 
     getLeaderForJourney(journeyID) {
         for (let c of this.leaders) {
-            if (c.id.journey === journeyID)
-                console.log(c, " ", journeyID);
-            return c;
+            if (c.id.journey === journeyID.id) {
+                return c;
+            }
         }
+        return undefined;
     }
 
     getCurrentJourney() {

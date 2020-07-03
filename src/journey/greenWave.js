@@ -12,6 +12,7 @@ class GreenWave {
         }
         this.greenWavePositions = [];
         this.initialize();
+
     }
 
     /**
@@ -29,10 +30,13 @@ class GreenWave {
      * The observer notify() function. Instances of this class observe an instance of Cyclist class
      */
     notify(data) {
-        // add the position to the end
-        this.greenWavePositions.unshift(data.position);
-        // remove the first position
-        this.greenWavePositions.pop();
+        if (data instanceof DataPoint) {
+            // add the position to the end
+            this.greenWavePositions.unshift(data.position);
+            // remove the first position
+            this.greenWavePositions.pop();
+        }
+
     }
 
     /**
