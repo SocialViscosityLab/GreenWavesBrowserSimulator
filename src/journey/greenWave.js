@@ -15,7 +15,7 @@ class GreenWave {
     }
 
     /**
-     * Fills a collection of datapoints for the greenwave. The position used is the begining of the joourney route
+     * Fills a collection of datapoints for the greenwave. The position used is the begining of the journey route
      */
     initialize() {
         // set all greenwave datapoints to the origin
@@ -40,7 +40,14 @@ class GreenWave {
     multiplying them by the duration of the sample rate, or into distance by multiplying ellapsed time by the speed
     */
     setGreenWaveScope(val) {
-        console.log("here");
         this.greenWaveScope = val;
+    }
+
+    getScopeInMeters() {
+        return this.greenWaveScope * GUI.speed.value;
+    }
+
+    getScopeInSeconds() {
+        return this.greenWaveScope * GUI.sampleRate.value;
     }
 }

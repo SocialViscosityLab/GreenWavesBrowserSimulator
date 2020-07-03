@@ -15,7 +15,6 @@ let comm;
 // Current selected route
 let currentRoute;
 
-var myOsc;
 // Boolean to set if the database should be connected
 let connect;
 /**
@@ -25,9 +24,7 @@ function setup() {
 
     //Set up to connect or not connect to the database
     connect = false;
-    //osc. This is currently used in the cyclcist's run() function.
-    //myOsc = new OSCSender();
-    //myOsc.enable(false);
+
     // GUI elements
     GUI.routeButton.onclick = setupRoutes;
     GUI.loopButton.onclick = switchRouteLoop;
@@ -171,12 +168,11 @@ function addCyclistListener() {
  */
 function run() {
 
-    // This chunk of code records ghost data in the database while the route is active
     if (journeyM.areJourneysCompleted()) {
         clearInterval(clicker);
         alert("All journeys finalized");
     } else {
-        // Record data on database
+        // Record cyclists' data in the database while there are active journeys
         if (connect) {
             //This is for leaders
             journeyM.recordLeadersDataOnDataBase(comm);

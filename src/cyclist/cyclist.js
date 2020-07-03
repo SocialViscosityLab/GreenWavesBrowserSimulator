@@ -38,7 +38,7 @@ class Cyclist {
         //this.distance = 0; // the distance elapsed from the origin
         this.step = 0; // the distance to move from current position
         // this.expectedAcc; // the expected acceleration
-        this.targetSpeed = 7; // the leader's target. The leader gets its target speed from user input
+        this.targetSpeed = GUI.speed; // the leader's target. The leader gets its target speed from user input
         // relative time
         this.timeCounter = 0;
 
@@ -56,11 +56,11 @@ class Cyclist {
         this.alpha2 = 0.5;
         this.alpha3 = 0.3;
         this.alpha4 = 0.1;
-        this.alpha5 = 0.04;
+        this.alpha5 = 0.02;
         this.alphaLag = 0.8;
         this.length_vehicle_front = 2;
         this.desiredSpacing = 15;
-        this.desirdIVSpacing = this.length_vehicle_front + this.desiredSpacing;
+        this.desiredIVSpacing = this.length_vehicle_front + this.desiredSpacing;
         this.designKSimple = 0.35; // the lower the value, the slower the
         this.designKAdaptive = 0.1;
 
@@ -124,6 +124,7 @@ class Cyclist {
                 return observer;
             }
         }
+        return undefined;
     }
 
     /**
@@ -135,6 +136,16 @@ class Cyclist {
                 return observer;
             }
         }
+        return undefined;
+    }
+
+    getGreenWave() {
+        for (const observer of this.observers) {
+            if (observer instanceof GreenWave) {
+                return observer;
+            }
+        }
+        return undefined;
     }
 
     /**
@@ -146,6 +157,13 @@ class Cyclist {
             this.leaderCyclist = cyclist;
             this.isLeader = false;
         }
+    }
+
+    getProximityToLeader() {
+        if (!this.isLeader) {
+            return this.myRoute.getAtoBDistance(this.leaderCyclist.position, this.position);
+        }
+        return undefined;
     }
 
     run(sampleRate) {
@@ -161,13 +179,15 @@ class Cyclist {
                     // update position
                     this.position = tmpPosition;
                     // update speed
-                    this.mySpeed = step * sampleRate;
+                    this.mySpeed = step / sampleRate;
                     let dpTemp = this.generateDataPoint();
                     // notify
                     this.notifyObservers(dpTemp);
-                    // broadcasting on OSC
-                    let tmp = Number(this.mySpeed.toPrecision(4));
-                    // myOsc is a global instance constructed in the main.js
+                    // update greenWave
+                    if (this.leaderCyclist) {
+                        const gw = this.leaderCyclist.getGreenWave();
+                        this.greenWave = this.getProximityToLeader() > 0 && this.getProximityToLeader() < gw.getScopeInMeters();
+                    }
                 } else {
                     if (this.position !== this.myRoute.getLastSegment().end) {
                         // get the stepLength
@@ -177,12 +197,16 @@ class Cyclist {
                         // update position
                         this.position = tmpPosition;
                         // update speed
-                        this.mySpeed = step * sampleRate;
+                        this.mySpeed = step / sampleRate;
                         let dpTemp = this.generateDataPoint();
                         // notify
                         this.notifyObservers(dpTemp);
-                        // broadcasting on OSC
-                        let tmp = Number(this.mySpeed.toPrecision(4));
+                        // update greenWave
+                        if (this.leaderCyclist) {
+                            const gw = this.leaderCyclist.getGreenWave();
+                            this.greenWave = this.getProximityToLeader() > 0 && this.getProximityToLeader() < gw.getScopeInMeters();
+                        }
+
                     } else {
                         this.status = "disabled";
                         console.log("Session completed for cyclist: ", this.id);
@@ -228,14 +252,14 @@ class Cyclist {
             /* NOTE: Ideally this should be just collaborativeACC() without any condition, but I am testng it as it was coded in java
              * The issue is that CACC does not account for situations in which a follower overpasses the preceding vehicle
              */
-            if (gap > this.desirdIVSpacing) {
-                // apply acceleration algortithm
+            if (gap > this.desiredIVSpacing) {
+                // apply acceleration algorithm
                 this.collaborativeACC(gap);
                 //this.simpleCC();
             } else {
 
                 // display negative acceleration since the bicycle is already in the gap. 
-                this.myAcceleration = Utilities.map(gap, 0, this.desirdIVSpacing, 0.01, -this.designKSimple);
+                this.myAcceleration = Utilities.map(gap, 0, this.desiredIVSpacing, 0.01, -this.designKSimple);
             }
         }
         // Get the step length for that speed
@@ -281,7 +305,7 @@ class Cyclist {
             // distance to vehice ahead
             //let distanceFrontToThis = GeometryUtils.getDistance(this.position, this.nearestFrontNode.position);
             // Calculate spacing error
-            spacing_error = -Math.abs(distanceFrontToThis) + this.desirdIVSpacing;
+            spacing_error = -Math.abs(distanceFrontToThis) + this.desiredIVSpacing;
 
             nodeFrontAcceleration = this.nearestFrontNode.myAcceleration;
 
@@ -291,7 +315,7 @@ class Cyclist {
             nodeFrontAcceleration = 0;
         }
 
-        // console.log("rel_speed_front: " + rel_speed_front + ", spacing_error: " + spacing_error + ", nodeFrontAcceleration: " +nodeFrontAcceleration);
+        //console.log("rel_speed_front: " + rel_speed_front + ", spacing_error: " + spacing_error + ", nodeFrontAcceleration: " + nodeFrontAcceleration);
         // b Calculate (Acceleration desired) A_des
 
         // * let a_des = this.alpha1 * (nodeFrontAcceleration + this.alpha2)
@@ -304,16 +328,19 @@ class Cyclist {
         // AN ADAPTATION THAT WORKS BETTER IN THIS SIMULATOR. SEE SEGATA'S
         // EQUATION COMMENTED ABOVE
 
+        //console.log("rel_speed_leader " + (this.mySpeed - this.leaderCyclist.mySpeed).toFixed(3))
+
         let a_des = (this.alpha1 * nodeFrontAcceleration) + (this.alpha2 * this.leaderCyclist.myAcceleration) -
             (this.alpha3 * rel_speed_front) - (this.alpha4 * (this.mySpeed - this.leaderCyclist.mySpeed)) -
             (this.alpha5 * spacing_error);
 
-        //console.log("a_des "+ a_des)
+        //console.log("a_des " + a_des.toFixed(3));
         // c Calculate desired acceleration adding a delay
         let a_des_lag = (this.alphaLag * a_des) + ((1 - this.alphaLag) * this.lastAccelerationPlatoon);
         //console.log("a_des_lag "+ a_des_lag)
         this.lastAccelerationPlatoon = a_des_lag;
         this.myAcceleration = a_des_lag;
+        //console.log("a_des_lag " + this.myAcceleration.toFixed(3))
         return a_des_lag;
     }
 
@@ -322,38 +349,38 @@ class Cyclist {
      *
      * @param {Journey} the journey to which this cyclist belongs
      */
-    getFrontCyclist(journey) {
-        //   // If I am not the leader
-        //   if (!this.isLeader){
-        //     // get all the cyclists
-        //     let cyclists = [];
-        //     for (let ssn of journey.sessions) {
-        //       cyclists.push(ssn.cyclist);
-        //     };
-        //     // Get the route
-        //     let route = journey.referenceRoute;
-        //     // Get the distance to the leader, which is the farthest cyclist
-        //   	let	distanceToFront = GeometryUtils.getDistance(cyclists[0].position, this.position);
-        //     // get cyclists in order
-        //     for (let temp of followers) {
-        // 			// If temp is not myself
-        // 			if (temp.id != this.id) {
-        // 				// If temp is ahead
-        // 				if (route.getAtoBDistance(temp.position, this.position) > 0) {
-        // 					// if temp is closer
-        // 					if (temp.position.x - this.position.x <= distanceToFront) {
-        // 						// if (pos.dist(temp.pos) <= distanceToFront) {
-        // 						// distanceToFront = pos.dist(temp.pos);
-        // 						distanceToFront = temp.position.x - this.position.x;
-        // 						this.nearestFrontNode = temp;
-        // 						// System.out.println(id + " is behind of "+
-        // 						// nearestFrontNode.id);
-        // 					} else {
-        // 						// System.out.println(id + " is ahead of "+ temp.id);
-        // 					}
-        // 				}
-        // 			}
-        // 		}
-        //   }
-    }
+    //getFrontCyclist(journey) {
+    //   // If I am not the leader
+    //   if (!this.isLeader){
+    //     // get all the cyclists
+    //     let cyclists = [];
+    //     for (let ssn of journey.sessions) {
+    //       cyclists.push(ssn.cyclist);
+    //     };
+    //     // Get the route
+    //     let route = journey.referenceRoute;
+    //     // Get the distance to the leader, which is the farthest cyclist
+    //   	let	distanceToFront = GeometryUtils.getDistance(cyclists[0].position, this.position);
+    //     // get cyclists in order
+    //     for (let temp of followers) {
+    // 			// If temp is not myself
+    // 			if (temp.id != this.id) {
+    // 				// If temp is ahead
+    // 				if (route.getAtoBDistance(temp.position, this.position) > 0) {
+    // 					// if temp is closer
+    // 					if (temp.position.x - this.position.x <= distanceToFront) {
+    // 						// if (pos.dist(temp.pos) <= distanceToFront) {
+    // 						// distanceToFront = pos.dist(temp.pos);
+    // 						distanceToFront = temp.position.x - this.position.x;
+    // 						this.nearestFrontNode = temp;
+    // 						// System.out.println(id + " is behind of "+
+    // 						// nearestFrontNode.id);
+    // 					} else {
+    // 						// System.out.println(id + " is ahead of "+ temp.id);
+    // 					}
+    // 				}
+    // 			}
+    // 		}
+    //   }
+    // }
 }
