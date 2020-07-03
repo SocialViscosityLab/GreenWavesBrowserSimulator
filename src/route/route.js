@@ -93,7 +93,7 @@ class Route {
                             index = 0;
                         } else {
                             // Route completed
-                            console.log("WARNING!!! Route exhausted");
+                            console.log(this.id + " Route exhausted !!!");
                             // Return the last point if the route
                             return this.segments[this.segments.length - 1].end;
                         }
@@ -105,7 +105,7 @@ class Route {
 
                 } else {
                     // Route completed
-                    console.log("WARNING!!! Route completed");
+                    console.log(this.id + " Route completed !!!");
                     // Return the last point if the route
                     return this.segments[this.segments.length - 1].end;
                 }

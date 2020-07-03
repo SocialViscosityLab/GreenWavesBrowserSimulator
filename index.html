@@ -97,108 +97,104 @@
                 </section>
                 <br>
                 <p>
-                    <span id="routeName"></span> <span id="journeyID"></span>
+                    <span id="routeInfo"></span>
                 </p>
-                <h6>
-                    <span id="routeDistance"></span> <span id="ellapsedTime"></span> <span id="estimatedDuration"></span> <span id="startTime"></span>
-                </h6>
             </div>
         </div>
-    </div>
-    <!-- close container -->
+        <!-- close container -->
 
-    <div class="container">
-        <!--- The input boxes container -->
-        <hr>
-        <div class="row">
-
-            <div class="col-sm-4">
-                <h4> 1. Set up one or more routes</h4>
-                <h6>If no route chosen, a route around the lab is setup by default</h6>
-
-                <!--- reading the directory for routes -->
-                <p>
-                    <input type="file" id="files" name="files[]" multiple />
-
-                    <!--- Directory access-->
-                    <h6>You can draw your own routes and import them to this app</h6>
-                    <a href="https://www.smartartifact.com/researchLab/routeMaker/" target="_blank">Generate your own
-            routes</a>
-                </p>
-                <hr>
-                <button id="routeButton" type="button">Setup routes</button>
-                <h6> If no route file chosen, one around the D4SV Lab is loaded.</h6>
-                <output id="list"></output>
-
-            </div>
-            <!-- Close column -->
-
-            <div class="col-sm-4">
-                <h4>2. Set up leader/ghost parameters</h4>
-                Sample rate<br>
-                <input id="sampleRate" type="number" name="sampleRate" value="1" min="0"> secs.
-                <h6>How often the system triggers an event that activates one action step on all agents</h6>
-                <br> Ghost speed:<br>
-                <input id="speed" type="number" name="speed" value="7" min="0"> m/s.
-                <h6>The global speed of all ghost leaders</h6>
-                <br> Green wave scope:<br>
-                <input id="greenWave" type="number" name="greenWave" value="5" min="1"> secs.
-                <h6> The duration of green light on all traffic lights. It is converted into the length of the ghost's 'tail' in meters.
-                </h6>
-            </div>
-            <!-- Close column -->
-
-
-            <div class="col-sm-4">
-                <h4>3. Activate journey and add followers</h4>
-                Start delay<br>
-                <input id="startDelay" type="number" name="sampleRate" value="0" min="0"> secs.
-                <h6>Ghost release delay</h6>
-                <br>
-                <button id="activateJourney" type="submit"> Activate Journey</button>
-                <button id="loopButton" type="button">Enable loop</button>
-                <br>
-                <h6>The journey starts with a default leader named 'the ghost'. If the route is a closed circuit enable the loop once the route is activated.</h6>
-                <h6>Click on the route behind the ghost to add a new cyclist to the journey. New cyclists will try to adaptively match the leader's speed. </h6>
-                <!-- <button id = "exportJSON" type = "button">Export to JSON</button>-->
-                <hr>
-                <h4>Output list</h4>
-                <h6>Once a cyclist completes the route, a file with its output is added below</h6>
-                <ul id='outputList'></ul>
-
-            </div>
-            <!-- Close column -->
-
-        </div>
-        <!-- Close row -->
-        <div class="row">
-            <!-- Open row -->
+        <div class="container">
+            <!--- The input boxes container -->
             <hr>
+            <div class="row">
+
+                <div class="col-sm-4">
+                    <h4> 1. Set up one or more routes</h4>
+                    <h6>If no route chosen, a route around the lab is setup by default</h6>
+
+                    <!--- reading the directory for routes -->
+                    <p>
+                        <input type="file" id="files" name="files[]" multiple />
+
+                        <!--- Directory access-->
+                        <h6>You can draw your own routes and import them to this app</h6>
+                        <a href="https://www.smartartifact.com/researchLab/routeMaker/" target="_blank">Generate your own
+            routes</a>
+                    </p>
+                    <hr>
+                    <button id="routeButton" type="button">Setup routes</button>
+                    <h6> If no route file chosen, one around the D4SV Lab is loaded.</h6>
+                    <output id="list"></output>
+
+                </div>
+                <!-- Close column -->
+
+                <div class="col-sm-4">
+                    <h4>2. Set up leader/ghost parameters</h4>
+                    Sample rate<br>
+                    <input id="sampleRate" type="number" name="sampleRate" value="1" min="0"> secs.
+                    <h6>How often the system triggers an event that activates one action step on all agents</h6>
+                    <br> Ghost speed:<br>
+                    <input id="speed" type="number" name="speed" value="7" min="0"> m/s.
+                    <h6>The global speed of all ghost leaders</h6>
+                    <br> Green wave scope:<br>
+                    <input id="greenWave" type="number" name="greenWave" value="5" min="1"> secs.
+                    <h6> The duration of green light on all traffic lights. It is converted into the length of the ghost's 'tail' in meters.
+                    </h6>
+                </div>
+                <!-- Close column -->
+
+
+                <div class="col-sm-4">
+                    <h4>3. Activate journey and add followers</h4>
+                    Start delay<br>
+                    <input id="startDelay" type="number" name="sampleRate" value="0" min="0"> secs.
+                    <h6>Ghost release delay</h6>
+                    <br>
+                    <button id="activateJourney" type="submit"> Activate Journey</button>
+                    <button id="loopButton" type="button">Enable loop</button>
+                    <br>
+                    <h6>The journey starts with a default leader named 'the ghost'. If the route is a closed circuit enable the loop once the route is activated.</h6>
+                    <h6>Click on the route behind the ghost to add a new cyclist to the journey. New cyclists will try to adaptively match the leader's speed. </h6>
+                    <!-- <button id = "exportJSON" type = "button">Export to JSON</button>-->
+                    <hr>
+                    <h4>Output list</h4>
+                    <h6>Once a cyclist completes the route, a file with its output is added below</h6>
+                    <ul id='outputList'></ul>
+
+                </div>
+                <!-- Close column -->
+
+            </div>
+            <!-- Close row -->
+            <div class="row">
+                <!-- Open row -->
+                <hr>
+
+            </div>
+            <!-- Close row -->
 
         </div>
-        <!-- Close row -->
+        <!--close container -->
 
-    </div>
-    <!--close container -->
-
-    <!-- EXPORT NETWORK MODAL FORM -->
-    <div class="modal fade" id="getSessionDataForm" tabindex="-1" role="dialog" aria-labelledby="getSessionDataForm" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3 class="modal-title">Retrieve data from Firebase</h3>
-                </div>
-                <div class="modal-body">
-                    <input id="idJourney" value="Journey ID"></input>
-                    <input id="idSession" value="Session ID"></input>
-                    <p>If no data is entered the last journey of the last session will be retrieved</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="getFirebaseData">Get data</button>
+        <!-- EXPORT NETWORK MODAL FORM -->
+        <div class="modal fade" id="getSessionDataForm" tabindex="-1" role="dialog" aria-labelledby="getSessionDataForm" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Retrieve data from Firebase</h3>
+                    </div>
+                    <div class="modal-body">
+                        <input id="idJourney" value="Journey ID"></input>
+                        <input id="idSession" value="Session ID"></input>
+                        <p>If no data is entered the last journey of the last session will be retrieved</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" id="getFirebaseData">Get data</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
 </body>
 <script src="src/GUI/GUI.js" type="text/javascript"></script>

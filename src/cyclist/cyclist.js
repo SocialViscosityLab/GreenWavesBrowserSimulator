@@ -236,7 +236,6 @@ class Cyclist {
 
                 // display negative acceleration since the bicycle is already in the gap. 
                 this.myAcceleration = Utilities.map(gap, 0, this.desirdIVSpacing, 0.01, -this.designKSimple);
-                console.log(gap + ", " + this.myAcceleration);
             }
         }
         // Get the step length for that speed

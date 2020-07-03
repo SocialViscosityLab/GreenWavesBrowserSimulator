@@ -1,4 +1,18 @@
 class GUI {
+    constructor() {}
+
+    static appendChild(element, node) {
+        element.appendChild(node);
+    }
+
+    static makeNode(type, content, id) {
+        let node = document.createElement(type);
+        node.innerHTML = content;
+        if (id) {
+            node.id = id;
+        }
+        return node;
+    }
 
 }
 GUI.routeButton = document.getElementById("routeButton");
@@ -19,3 +33,4 @@ GUI.ellapsedTime = document.getElementById("ellapsedTime");
 GUI.estimatedDuration = document.getElementById("estimatedDuration");
 GUI.routeDistance = document.getElementById("routeDistance");
 GUI.journeyID = document.getElementById("journeyID");
+GUI.routeInfo = document.getElementById("routeInfo");

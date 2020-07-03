@@ -177,7 +177,7 @@ class Communication {
      * presents a change in it
      * @param {String} journeyId 
      */
-    listenToJourenysSessions(journeyId) {
+    listenToJourneysSessions(journeyId) {
         var sessions = db.collection("journeys").doc(journeyId).collection("sessions")
             .onSnapshot(function(docSnapShot) {
                 docSnapShot.forEach(function(doc) {

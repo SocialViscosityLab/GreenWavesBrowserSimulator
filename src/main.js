@@ -14,8 +14,6 @@ let directory;
 let comm;
 // Current selected route
 let currentRoute;
-//Current journey
-let currentJourney;
 
 var myOsc;
 // Boolean to set if the database should be connected
@@ -107,22 +105,29 @@ function activateJourneys() {
         journeyM.activate(routeM.routes, ghostSpeed, sampleRate, currentMap);
         // Execute the run function at the frequency of the sampleRate
         clicker = setInterval(run, (1000 * sampleRate));
-        currentJourney = journeyM.getCurrentJourney();
 
         if (connect) {
-            // Adds new journey to firebase
-            comm.addNewJourney(currentJourney.id, currentRoute.id);
-            // Adds new session to firebase
-            comm.addNewGhostSession(currentJourney.id);
-            // Activates session change listener in firebase
-            comm.listenToJourenysSessions(currentJourney.id);
+            for (const journey of journeyM.journeys) {
+                // Adds new journey to firebase
+                comm.addNewJourney(journey.id, journey.referenceRoute.id);
+                // Adds new session to firebase
+                comm.addNewGhostSession(journey.id);
+                // Activates session change listener in firebase
+                comm.listenToJourneysSessions(journey.id);
+            }
+
         }
-        // Route computations
-        GUI.routeName.innerHTML = "<b>Route Name: </b>" + currentJourney.referenceRoute.id + ', ';
-        GUI.journeyID.innerHTML = "<b>Journey ID: </b>" + currentJourney.id;
-        GUI.routeDistance.innerHTML = "<b>- Total length: </b>" + currentRoute.getTotalLength() + ' m,';
-        GUI.estimatedDuration.innerHTML = "<b>Anticipated duration: </b>" + currentRoute.getDuration(GUI.speed.value, 'min').toFixed(2) + ' min,';
-        GUI.startTime.innerHTML = "<b>Start time: </b>" + currentJourney.sessions[0].startTime;
+        // Update GUI with route computations
+        for (const journey of journeyM.journeys) {
+            let node = GUI.makeNode('p', "<b>Route Name: </b>" + journey.referenceRoute.id + ', <b>Journey ID: </b>' + journey.id)
+            let node2 = GUI.makeNode('li', "<b>Total length: </b>" + journey.referenceRoute.getTotalLength().toFixed(1) +
+                " m, <b>Anticipated duration: </b>" + journey.referenceRoute.getDuration(GUI.speed.value, 'min').toFixed(2) +
+                " min, <b>Start time: </b>" + journey.sessions[0].startTime);
+            let node3 = GUI.makeNode('span', "<b>, Ellapsed time: </b>", journey.referenceRoute.id)
+            GUI.appendChild(node2, node3);
+            GUI.appendChild(node, node2);
+            GUI.appendChild(GUI.routeInfo, node);
+        }
     } else {
         alert("Setup routes first")
     }
@@ -161,38 +166,38 @@ function addCyclistListener() {
     });
 }
 
-
 /**
  * Run the simulation
  */
 function run() {
 
     // This chunk of code records ghost data in the database while the route is active
-
     if (journeyM.areJourneysCompleted()) {
         clearInterval(clicker);
         alert("All journeys finalized");
-    }
-
-    // Record data on database
-    if (connect) {
-        //This is for leaders
-        journeyM.recordLeadersDataOnDataBase(comm);
-        //This is for simulated followers
-        journeyM.recordFollowersDataOnDataBase(comm);
-    }
-    // Run cyclists
-    journeyM.runCyclists(sampleRate);
-    //plot all journeys
-    currentMap.plotJourneys();
-    //plot dataPoints
-    //currentMap.displaySessionMarker[0,0];
-    // plot green waves
-    currentMap.plotGreenWaves();
-    // plot cyclists
-    currentMap.plotCyclists();
-
-    if (journeyM.leaders[0].status == "enabled") {
-        GUI.ellapsedTime.innerHTML = "<b>Ellapsed time: </b>" + (((Date.now() - currentJourney.sessions[0].startTime) / 1000) / 60).toFixed(2) + ' min,';
+    } else {
+        // Record data on database
+        if (connect) {
+            //This is for leaders
+            journeyM.recordLeadersDataOnDataBase(comm);
+            //This is for simulated followers
+            journeyM.recordFollowersDataOnDataBase(comm);
+        }
+        // Run cyclists
+        journeyM.runCyclists(sampleRate);
+        // plot all journeys
+        currentMap.plotJourneys();
+        // Plot green waves
+        currentMap.plotGreenWaves();
+        // Plot cyclists
+        currentMap.plotCyclists();
+        // Update elapsed time in GUI
+        for (const leader of journeyM.leaders) {
+            if (leader.status == 'enabled') {
+                const id = leader.getJourney().referenceRoute.id;
+                let element = document.getElementById(id);
+                element.innerHTML = "<b>, Ellapsed time: </b>" + (((Date.now() - leader.getSession().startTime) / 1000) / 60).toFixed(2) + ' min.'
+            }
+        }
     }
 }

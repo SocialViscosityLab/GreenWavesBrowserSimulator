@@ -326,18 +326,13 @@ class JourneyManager {
             if (cyclist.status == "enabled") {
 
                 // Parameter to send to Firebase
-                // const journeyId = currentJourney.id;
-                // const dataPointDoc = currentJourney.sessions[0].getLastDataPoint().getDoc()
-                // const sessionId = "00000";
-                // const dataPointId = currentJourney.sessions[0].dataPoints.length - 1;
-
                 const journeyId = cyclist.getJourney().id;
                 const dataPointDoc = cyclist.getSession().getLastDataPoint().getDoc()
                 const sessionId = cyclist.getSession().id_session.id;
                 const dataPointId = cyclist.getSession().dataPoints.length - 1;
 
                 //record
-                console.log('recorded for ' + cyclist.id.id + " on journey:" + journeyId + " on session: " + sessionId + " on route: " + cyclist.getJourney().referenceRoute.id);
+                //console.log('recorded for ' + cyclist.id.id + " on journey:" + journeyId + " on session: " + sessionId + " on route: " + cyclist.getJourney().referenceRoute.id);
 
                 // this is to get the latest ghost position. Otherwise it would be necessary to retrieve the entire history of ghost position and select the latest
                 connectionToFirebase.updateCurrentGhostPosition(journeyId, dataPointDoc);
@@ -354,22 +349,20 @@ class JourneyManager {
      */
     recordFollowersDataOnDataBase(connectionToFirebase) {
 
-        if (recordFollowers) {
-            // for followers
-            for (let cyclist of this.followers) {
-                if (cyclist.status == "enabled") {
+        // for followers
+        for (let cyclist of this.followers) {
+            if (cyclist.status == "enabled") {
 
-                    const journeyId = cyclist.getJourney().id;
-                    const dataPointDoc = cyclist.getSession().getLastDataPoint().getDoc()
-                    const sessionId = cyclist.getSession().id_session.id;
-                    const dataPointId = cyclist.getSession().dataPoints.length - 1;
+                const journeyId = cyclist.getJourney().id;
+                const dataPointDoc = cyclist.getSession().getLastDataPoint().getDoc()
+                const sessionId = cyclist.getSession().id_session.id;
+                const dataPointId = cyclist.getSession().dataPoints.length - 1;
 
-                    //record
-                    console.log('recorded for ' + cyclist.id.id + " on journey:" + journeyId + " on session: " + sessionId + " on route: " + cyclist.getJourney().referenceRoute.id);
+                //record
+                console.log('recorded for ' + cyclist.id.id + " on journey:" + journeyId + " on session: " + sessionId + " on route: " + cyclist.getJourney().referenceRoute.id);
 
-                    // this is to update the ghost's history of posititons
-                    connectionToFirebase.addNewDataPointInSession(journeyId, sessionId, dataPointId, dataPointDoc);
-                }
+                // this is to update the ghost's history of posititons
+                connectionToFirebase.addNewDataPointInSession(journeyId, sessionId, dataPointId, dataPointDoc);
             }
         }
     }
