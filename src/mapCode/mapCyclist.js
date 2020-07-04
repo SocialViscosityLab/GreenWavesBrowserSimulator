@@ -45,30 +45,24 @@ class MapCyclist {
         // for the first marker
         if (!this.marker) {
             this.marker = L.marker([this.cyclist.position.lat, this.cyclist.position.lon], { icon: this.blueIcon }).addTo(theMap);
-
-
-            // this.marker = L.circleMarker([this.cyclist.position.lat,this.cyclist.position.lon],
-            //   {color:'blue', fillColor: 'blue', weight:1, stroke:true, radius:5}).addTo(theMap);
-
+            this.currentIcon = this.blueIcon;
         } else {
-            //console.log("Printing cyclist:"+this.cyclist.id.id);
-
             let newLatLng = new L.LatLng(this.cyclist.position.lat, this.cyclist.position.lon);
-
             if (this.cyclist.greenWave) {
-                this.marker.setIcon(this.blueIcon);
+                this.changeIcon(this.blueIcon);
             } else {
-                // change the color of markers according to acceleration direction
-                if (this.cyclist.myAcceleration > 0) {
-                    this.marker.setIcon(this.greenIcon);
+                if (this.cyclist.status == "disabled") {
+                    this.changeIcon(this.purpleIcon);
                 } else {
-                    this.marker.setIcon(this.redIcon);
+                    // change the color of markers according to acceleration direction
+                    if (this.cyclist.myAcceleration > 0) {
+                        this.changeIcon(this.greenIcon);
+                    } else {
+                        this.changeIcon(this.redIcon);
+                    }
                 }
             }
 
-            if (this.cyclist.status == "disabled") {
-                this.marker.setIcon(this.purpleIcon);
-            }
 
             this.marker.setLatLng(newLatLng);
         }
@@ -82,25 +76,29 @@ class MapCyclist {
     plotGhost(theMap) {
         // for the first marker
         if (!this.marker) {
-
             this.marker = L.marker([this.cyclist.position.lat, this.cyclist.position.lon], { icon: this.greenGhost }).addTo(theMap);
-
+            this.currentIcon = this.greenGhost;
         } else {
-
             let newLatLng = new L.LatLng(this.cyclist.position.lat, this.cyclist.position.lon);
-
             if (this.cyclist.status == "disabled") {
 
-                this.marker.setIcon(this.purpleGhost);
+                this.changeIcon(this.purpleGhost);
             }
-
             this.marker.setLatLng(newLatLng);
-
             let greenWaveCount = String(this.cyclist.getFollowersInGreenWave().length) + "/" + String(this.cyclist.getFollowers().length);
-
             this.marker.bindPopup(greenWaveCount);
         }
 
+    }
+
+    /**
+     * This prevents from retrieving the png at each interval
+     * */
+    changeIcon(newIcon) {
+        if (this.currentIcon.options.iconUrl !== newIcon.options.iconUrl) {
+            this.marker.setIcon(newIcon);
+            this.currentIcon = newIcon;
+        }
     }
 
     makeIcon(iconFileName, shadowFileName, x, y) {

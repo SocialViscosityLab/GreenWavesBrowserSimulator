@@ -16,7 +16,7 @@ class JourneyManager {
         this.nextJourneyId = this.currentJourneyId;
     }
 
-    /**
+    /** REVISED
      * Used in main class. It activates the run() method in the function setInterval()
      */
     activate(currentRoutes, ghostInitialSpeed, sampleRate, currentMap) {
@@ -60,6 +60,22 @@ class JourneyManager {
                 // add journey to map
                 if (currentMap) currentMap.setupJourney(journeyTmp, tmpGW);
                 if (currentMap) currentMap.addCyclist(ghostCyclist);
+
+
+                /**** Create Journey on Firebase  ******/
+                if (connect) {
+                    // Adds new journey to firebase
+                    comm.addNewJourney(journeyTmp.id, journeyTmp.referenceRoute.id).then(function() {
+                        // Adds new session to firebase
+                        comm.addNewGhostSession(journeyTmp.id, ghostCyclist).then(function() {
+                            //  Listen when the database journey has new sessions added
+                            comm.listenToJourneySessions(journeyTmp.id)
+                        })
+
+                    });
+
+                }
+
                 // add to collection
                 this.journeys.push(journeyTmp);
             } else {
@@ -123,11 +139,11 @@ class JourneyManager {
 
 
     /**
-     * Adds a cyclist to the nearest journey and creates a session for her
+     * Adds a cyclist to the nearest journey from a mouse click on the map and creates a session for her
      * @param {Event} event The mouse event
      * @return {boolean} true if a new cyclist was added to the route
      */
-    addCyclist(event) {
+    addLocalCyclist(event) {
         let eventLocation = new Position(event.latlng.lat, event.latlng.lng);
         // retrive the journey with the nearest route to event location
         let journeyTmp = this.getNearestTo(eventLocation, 10);
@@ -136,7 +152,7 @@ class JourneyManager {
             // temp id
             let idTmp = { id: journeyTmp.sessions.length + '_follower', journey: journeyTmp.id, route: journeyTmp.referenceRoute.id };
             // create a cyclists
-            let cyclistTmp = new SimulatedCyclist(idTmp, journeyTmp.referenceRoute, eventLocation, 0, true); // 3 is the default speed
+            let cyclistTmp = new SimulatedCyclist(idTmp, journeyTmp.referenceRoute, eventLocation, 0, true); // 0 is the initial speed
             // set leader
             cyclistTmp.setLeader(this.getLeaderForJourney(journeyTmp));
             // Create a session for this cyclist
@@ -156,8 +172,9 @@ class JourneyManager {
 
             // adds a new session in a journey
             if (connect) {
-                comm.addNewFollowerSession(journeyTmp.id, tmpS);
-                console.log("new session added to Firebase in journey " + journeyTmp.id);
+                comm.addNewFollowerSession(journeyTmp.id, cyclistTmp).then(function(value) {
+                    console.log("New session for cyclist " + cyclistTmp.id.id + "  added to Firebase in journey " + journeyTmp.id);
+                });
             }
 
             /**** Visualization of cyclist on map *****/
@@ -171,7 +188,7 @@ class JourneyManager {
 
     /**
      * Adds a remote cyclist to the latest active journey and creates a local session for her
-     * @param {Event} event The communication event triggered when the remote cyclcist joins the db session. see comm.listenToJourneysSessions()
+     * @param {Event} event The communication document retrieved from the database when the remote cyclcist joins the db session. see comm.listenToJourneysSessions()
      */
     addRemoteCyclist(sessionId, event) {
         // retrive the latest journey
@@ -328,9 +345,8 @@ class JourneyManager {
 
     /**
      * Records Leaders data on Firebase as long they are "enabled", i.e. they have not reached the final route point. The recording sample rate is specified by the user on the GUI
-     * @param {Object} connectionToFirebase An instance of Communication
      */
-    recordLeadersDataOnDataBase(connectionToFirebase) {
+    recordLeadersDataOnDataBase() {
         // for leaders
         for (let cyclist of this.leaders) {
             if (cyclist.status == "enabled") {
@@ -342,22 +358,18 @@ class JourneyManager {
                 const dataPointId = cyclist.getSession().dataPoints.length - 1;
 
                 //record
-                //console.log('recorded for ' + cyclist.id.id + " on journey:" + journeyId + " on session: " + sessionId + " on route: " + cyclist.getJourney().referenceRoute.id);
+                //console.log('recorded on journeyId:' + journeyId + ", on sessionId: " + sessionId + ', for cyclistIndex ' + sessionId + ', in dataPointId ' + dataPointId + ", on route: " + cyclist.getJourney().referenceRoute.id);
 
-                // this is to get the latest ghost position. Otherwise it would be necessary to retrieve the entire history of ghost position and select the latest
-                connectionToFirebase.updateCurrentGhostPosition(journeyId, dataPointDoc);
-
-                // this is to update the ghost's history of posititons
-                connectionToFirebase.addNewDataPointInSession(journeyId, sessionId, dataPointId, dataPointDoc);
+                // Update the ghost's history of posititons
+                comm.addNewDataPointInSession(journeyId, sessionId, dataPointId, dataPointDoc);
             }
         }
     }
 
     /**
      * Records followers data on Firebase as long they are "enabled", i.e. they have not reached the final route point. The recording sample rate is specified by the user on the GUI
-     * @param {Object} connectionToFirebase An instance of Communication
      */
-    recordFollowersDataOnDataBase(connectionToFirebase) {
+    recordLocalFollowersDataOnDataBase() {
 
         // for followers
         for (let cyclist of this.followers) {
@@ -365,14 +377,20 @@ class JourneyManager {
 
                 const journeyId = cyclist.getJourney().id;
                 const dataPointDoc = cyclist.getSession().getLastDataPoint().getDoc()
-                const sessionId = cyclist.getSession().id_session.id;
+                const localSessionId = cyclist.getSession().id_session.id;
                 const dataPointId = cyclist.getSession().dataPoints.length - 1;
 
                 //record
-                //console.log('recorded for ' + cyclist.id.id + " on journey:" + journeyId + " on session: " + sessionId + " on route: " + cyclist.getJourney().referenceRoute.id);
-                connectionToFirebase.getSessionIDfromCyclistUserId(journeyId, cyclist.id.id).then(function(sessionIdOnFirebase) {
-                    connectionToFirebase.addNewDataPointInSession(journeyId, sessionIdOnFirebase, dataPointId, dataPointDoc);
-                });
+                //console.log('recorded on journeyId:' + journeyId + ", on sessionId: " + localSessionId + ', for cyclistIndex ' + localSessionId + ', in dataPointId ' + dataPointId + ", on route: " + cyclist.getJourney().referenceRoute.id);
+                //Get the session ID from a cyclist ID on a specific journey
+                comm.getSessionIDfromCyclistUserId(journeyId, cyclist.id.id).then(function(session) {
+                    const cloudSessionID = session.docs[0].id;
+                    console.log(cloudSessionID);
+                    // Update the follower's history of posititons
+                    comm.addNewDataPointInSession(journeyId, cloudSessionID, dataPointId, dataPointDoc);
+                })
+
+
             }
         }
     }

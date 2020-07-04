@@ -1,12 +1,11 @@
 class Communication {
 
     constructor() {
-        this.newJourneyId = 0;
         this.journeys = db.collection('journeys');
         this.routes = db.collection('routes');
     }
 
-    /**
+    /** REVISED DEPRECATED
      * Consult the journey's id on the database and generate the next 
      * one in the sequence
      * @deprecated Since July 3, 2020 use getNewJourneyId2. It reduces the download burden on the database.
@@ -24,12 +23,12 @@ class Communication {
             });
             let zeros = "00000";
             let journeyId = (zeros + (jId + 1)).slice(-zeros.length);
-            this.newJourneyId = journeyId;
+            Communication.newJourneyId = journeyId;
         });
         return promise;
     }
 
-    /**
+    /** REVISED
      * Consult the journey's id on the database and generate the next 
      * one in the sequence. Journeys must have an 'id' field. Implemented since July 3, 2020
      */
@@ -38,7 +37,7 @@ class Communication {
         for (const iterator of lastJourney.docs) {
             let zeros = "00000";
             let journeyId = (zeros + (Number(iterator.id) + 1)).slice(-zeros.length);
-            this.newJourneyId = journeyId;
+            Communication.newJourneyId = journeyId;
         }
         return lastJourney;
     }
@@ -177,7 +176,7 @@ class Communication {
     }
 
 
-    /**
+    /** REVISED
      * Gets all the route names stored in Firebase. Names added since July 3 2020
      */
     async getAvailableRoutes() {
@@ -201,57 +200,60 @@ class Communication {
     }
 
 
-    /**
-     * Listen to a specific journey and returns any session that 
-     * presents a change in it.
-     * It is used to
+    /** REVISED
+     * Listen to a specific journey. If there is an addition to the session list, a new cyclists id added to the Journey Manager
      * @param {String} journeyId 
      */
-    listenToJourneysSessions(journeyId) {
+    listenToJourneySessions(journeyId) {
         var sessions = this.journeys.doc(journeyId).collection("sessions").where("index", '>', "00000")
             .onSnapshot(function(docSnapShot) {
-                docSnapShot.forEach(function(doc) {
-                    if (doc.id !== "00000") {
-                        let changingSession = doc.data();
-                        journeyM.addRemoteCyclist(doc.id, changingSession);
-                        return changingSession;
+                docSnapShot.docChanges().forEach(function(change) {
+                    //console.log(change);
+                    if (change.type == 'added') {
+                        let changingSession = change.doc.data();
+                        /**
+                         * Add a remote Cycilst to the journey Manager only if it is not simulated because
+                         * simulated cyclists have been added already in the click event on Main.
+                         */
+                        if (!changingSession.isSimulated) {
+                            journeyM.addRemoteCyclist(change.doc.id, changingSession);
+                        }
                     }
-                })
+                });
             });
         return sessions;
     }
 
 
-    /**
+    /** REVISED
      * Sends a new rout with a specific Id to defined
      * positionPoints to the database
      * @param {String} id 
      * @param {JSON} positionPoints 
      */
-    addNewRoute(id, positionPoints) {
+    async addNewRoute(id, positionPoints) {
         // get the routes on firebase
-        let routesOnFirebase = this.getAvailableRoutes();
-        // obce retrieved
-        routesOnFirebase.then(function(element) {
-            // verufy if the name exists already
-            if (element.includes(id)) {
-                alert(id + " exists on database. Not replaced")
-            } else {
-                // add it to firebase if the name does not exist
-                for (var i = 0; i <= positionPoints.length; i++) {
-                    if (positionPoints[i] != undefined) {
-                        let zeros = "000";
-                        let ppId = (zeros + i).slice(-zeros.length);
-                        this.routes.doc(id).collection('position_points').doc(ppId).set(positionPoints[i]);
-                        this.routes.doc(id).set({ name: id, loop: false, date: new Date() });
-                    }
+        let routesOnFirebase = await this.getAvailableRoutes();
+        // once retrieved
+        // verify if the name exists already
+        if (routesOnFirebase.includes(id)) {
+            console.log("Route " + id + " exists on database. Not replaced!")
+        } else {
+            // add it to firebase if the name does not exist
+            for (var i = 0; i <= positionPoints.length; i++) {
+                if (positionPoints[i] != undefined) {
+                    let zeros = "000";
+                    let ppId = (zeros + i).slice(-zeros.length);
+                    await this.routes.doc(id).collection('position_points').doc(ppId).set(positionPoints[i]);
                 }
             }
-        });
+            await this.routes.doc(id).set({ name: id, loop: false, date: new Date() });
+            console.log("Route " + id + " added to database");
+        }
     }
 
 
-    /**
+    /** REVISED
      * Switch the loop's value on a specific route
      * @param {String} id 
      * @param {Boolean} loop 
@@ -261,7 +263,7 @@ class Communication {
     }
 
 
-    /**
+    /** REVISED
      * Sets a new journey on the database with a specific id and a 
      * reference route
      * @param {String} id 
@@ -269,28 +271,30 @@ class Communication {
      */
     addNewJourney(id, refRouteId) {
         let refRoute = this.routes.doc(refRouteId);
-        this.journeys.doc(id).set({ id: id, reference_route: refRoute });
-        console.log("new journey added");
+        return this.journeys.doc(id).set({ id: id, reference_route: refRoute, date: new Date() });
     }
 
 
-    /**
+    /** REVISED
      * Adds a new new Ghost's session on a specific journey
-     * @param {String} journeyId 
+     * @param {String} journeyId
+     * @param {Cyclist} ghost
      */
-    addNewGhostSession(jId) {
+    addNewGhostSession(jId, ghost) {
         let journeyId = "" + jId;
         let time = new Date();
         let startTime = time.getFullYear() + "/" + (time.getMonth() + 1) + "/" + time.getDate() + " - " + time.getHours() + ":" + time.getMinutes() + ":" + time.getSeconds();
         let metaData = {
             index: "00000",
-            id_user: "ghost",
-            start_time: startTime
+            id_user: ghost.id.id,
+            start_time: startTime,
+            isSimulated: ghost.isSimulated
         };
-        this.journeys.doc(journeyId).collection('sessions').doc("00000").set(metaData);
+        return this.journeys.doc(journeyId).collection('sessions').doc("00000").set(metaData);
     }
 
-    /**
+
+    /** REVISED
      * Consult the session's id on the database and generate the next 
      * one in the sequence. Sessions must have an 'index' field. Implemented since July 3, 2020
      */
@@ -306,36 +310,38 @@ class Communication {
         return sessionId;
     }
 
-    /**
+
+    /** REVISED
      * Adds a new new follower session on a specific journey
      * @param {String} journeyId
-     * @param {Session} session 
+     * @param {Session} cyclist 
      */
-    async addNewFollowerSession(jId, session) {
+    async addNewFollowerSession(jId, cyclist) {
         let journeyId = "" + jId;
         let time = new Date();
         let startTime = time.getFullYear() + "/" + (time.getMonth() + 1) + "/" + time.getDate() + " - " + time.getHours() + ":" + time.getMinutes() + ":" + time.getSeconds();
-        this.getNewSessionId(journeyId).then(function(newId) {
-            let metaData = {
-                index: newId,
-                id_user: session.id_session.id,
-                start_time: startTime
-            };
-            // console.log(metaData);
-            db.collection('journeys').doc(journeyId).collection('sessions').doc(newId).set(metaData);
-            //console.log("metaData added");
-        });
+        let sessionID = await this.getNewSessionId(journeyId);
+        let metaData = {
+            index: sessionID,
+            id_user: cyclist.id.id,
+            start_time: startTime,
+            isSimulated: cyclist.isSimulated
+        };
+        // console.log(metaData);
+        let completion = db.collection('journeys').doc(journeyId).collection('sessions').doc(sessionID).set(metaData);
+        //console.log("metaData added");
+        return completion;
     }
 
 
-    /**
+    /** REVISED
      * Adds a new datapoint document with a specific id in a specific session from a specific journey
      * @param {String} jId 
      * @param {String} sessionId 
      * @param {Integer} dpId 
      * @param {JSON} dataPointDoc 
      */
-    async addNewDataPointInSession(jId, sessionId, dpId, dataPointDoc) {
+    addNewDataPointInSession(jId, sessionId, dpId, dataPointDoc) {
         let journeyId = "" + jId;
         let dataPointId = "" + dpId;
         let zero_filled = '00000';
@@ -349,11 +355,11 @@ class Communication {
      * @param {String} id_session 
      * @returns {Promise,JSON} Session_json
      */
-    async getSessionIDfromCyclistUserId(id_journey, id_cyclist) {
+    getSessionIDfromCyclistUserId(id_journey, user_id) {
         // console.log("journey: " + id_journey + ",  cyclist:" + id_cyclist)
-        const session = await this.journeys.doc(id_journey).collection('sessions').where("id_user", "==", id_cyclist).get();
+        const session = this.journeys.doc(id_journey).collection('sessions').where("id_user", "==", user_id).get();
         // console.log(session.docs[0].id);
-        return session.docs[0].id;
+        return session; //.docs[0].id;
     }
 
     /**
@@ -361,7 +367,7 @@ class Communication {
      * @param {String} jId 
      * @param {JSON} dataPointDoc 
      */
-    updateCurrentGhostPosition(jId, dataPointDoc) {
+    updateGhostPosition(jId, dataPointDoc) {
         let journeyId = "" + jId;
         this.journeys.doc(journeyId).collection('sessions').doc("00000").update({ current_ghost_position: dataPointDoc });
     }
@@ -422,3 +428,4 @@ class Communication {
             });
     }
 }
+Communication.newJourneyId = "00000";
