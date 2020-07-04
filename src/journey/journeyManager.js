@@ -19,7 +19,7 @@ class JourneyManager {
     /**
      * Used in main class. It activates the run() method in the function setInterval()
      */
-    activate(currentRoutes, ghostSpeed, sampleRate, currentMap) {
+    activate(currentRoutes, ghostInitialSpeed, sampleRate, currentMap) {
         for (let routeTmp of currentRoutes) {
             if (routeTmp != undefined) {
                 // Instantiate journey
@@ -31,9 +31,9 @@ class JourneyManager {
                 // cyclist temp id
                 let idTmp = { id: 0 + '_ghost', journey: journeyTmp.id, route: routeTmp.id };
                 // ghost cyclist
-                let ghostCyclist = new Cyclist(idTmp, journeyTmp.referenceRoute, journeyTmp.referenceRoute.routePoints[0], ghostSpeed, true);
+                let ghostCyclist = new SimulatedCyclist(idTmp, journeyTmp.referenceRoute, journeyTmp.referenceRoute.routePoints[0], ghostInitialSpeed, true);
                 // set ghost's target speed
-                ghostCyclist.targetSpeed = ghostSpeed;
+                ghostCyclist.targetSpeed = Number(GUI.speed.value);
                 // Create a session for this cyclist
                 let tmpS = new Session("00000", ghostCyclist.id);
                 // Insert the session at the begining of journey sessions
@@ -48,6 +48,8 @@ class JourneyManager {
                 ghostCyclist.subscribe(tmpS);
                 // Subscribe the green wave as observer to the cyclists
                 ghostCyclist.subscribe(tmpGW);
+                // initialize observers
+                ghostCyclist.initializeObservers();
                 // add ghost to cyclist collection
                 this.leaders.unshift(ghostCyclist);
                 // greenWaves
@@ -82,10 +84,9 @@ class JourneyManager {
                 // cyclist temp id
                 let idTmp = { id: session.user_id, journey: journeyTmp.id, route: 'reference route' };
                 // ghost cyclist
-                let tempCyclist = new Cyclist(idTmp, journeyTmp.referenceRoute, journeyTmp.referenceRoute.routePoints[0], 0, false);
+                let tempCyclist = new SimulatedCyclist(idTmp, journeyTmp.referenceRoute, journeyTmp.referenceRoute.routePoints[0], 0, false);
                 // Create a session for this cyclist
                 let tmpS = new Session(session.user_id, tempCyclist.id);
-
 
                 let dp_array = session.data_points
                 for (let dp in dp_array) {
@@ -103,7 +104,6 @@ class JourneyManager {
                     let tmpGW = new GreenWave(journeyTmp, Number(0));
                     // Subscribe the green wave as observer to the cyclists
                     tempCyclist.subscribe(tmpGW);
-
                     // add ghost to cyclist collection
                     this.leaders.unshift(tempCyclist);
                     // greenWaves
@@ -136,7 +136,7 @@ class JourneyManager {
             // temp id
             let idTmp = { id: journeyTmp.sessions.length + '_follower', journey: journeyTmp.id, route: journeyTmp.referenceRoute.id };
             // create a cyclists
-            let cyclistTmp = new Cyclist(idTmp, journeyTmp.referenceRoute, eventLocation, 3, true); // 3 is the default speed
+            let cyclistTmp = new SimulatedCyclist(idTmp, journeyTmp.referenceRoute, eventLocation, 0, true); // 3 is the default speed
             // set leader
             cyclistTmp.setLeader(this.getLeaderForJourney(journeyTmp));
             // Create a session for this cyclist
@@ -149,8 +149,16 @@ class JourneyManager {
             cyclistTmp.subscribe(tmpS);
             // Subscribe this cyclist as observer of the leader's
             this.getLeaderForJourney(journeyTmp).subscribe(cyclistTmp);
+            // initialize observers
+            cyclistTmp.initializeObservers();
             // add cyclist to cyclist collection
             this.followers.push(cyclistTmp);
+
+            // adds a new session in a journey
+            if (connect) {
+                comm.addNewFollowerSession(journeyTmp.id, tmpS);
+                console.log("new session added to Firebase in journey " + journeyTmp.id);
+            }
 
             /**** Visualization of cyclist on map *****/
             if (currentMap) currentMap.addCyclist(cyclistTmp);
@@ -163,13 +171,9 @@ class JourneyManager {
 
     /**
      * Adds a remote cyclist to the latest active journey and creates a local session for her
-     * @param {Event} event The communication event triggered when the remote cyclcist joins the db session
+     * @param {Event} event The communication event triggered when the remote cyclcist joins the db session. see comm.listenToJourneysSessions()
      */
     addRemoteCyclist(sessionId, event) {
-        //current_position: {acceleration: 0, latitude: 40.1149175, longitude: -88.22143, speed: 0, suggestion: -1, …}
-        //id_user: "mTgx1snPoAaYr3aCwKemtyIJNw63"
-        //start_time: "2019/1/7 - 21:10:54"
-
         // retrive the latest journey
         let journeyTmp = this.getCurrentJourney();
 
@@ -205,7 +209,7 @@ class JourneyManager {
                 // temp id
                 let idTmp = { id: event.id_user, journey: journeyTmp.id, route: journeyTmp.referenceRoute.id };
                 // create a cyclists
-                let cyclistTmp = new Cyclist(idTmp, journeyTmp.referenceRoute, eventLocation, event.current_position.speed, false);
+                let cyclistTmp = new ActualCyclist(idTmp, journeyTmp.referenceRoute, eventLocation, event.current_position.speed, false);
                 // set leader
                 cyclistTmp.setLeader(this.getLeaderForJourney(journeyTmp));
                 // Create a local session for this cyclist
@@ -225,8 +229,8 @@ class JourneyManager {
 
     /**
      * Adds a remote cyclist to the latest active journey and creates a local session for her
-     * @param {Event} event The communication event triggered when the remote cyclcist joins the db session
-     * @todo addecuate the method in order to receive datapoints from the loaded jsons and store them in the session object
+     * @param {Event} event The communication event triggered when the remote cyclist joins the db session
+     * @todo adecuate the method in order to receive datapoints from the loaded jsons and store them in the session object
      */
     importCyclistData(sessionId, event) {
         //current_position: {acceleration: 0, latitude: 40.1149175, longitude: -88.22143, speed: 0, suggestion: -1, …}
@@ -265,7 +269,7 @@ class JourneyManager {
             // temp id
             let idTmp = { id: event.id_user, journey: journeyTmp.id, route: journeyTmp.referenceRoute.id };
             // create a cyclists
-            let cyclistTmp = new Cyclist(idTmp, journeyTmp.referenceRoute, eventLocation, event.current_position.speed, false);
+            let cyclistTmp = new SimulatedCyclist(idTmp, journeyTmp.referenceRoute, eventLocation, event.current_position.speed, false);
             // set leader
             cyclistTmp.setLeader(this.getLeaderForJourney(journeyTmp));
             // Create a local session for this cyclist
@@ -274,6 +278,10 @@ class JourneyManager {
             journeyTmp.sessions.push(tmpS);
             // Subscribe the session as observer to the cyclists
             cyclistTmp.subscribe(tmpS);
+            /**** might need to invoke 
+             initialize observers
+             cyclistTmp.initializeObservers();
+             */
             // add cyclist to cyclist collection
             this.followers.push(cyclistTmp);
 
@@ -361,10 +369,10 @@ class JourneyManager {
                 const dataPointId = cyclist.getSession().dataPoints.length - 1;
 
                 //record
-                console.log('recorded for ' + cyclist.id.id + " on journey:" + journeyId + " on session: " + sessionId + " on route: " + cyclist.getJourney().referenceRoute.id);
-
-                // this is to update the ghost's history of posititons
-                connectionToFirebase.addNewDataPointInSession(journeyId, sessionId, dataPointId, dataPointDoc);
+                //console.log('recorded for ' + cyclist.id.id + " on journey:" + journeyId + " on session: " + sessionId + " on route: " + cyclist.getJourney().referenceRoute.id);
+                connectionToFirebase.getSessionIDfromCyclistUserId(journeyId, cyclist.id.id).then(function(sessionIdOnFirebase) {
+                    connectionToFirebase.addNewDataPointInSession(journeyId, sessionIdOnFirebase, dataPointId, dataPointDoc);
+                });
             }
         }
     }
@@ -424,17 +432,18 @@ class JourneyManager {
     }
 
     getNextJourneyId() {
+
         this.currentJourneyId = this.nextJourneyId;
         // convert from string to number
         let num = Number(this.currentJourneyId);
-        // increase numbre by 1
+        // increase number by 1
         num++;
         // trim string's tail by the decimal places of num
-        let tmp = this.currentJourneyId.slice(0, -String(num).length);
+        let tmp = String(this.currentJourneyId).slice(0, -String(num).length);
         // update current ID
         this.nextJourneyId = tmp + num;
         // show ID
-        //console.log(this.currentJourneyId);
+        // console.log(this.currentJourneyId);
     }
 
     /** 

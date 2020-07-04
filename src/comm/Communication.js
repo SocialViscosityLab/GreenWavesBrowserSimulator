@@ -1,15 +1,19 @@
 class Communication {
+
     constructor() {
         this.newJourneyId = 0;
+        this.journeys = db.collection('journeys');
+        this.routes = db.collection('routes');
     }
 
     /**
      * Consult the journey's id on the database and generate the next 
      * one in the sequence
+     * @deprecated Since July 3, 2020 use getNewJourneyId2. It reduces the download burden on the database.
      */
     getNewJourneyId() {
         let jId = 0;
-        var journeys = db.collection('journeys').get().then(snapshot => {
+        let promise = this.journeys.get().then(snapshot => {
             snapshot.forEach(doc => {
                 let id = parseInt(doc.id);
                 if (id !== null) {
@@ -21,11 +25,23 @@ class Communication {
             let zeros = "00000";
             let journeyId = (zeros + (jId + 1)).slice(-zeros.length);
             this.newJourneyId = journeyId;
-
         });
-        return journeys;
+        return promise;
     }
 
+    /**
+     * Consult the journey's id on the database and generate the next 
+     * one in the sequence. Journeys must have an 'id' field. Implemented since July 3, 2020
+     */
+    async getNewJourneyId2() {
+        const lastJourney = await this.journeys.orderBy('id', 'desc').limit(1).get();
+        for (const iterator of lastJourney.docs) {
+            let zeros = "00000";
+            let journeyId = (zeros + (Number(iterator.id) + 1)).slice(-zeros.length);
+            this.newJourneyId = journeyId;
+        }
+        return lastJourney;
+    }
 
     /**
      * Returns the json object from a specific session 
@@ -38,7 +54,7 @@ class Communication {
         console.log("getting session" + id_session);
         let session_json;
         let data_points_array = {};
-        let doc_ref = db.collection('journeys').doc(id_journey).collection('sessions').doc(id_session);
+        let doc_ref = this.journeys.doc(id_journey).collection('sessions').doc(id_session);
 
         return doc_ref.get().then(doc => {
                 let session_data = doc.data()
@@ -79,7 +95,7 @@ class Communication {
     getGhostSession(id_journey) {
         let session_json
         let data_points_array = {}
-        let doc_ref = db.collection('journeys').doc(id_journey).collection('sessions').doc('00000');
+        let doc_ref = this.journeys.doc(id_journey).collection('sessions').doc('00000');
 
         return doc_ref.get().then(doc => {
                 let session_data = doc.data()
@@ -119,7 +135,7 @@ class Communication {
     getJourney(journeyId) {
         let journey
         let routeRef
-        let journeyRef = db.collection('journeys').doc(journeyId)
+        let journeyRef = this.journeys.doc(journeyId)
 
         return journeyRef.get().then(doc => {
                 routeRef = doc.data().reference_route.id
@@ -161,6 +177,19 @@ class Communication {
     }
 
 
+    /**
+     * Gets all the route names stored in Firebase. Names added since July 3 2020
+     */
+    async getAvailableRoutes() {
+        let routeNames = [];
+        const tmpRoutes = await this.routes.get();
+        for (const iterator of tmpRoutes.docs) {
+            // console.log(iterator.data());
+            routeNames.push(iterator.data().name);
+        }
+        return routeNames;
+    }
+
 
     /**
      * Format a number with the id format used on the database
@@ -174,11 +203,12 @@ class Communication {
 
     /**
      * Listen to a specific journey and returns any session that 
-     * presents a change in it
+     * presents a change in it.
+     * It is used to
      * @param {String} journeyId 
      */
     listenToJourneysSessions(journeyId) {
-        var sessions = db.collection("journeys").doc(journeyId).collection("sessions")
+        var sessions = this.journeys.doc(journeyId).collection("sessions").where("index", '>', "00000")
             .onSnapshot(function(docSnapShot) {
                 docSnapShot.forEach(function(doc) {
                     if (doc.id !== "00000") {
@@ -199,15 +229,25 @@ class Communication {
      * @param {JSON} positionPoints 
      */
     addNewRoute(id, positionPoints) {
-        for (var i = 0; i <= positionPoints.length; i++) {
-            if (positionPoints[i] != undefined) {
-                let zeros = "000";
-                let ppId = (zeros + i).slice(-zeros.length);
-                db.collection('routes').doc(id).collection('position_points').doc(ppId).set(positionPoints[i]);
-                db.collection('routes').doc(id).set({ loop: false });
-
+        // get the routes on firebase
+        let routesOnFirebase = this.getAvailableRoutes();
+        // obce retrieved
+        routesOnFirebase.then(function(element) {
+            // verufy if the name exists already
+            if (element.includes(id)) {
+                alert(id + " exists on database. Not replaced")
+            } else {
+                // add it to firebase if the name does not exist
+                for (var i = 0; i <= positionPoints.length; i++) {
+                    if (positionPoints[i] != undefined) {
+                        let zeros = "000";
+                        let ppId = (zeros + i).slice(-zeros.length);
+                        this.routes.doc(id).collection('position_points').doc(ppId).set(positionPoints[i]);
+                        this.routes.doc(id).set({ name: id, loop: false, date: new Date() });
+                    }
+                }
             }
-        }
+        });
     }
 
 
@@ -217,7 +257,7 @@ class Communication {
      * @param {Boolean} loop 
      */
     setRouteLoop(id, loop) {
-        db.collection('routes').doc(id).set({ loop: loop });
+        this.routes.doc(id).set({ loop: loop });
     }
 
 
@@ -228,8 +268,8 @@ class Communication {
      * @param {String} refRouteId 
      */
     addNewJourney(id, refRouteId) {
-        let refRoute = db.collection('routes').doc(refRouteId);
-        db.collection('journeys').doc(id).set({ reference_route: refRoute });
+        let refRoute = this.routes.doc(refRouteId);
+        this.journeys.doc(id).set({ id: id, reference_route: refRoute });
         console.log("new journey added");
     }
 
@@ -243,22 +283,59 @@ class Communication {
         let time = new Date();
         let startTime = time.getFullYear() + "/" + (time.getMonth() + 1) + "/" + time.getDate() + " - " + time.getHours() + ":" + time.getMinutes() + ":" + time.getSeconds();
         let metaData = {
+            index: "00000",
             id_user: "ghost",
             start_time: startTime
         };
-        db.collection('journeys').doc(journeyId).collection('sessions').doc("00000").set(metaData);
-        console.log("metaData added");
+        this.journeys.doc(journeyId).collection('sessions').doc("00000").set(metaData);
+    }
+
+    /**
+     * Consult the session's id on the database and generate the next 
+     * one in the sequence. Sessions must have an 'index' field. Implemented since July 3, 2020
+     */
+    async getNewSessionId(id_journey) {
+        const lastSession = await this.journeys.doc(id_journey).collection('sessions').orderBy('index', 'desc').limit(1).get();
+        //console.log(lastSession)
+        let sessionId;
+        for (const iterator of lastSession.docs) {
+            let zeros = "00000";
+            sessionId = (zeros + (Number(iterator.id) + 1)).slice(-zeros.length);
+        }
+        //console.log(sessionId);
+        return sessionId;
+    }
+
+    /**
+     * Adds a new new follower session on a specific journey
+     * @param {String} journeyId
+     * @param {Session} session 
+     */
+    async addNewFollowerSession(jId, session) {
+        let journeyId = "" + jId;
+        let time = new Date();
+        let startTime = time.getFullYear() + "/" + (time.getMonth() + 1) + "/" + time.getDate() + " - " + time.getHours() + ":" + time.getMinutes() + ":" + time.getSeconds();
+        this.getNewSessionId(journeyId).then(function(newId) {
+            let metaData = {
+                index: newId,
+                id_user: session.id_session.id,
+                start_time: startTime
+            };
+            // console.log(metaData);
+            db.collection('journeys').doc(journeyId).collection('sessions').doc(newId).set(metaData);
+            //console.log("metaData added");
+        });
     }
 
 
     /**
-     * Adds a new datapoint document with a specific id in a sepecific session from a specific journey
+     * Adds a new datapoint document with a specific id in a specific session from a specific journey
      * @param {String} jId 
      * @param {String} sessionId 
      * @param {Integer} dpId 
      * @param {JSON} dataPointDoc 
      */
-    addNewDataPointInSession(jId, sessionId, dpId, dataPointDoc) {
+    async addNewDataPointInSession(jId, sessionId, dpId, dataPointDoc) {
         let journeyId = "" + jId;
         let dataPointId = "" + dpId;
         let zero_filled = '00000';
@@ -266,6 +343,18 @@ class Communication {
         db.collection('journeys').doc(journeyId).collection('sessions').doc(sessionId).collection("data_points").doc(filledDataPointId).set(dataPointDoc);
     }
 
+    /**
+     * Returns the session from a cyclist ID on a specific journey
+     * @param {String} id_journey 
+     * @param {String} id_session 
+     * @returns {Promise,JSON} Session_json
+     */
+    async getSessionIDfromCyclistUserId(id_journey, id_cyclist) {
+        // console.log("journey: " + id_journey + ",  cyclist:" + id_cyclist)
+        const session = await this.journeys.doc(id_journey).collection('sessions').where("id_user", "==", id_cyclist).get();
+        // console.log(session.docs[0].id);
+        return session.docs[0].id;
+    }
 
     /**
      * Update the current ghost position on the database from a specific journey
@@ -274,7 +363,7 @@ class Communication {
      */
     updateCurrentGhostPosition(jId, dataPointDoc) {
         let journeyId = "" + jId;
-        db.collection('journeys').doc(journeyId).collection('sessions').doc("00000").update({ current_ghost_position: dataPointDoc });
+        this.journeys.doc(journeyId).collection('sessions').doc("00000").update({ current_ghost_position: dataPointDoc });
     }
 
 
@@ -287,7 +376,7 @@ class Communication {
         let journeyId = '00000'
         let sessionId = '00000'
 
-        return db.collection('journeys').get()
+        return this.journeys.get()
             .then(snapshot => {
                 snapshot.forEach(doc => {
                     let id = parseInt(doc.id);
@@ -299,7 +388,7 @@ class Communication {
                 });
                 journeyId = this.formatID(jId)
                     //console.log('Last journey found: '+journeyId)
-                return db.collection('journeys').doc(journeyId).collection('sessions').get();
+                return this.journeys.doc(journeyId).collection('sessions').get();
             })
             .then(snapshot => {
                 let sId = 0;
@@ -313,7 +402,7 @@ class Communication {
                 });
                 sessionId = this.formatID(sId)
                     //console.log('Last session found: '+sessionId)
-                let doc_ref = db.collection('journeys').doc(journeyId).collection('sessions').doc(sessionId);
+                let doc_ref = this.journeys.doc(journeyId).collection('sessions').doc(sessionId);
                 return doc_ref.get()
             })
             .then(doc => {

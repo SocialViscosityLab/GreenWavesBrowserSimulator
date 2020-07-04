@@ -12,7 +12,7 @@ class DataPoint {
         this.speed = speed;
         this.time = time;
         // suggestion: computed locally by the cyclists mobile phone. It requires the leader's (ghost) positions to do such computation.
-        this.suggestion = 'no suggestion';
+        this.suggestion = '---';
         // The coordiantes are geodesic is they are expressed in latitute and longitude. Else are polar if they are expressed in radians.
         this.positionFormat = "geodesic";
     }

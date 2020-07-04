@@ -68,7 +68,7 @@ function activateJourneyDelayed() {
 
 function createAndActivateJourney() {
     if (connect) {
-        comm.getNewJourneyId().then(activateJourneys);
+        comm.getNewJourneyId2().then(activateJourneys);
     } else {
         window.setTimeout(activateJourneys, GUI.ghostDelay.value * 1000);
     }
@@ -90,7 +90,7 @@ function switchRouteLoop() {
  */
 function activateJourneys() {
     // activate all the journeys
-    let ghostSpeed = Number(GUI.speed.value);
+    let ghostSpeed = 0; //Number(GUI.speed.value);
     sampleRate = Number(GUI.sampleRate.value);
     if (routeM.routes.length > 0) {
         if (connect) {
@@ -109,10 +109,9 @@ function activateJourneys() {
                 comm.addNewJourney(journey.id, journey.referenceRoute.id);
                 // Adds new session to firebase
                 comm.addNewGhostSession(journey.id);
-                // Activates session change listener in firebase
+                // Activates session change listener in Firebase.
                 comm.listenToJourneysSessions(journey.id);
             }
-
         }
         // Update GUI with route computations
         for (const journey of journeyM.journeys) {
@@ -168,32 +167,32 @@ function addCyclistListener() {
  */
 function run() {
 
-    if (journeyM.areJourneysCompleted()) {
-        clearInterval(clicker);
-        alert("All journeys finalized");
-    } else {
-        // Record cyclists' data in the database while there are active journeys
-        if (connect) {
-            //This is for leaders
-            journeyM.recordLeadersDataOnDataBase(comm);
-            //This is for simulated followers
-            journeyM.recordFollowersDataOnDataBase(comm);
-        }
-        // Run cyclists
-        journeyM.runCyclists(sampleRate);
-        // plot all journeys
-        currentMap.plotJourneys();
-        // Plot green waves
-        currentMap.plotGreenWaves();
-        // Plot cyclists
-        currentMap.plotCyclists();
-        // Update elapsed time in GUI
-        for (const leader of journeyM.leaders) {
-            if (leader.status == 'enabled') {
-                const id = leader.getJourney().referenceRoute.id;
-                let element = document.getElementById(id);
-                element.innerHTML = "<b>, Ellapsed time: </b>" + (((Date.now() - leader.getSession().startTime) / 1000) / 60).toFixed(2) + ' min.'
-            }
+    // if (journeyM.areJourneysCompleted()) {
+    //     clearInterval(clicker);
+    //     alert("All journeys finalized");
+    // } else {
+    // Record cyclists' data in the database while there are active journeys
+    if (connect) {
+        //This is for leaders
+        journeyM.recordLeadersDataOnDataBase(comm);
+        //This is for simulated followers
+        journeyM.recordFollowersDataOnDataBase(comm);
+    }
+    // Run cyclists
+    journeyM.runCyclists(sampleRate);
+    // plot all journeys
+    currentMap.plotJourneys();
+    // Plot green waves
+    currentMap.plotGreenWaves();
+    // Plot cyclists
+    currentMap.plotCyclists();
+    // Update elapsed time in GUI
+    for (const leader of journeyM.leaders) {
+        if (leader.status == 'enabled') {
+            const id = leader.getJourney().referenceRoute.id;
+            let element = document.getElementById(id);
+            element.innerHTML = "<b>, Ellapsed time: </b>" + (((Date.now() - leader.getSession().startTime) / 1000) / 60).toFixed(2) + ' min.'
         }
     }
+    //}
 }

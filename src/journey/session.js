@@ -90,8 +90,8 @@ class Session {
      * @param DataPoint
      * Add a new datapoint to the list
      */
-    addDataPoin(data_point) {
-        this.dataPoints.push(data_point)
+    addDataPoint(data_point) {
+        this.dataPoints.push(data_point);
     }
 
     /**

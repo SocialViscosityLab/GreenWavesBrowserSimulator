@@ -46,7 +46,7 @@ class RouteManager {
                 [40.10146, -88.233385]
             ];
             // initialize route
-            routeTmp = new Route("Pilot route");
+            routeTmp = new Route("Pilot_route");
             routeTmp.initiateRoutePoints(points);
             // add route to map
             currentMap.setupRoute(routeTmp);

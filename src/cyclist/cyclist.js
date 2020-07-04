@@ -1,5 +1,5 @@
 /**
- * This class defines a hybrid unit composed by one rider and one bicycle.
+ * This abstract class defines a hybrid unit composed by one rider and one bicycle. It is extended by SimulatedCyclist and ActualCyclist
  *
  * DEFINITIONS <br> (Reference book: Vehicle Dynamics and Control, Rajamani, First Edition) <br><br>
  * SPACING ERROR: the actual spacing from the preceding vehicle and the desired inter-vehicle spacing. <br>
@@ -28,16 +28,13 @@ class Cyclist {
         // the current route on which this cyclist is running
         this.myRoute = route;
 
-        // Current data point of the cyclist
-        this.currentDataPoint;
-
         // Kinematic Variables
         this.position = position;
         this.mySpeed = speed; // the agent's current speed
         this.myAcceleration = 0; // the agent's current acceleration
         //this.distance = 0; // the distance elapsed from the origin
         this.step = 0; // the distance to move from current position
-        this.latestSuggestion = 'up'; // String: up, down, mantain 
+        this.latestSuggestion = 'none'; // String: none, up, down, mantain
         this.targetSpeed = GUI.speed; // the leader's target. The leader gets its target speed from user input
         // relative time
         this.timeCounter = 0;
@@ -64,36 +61,7 @@ class Cyclist {
         this.designKSimple = 0.35; // the lower the value, the slower the
         this.designKAdaptive = 0.1;
 
-        this.ciclistStarted = false;
-    }
-
-    /** Private Makes a datapoint with current properties of this cyclists
-     */
-    generateDataPoint() {
-        let datapoint = new DataPoint(this.myAcceleration, this.position, this.mySpeed, this.timeCounter);
-        this.timeCounter += (sampleRate * 1000);
-        return (datapoint)
-    }
-
-    setDataPoint(acc, pos, speed, time) {
-        this.myAcceleration = acc;
-        this.position = pos;
-        this.mySpeed = speed;
-        this.timeCounter = time;
-        this.currentDataPoint = new DataPoint(acc, pos, speed, time)
-    }
-
-    /** Subscribe as observer to this cyclist
-    https://pawelgrzybek.com/the-observer-pattern-in-javascript-explained/
-    */
-    subscribe(observer) {
-        this.observers.push(observer);
-        // notify
-        if (this.isSimulated) {
-            this.notifyObservers(this.generateDataPoint());
-        } else {
-            this.notifyObservers(this.currentDataPoint);
-        }
+        // this.ciclistStarted = false;
     }
 
     /** Unubscribe from this cyclist
@@ -197,123 +165,15 @@ class Cyclist {
     }
 
     getSuggestion(initial, suggested) {
-        const rtn;
-        if (initial && suggested) {
-            if (initial < suggested) {
-                rtn = 'up';
-            } else if (initial > suggested) {
-                rtn = 'down'
-            } else {
-                rtn = 'mantain'
-            }
+        let rtn;
+        if (initial < suggested) {
+            rtn = 'up';
+        } else if (initial > suggested) {
+            rtn = 'down'
+        } else {
+            rtn = 'mantain'
         }
         return rtn;
-    }
-
-    run(sampleRate) {
-        // If the route is not completed and the cyclists is enabled
-        //if (this.position !== this.myRoute.getLastSegment().end && this.status == "enabled"){
-        if (this.status == "enabled") {
-            if (this.isSimulated) {
-                if (this.myRoute.loop) {
-                    // get the stepLength
-                    let step = this.getStep(sampleRate);
-                    // Ask the route for the location of the step
-                    let tmpPosition = this.myRoute.getPosition(this.position, step);
-                    // update position
-                    this.position = tmpPosition;
-                    // update speed
-                    this.mySpeed = step / sampleRate;
-                    let dpTemp = this.generateDataPoint();
-                    // update suggestion
-                    dpTemp.suggestion = this.latestSuggestion;
-                    // update greenWave
-                    if (!this.isLeader) {
-                        const gw = this.leaderCyclist.getGreenWave();
-                        this.greenWave = this.getProximityToLeader() > 0 && this.getProximityToLeader() < gw.getScopeInMeters();
-                    }
-                    // notify
-                    this.notifyObservers(dpTemp);
-                } else {
-                    if (this.position !== this.myRoute.getLastSegment().end) {
-                        // get the stepLength
-                        let step = this.getStep(sampleRate);
-                        // Ask the route for the location of the step
-                        let tmpPosition = this.myRoute.getPosition(this.position, step);
-                        // update position
-                        this.position = tmpPosition;
-                        // update speed
-                        this.mySpeed = step / sampleRate;
-                        let dpTemp = this.generateDataPoint();
-                        // update suggestion
-                        dpTemp.suggestion = this.latestSuggestion;
-                        // update greenWave
-                        if (!this.isLeader) {
-                            const gw = this.leaderCyclist.getGreenWave();
-                            this.greenWave = this.getProximityToLeader() > 0 && this.getProximityToLeader() < gw.getScopeInMeters();
-                        }
-                        // notify
-                        this.notifyObservers(dpTemp);
-                    } else {
-                        this.status = "disabled";
-                        console.log("Session completed for cyclist: ", this.id);
-                        for (let observer of this.observers) {
-                            if (observer instanceof Session) {
-                                observer.saveToJSON();
-                            }
-                        }
-                    }
-                }
-            } else {
-                //  console.log(this.currentDataPoint)
-                if (this.currentDataPoint != undefined) {
-                    this.notifyObservers(this.currentDataPoint);
-                }
-            }
-        }
-    }
-
-
-
-    /**
-     * Get data from all the the other agents and act based on data from the
-     * nearestFrontNode
-     *
-     * @param leader
-     */
-    getStep(sampleRate) {
-        let step;
-        // If leader, accelerate with simpleCruiseControl
-        if (this.isLeader) {
-            // simple acceleration
-            this.myAcceleration = this.simpleCC();
-            // for all other cyclsist
-        } else {
-            // THIS DISABLES THE CONVOY FUNCTIONALITY BECAUSE EVERYONE IS FOLLOWING THE LEADER
-            this.nearestFrontNode = this.leaderCyclist;
-            // get the gap to the preceding cyclsist
-            let gap = this.myRoute.getAtoBDistance(this.nearestFrontNode.position, this.position);
-            //let gap = GeometryUtils.getDistance(this.leaderCyclist.position , this.position);
-
-            /* NOTE: Ideally this should be just collaborativeACC() without any condition, but I am testng it as it was coded in java
-             * The issue is that CACC does not account for situations in which a follower overpasses the preceding vehicle
-             */
-            if (gap > this.desiredIVSpacing) {
-                // apply acceleration algorithm
-                const tmp = this.collaborativeACC(gap);
-                this.latestSuggestion = getSuggestion(this.myAcceleration, tmp);
-                this.myAcceleration = tmp;
-                //this.myAcceleration = this.simpleCC();
-            } else {
-                // display negative acceleration since the bicycle is already in the gap. 
-                this.myAcceleration = Utilities.map(gap, 0, this.desiredIVSpacing, 0.01, -this.designKSimple);
-            }
-        }
-        // Get the step length for that speed
-        // x = Vi*t + (at2)/2, where time(t) is = 1
-        step = (this.mySpeed * sampleRate) + (((this.myAcceleration * Math.pow(sampleRate, 2))) / 2);
-        // console.log("speed: " + this.mySpeed + ", acceleration: " + this.myAcceleration + ", step:" + step + ", sampleRate ", sampleRate);
-        return Number(step);
     }
 
     /**
@@ -392,8 +252,6 @@ class Cyclist {
 
     /**
      * Determine which node is in front
-     *
-     * @param {Journey} the journey to which this cyclist belongs
      */
     //getFrontCyclist(journey) {
     //   // If I am not the leader
