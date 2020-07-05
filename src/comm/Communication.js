@@ -5,7 +5,7 @@ class Communication {
         this.routes = db.collection('routes');
     }
 
-    /** REVISED DEPRECATED
+    /** DEPRECATED
      * Consult the journey's id on the database and generate the next 
      * one in the sequence
      * @deprecated Since July 3, 2020 use getNewJourneyId2. It reduces the download burden on the database.
@@ -42,12 +42,13 @@ class Communication {
         return lastJourney;
     }
 
-    /**
+    /** DEPRECATED
      * Returns the json object from a specific session 
      * on a specific journey
      * @param {String} id_journey 
      * @param {String} id_session 
      * @returns {Promise,JSON} Session_json
+     * @deprecated
      */
     getSession(id_journey, id_session) {
         console.log("getting session" + id_session);
@@ -85,11 +86,12 @@ class Communication {
     }
 
 
-    /**
+    /** DEPRECATED
      * Returns the json object from the ghost's session 
      * on a specific journey
      * @param {String} id_journey 
      * @returns {Promise,JSON} Session_json
+     * @deprecated
      */
     getGhostSession(id_journey) {
         let session_json
@@ -126,10 +128,11 @@ class Communication {
     }
 
 
-    /**
+    /** DEPRECATED
      * Looks for all the information of a specific journey
      * and return an object with all its information
      * @returns {Promise,Object} journey
+     * @deprecated
      */
     getJourney(journeyId) {
         let journey
@@ -349,7 +352,7 @@ class Communication {
         db.collection('journeys').doc(journeyId).collection('sessions').doc(sessionId).collection("data_points").doc(filledDataPointId).set(dataPointDoc);
     }
 
-    /**
+    /** REVISED
      * Returns the session from a cyclist ID on a specific journey
      * @param {String} id_journey 
      * @param {String} id_session 
@@ -362,10 +365,11 @@ class Communication {
         return session; //.docs[0].id;
     }
 
-    /**
+    /** REVISED
      * Update the current ghost position on the database from a specific journey
      * @param {String} jId 
-     * @param {JSON} dataPointDoc 
+     * @param {JSON} dataPointDoc
+     * @deprecated
      */
     updateGhostPosition(jId, dataPointDoc) {
         let journeyId = "" + jId;
@@ -373,9 +377,10 @@ class Communication {
     }
 
 
-    /**
+    /** DEPRECATED
      * Looks for the last session on the data base and returns it in form of a json
      * @returns {Promise,JSON} Session_json
+     * @deprecated
      */
     getLastSession() {
         let jId = 0;

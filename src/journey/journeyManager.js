@@ -138,7 +138,7 @@ class JourneyManager {
     }
 
 
-    /**
+    /** REVISED
      * Adds a cyclist to the nearest journey from a mouse click on the map and creates a session for her
      * @param {Event} event The mouse event
      * @return {boolean} true if a new cyclist was added to the route
@@ -186,7 +186,7 @@ class JourneyManager {
     }
 
 
-    /**
+    /** REVISED
      * Adds a remote cyclist to the latest active journey and creates a local session for her
      * @param {Event} event The communication document retrieved from the database when the remote cyclcist joins the db session. see comm.listenToJourneysSessions()
      */
@@ -343,7 +343,7 @@ class JourneyManager {
         }
     }
 
-    /**
+    /** REVISED
      * Records Leaders data on Firebase as long they are "enabled", i.e. they have not reached the final route point. The recording sample rate is specified by the user on the GUI
      */
     recordLeadersDataOnDataBase() {
@@ -366,7 +366,7 @@ class JourneyManager {
         }
     }
 
-    /**
+    /** REVISED
      * Records followers data on Firebase as long they are "enabled", i.e. they have not reached the final route point. The recording sample rate is specified by the user on the GUI
      */
     recordLocalFollowersDataOnDataBase() {
@@ -377,7 +377,7 @@ class JourneyManager {
 
                 const journeyId = cyclist.getJourney().id;
                 const dataPointDoc = cyclist.getSession().getLastDataPoint().getDoc()
-                const localSessionId = cyclist.getSession().id_session.id;
+                    //const localSessionId = cyclist.getSession().id_session.id;
                 const dataPointId = cyclist.getSession().dataPoints.length - 1;
 
                 //record
@@ -444,6 +444,7 @@ class JourneyManager {
             }
         }
     }
+
     setCurrentJourneyId(id) {
         this.currentJourneyId = id;
         this.nextJourneyId = this.currentJourneyId;
@@ -464,7 +465,7 @@ class JourneyManager {
         // console.log(this.currentJourneyId);
     }
 
-    /** 
+    /** REVISED
      * Returns true when all journeys are completed
      */
     areJourneysCompleted() {
