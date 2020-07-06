@@ -40,6 +40,24 @@ class GUI {
             element.style.color = "black";
         }
     }
+
+    /**
+     * Timer in seconds
+     */
+    static timer(element, seconds) {
+        element.textContent = seconds;
+        if (seconds > 0) {
+            element.hidden = false;
+            let interval = setInterval(() => {
+                seconds--;
+                if (seconds <= 0) {
+                    clearInterval(interval);
+                }
+                element.textContent = seconds;
+
+            }, 1000);
+        }
+    }
 }
 GUI.routeButton = document.getElementById("routeButton");
 GUI.loopButton = document.getElementById("loopButton");
@@ -50,6 +68,8 @@ GUI.connectFirebase = document.getElementById("connectFirebase");
 GUI.speed = document.getElementById("speed");
 GUI.sampleRate = document.getElementById("sampleRate");
 GUI.ghostDelay = document.getElementById("startDelay");
+GUI.countdown = document.getElementById("countdown");
+GUI.countdownValue = String(GUI.ghostDelay.value);
 
 
 //*** Output value */

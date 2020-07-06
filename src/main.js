@@ -67,6 +67,9 @@ function setupRoutes() {
  * Activate journeys after some seconds. 
  */
 function activateJourneyDelayed() {
+
+    GUI.timer(GUI.countdown, GUI.ghostDelay.value);
+
     window.setTimeout(function createAndActivateJourney() {
         if (connect) {
             comm.getNewJourneyId2().then(activateJourneys);
