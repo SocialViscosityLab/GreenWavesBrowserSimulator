@@ -156,7 +156,6 @@ class Cartography {
      * Displays all the journeys' sessions on the map
      */
     plotJourneys() {
-        console.log(this.mapJourneys);
         for (let j of this.mapJourneys) {
             //plot ghost Session
             j.plotSessions(this);
