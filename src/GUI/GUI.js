@@ -69,7 +69,9 @@ GUI.speed = document.getElementById("speed");
 GUI.sampleRate = document.getElementById("sampleRate");
 GUI.ghostDelay = document.getElementById("startDelay");
 GUI.countdown = document.getElementById("countdown");
-GUI.countdownValue = String(GUI.ghostDelay.value);
+if (GUI.ghostDelay != undefined) {
+    GUI.countdownValue = String(GUI.ghostDelay.value);
+}
 
 
 //*** Output value */

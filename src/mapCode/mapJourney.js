@@ -61,7 +61,7 @@ class MapJourney {
             this.mapSessions[sessionID].markSessionAllDataPoints(theMap, frequency);
         } else {
             for (let ssn of Object.keys(this.mapSessions)) {
-                console.log(ssn)
+                console.log("session id: " + ssn)
                 this.mapSessions[ssn].markSessionAllDataPoints(theMap, frequency);
             }
         }

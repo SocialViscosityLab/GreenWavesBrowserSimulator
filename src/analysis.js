@@ -53,8 +53,7 @@ function setup() {
 }
 
 function createAndActivateJourney() {
-    console.log("here")
-        // Creates the route for the uploaded journey
+    // Creates the route for the uploaded journey
     if (jsonObjects[0]) {
         createRouteAndJourneys(jsonObjects[0]);
         activateJourneys();
@@ -137,7 +136,7 @@ function createRouteAndJourneys(downloadedJourney) {
  * display data
  */
 function displayJourney() {
-    // ALWAYS invoke this methos to display the latest condition of each journey and its sessions
+    // ALWAYS invoke this methods to display the latest condition of each journey and its sessions
     currentMap.updateJourney();
     //**Run cyclists
     //journeyM.runCyclists(sampleRate);

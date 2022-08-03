@@ -34,6 +34,17 @@ class SimulatedCyclist extends Cyclist {
         return (datapoint)
     }
 
+    /** Method for visualizing a simulated cyclists in the analysis tool*/
+    setDataPoint(acc, pos, speed, time) {
+        this.myAcceleration = acc;
+        this.position = pos;
+        this.mySpeed = speed;
+        this.timeCounter = time;
+        this.currentDataPoint = new DataPoint(acc, pos, speed, time);
+        // update suggestion
+        this.currentDataPoint.suggestion = this.latestSuggestion;
+    }
+
     run(sampleRate) {
         this.timeCounter += (sampleRate * 1000);
         // If the route is not completed and the cyclists is enabled

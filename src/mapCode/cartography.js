@@ -45,6 +45,7 @@ class Cartography {
     Sets the first journey to the map
     */
     setupJourney(journey, greenWave) {
+        console.log(journey);
         this.mapJourneys.push(new MapJourney(journey, greenWave));
     }
 
@@ -155,6 +156,7 @@ class Cartography {
      * Displays all the journeys' sessions on the map
      */
     plotJourneys() {
+        console.log(this.mapJourneys);
         for (let j of this.mapJourneys) {
             //plot ghost Session
             j.plotSessions(this);

@@ -35,7 +35,9 @@ class Cyclist {
         //this.distance = 0; // the distance elapsed from the origin
         this.step = 0; // the distance to move from current position
         this.latestSuggestion = 'none'; // String: none, up, down, mantain
-        this.targetSpeed = GUI.speed; // the leader's target. The leader gets its target speed from user input
+        if (GUI.speed != undefined) {
+            this.targetSpeed = GUI.speed.value; // the leader's target. The leader gets its target speed from user input
+        }
         // relative time
         this.timeCounter = 0;
 

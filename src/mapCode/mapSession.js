@@ -45,9 +45,9 @@ class MapSession {
             // If there are no markers in this session
             if (this.sessionMarkers[i] == undefined) {
 
-                if (i < 100) {
-                    console.log(Math.round(this.session.dataPoints[i].time) % frequency)
-                }
+                // if (i < 100) {
+                //     console.log(Math.round(this.session.dataPoints[i].time) % frequency)
+                // }
                 //https://github.com/pointhi/leaflet-color-markers
                 var icon = new L.Icon({
                     iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
@@ -57,7 +57,7 @@ class MapSession {
                     popupAnchor: [1, -34],
                     shadowSize: [36, 36]
                 });
-                if (this.getID() != "ghost") {
+                if (this.getID() != "0_ghost") {
                     icon = new L.Icon({
                         iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-gold.png',
                         shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',

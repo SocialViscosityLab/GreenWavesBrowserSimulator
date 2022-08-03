@@ -94,6 +94,7 @@ class JourneyManager {
             let journeyTmp = new Journey(journeyID, journeyRoute);
             // make route active
             journeyTmp.activateRoute(true);
+
             /**** Visualization  of journey on map *****/
             // add journey to map
             sessionsJSON.forEach(session => {
@@ -108,14 +109,15 @@ class JourneyManager {
                 for (let dp in dp_array) {
                     let tempPos = new Position(dp_array[dp].latitude, dp_array[dp].longitude);
                     tempCyclist.setDataPoint(dp_array[dp].acceleration, tempPos, dp_array[dp].speed, dp_array[dp].time)
-                    tmpS.addDataPoin(new DataPoint(dp_array[dp].acceleration, tempPos, dp_array[dp].speed, dp_array[dp].time))
+                    tmpS.addDataPoint(new DataPoint(dp_array[dp].acceleration, tempPos, dp_array[dp].speed, dp_array[dp].time))
                 }
 
                 // Insert the session at the begining of journey sessions
                 journeyTmp.sessions.unshift(tmpS);
+
                 // Subscribe the session as observer to the cyclists
                 tempCyclist.subscribe(tmpS);
-                if (session.user_id == 'ghost') {
+                if (session.user_id == '0_ghost') {
                     // Create a green wave for this ghost
                     let tmpGW = new GreenWave(journeyTmp, Number(0));
                     // Subscribe the green wave as observer to the cyclists

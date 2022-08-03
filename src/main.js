@@ -59,6 +59,8 @@ function setupRoutes() {
     currentRoute = routeM.routes[routeM.routes.length - 1];
     if (connect) {
         // adds route to firebase
+        console.log(currentRoute);
+        console.log(currentRoute.getPositionPoints());
         comm.addNewRoute(currentRoute.id, currentRoute.getPositionPoints());
     }
 }
