@@ -51,7 +51,7 @@ class Communication {
      * @deprecated
      */
     getSession(id_journey, id_session) {
-        console.log("getting session" + id_session);
+        console.log("getting session " + id_session);
         let session_json;
         let data_points_array = {};
         let doc_ref = this.journeys.doc(id_journey).collection('sessions').doc(id_session);
@@ -76,6 +76,8 @@ class Communication {
                         'latitude': dp.data().latitude,
                         'longitude': dp.data().longitude,
                         'speed': dp.data().speed,
+                        'heading': dp.data().heading, // GPS Heading
+                        'altitude': dp.data().altitude, // GPS Altitude
                         'suggestion': dp.data().suggestion,
                         'time': dp.data().time
                     }
@@ -135,6 +137,7 @@ class Communication {
      * @deprecated
      */
     getJourney(journeyId) {
+        console.log('comming here getJourney');
         let journey
         let routeRef
         let journeyRef = this.journeys.doc(journeyId)

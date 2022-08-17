@@ -396,7 +396,7 @@ class Route {
 
     /**
      * Creates the list of corner points in a route from the values input in the GUI
-     * @param {number} totalRoutePoints
+     * @param {array} points collection of cordinate pairs
      */
     initiateRoutePoints(points) {
 
