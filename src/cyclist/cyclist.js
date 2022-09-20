@@ -184,7 +184,8 @@ class Cyclist {
      * Simple Cruise Control Algorithm. This control algorithm simply
      * accelerates the node until it reaches the target speed. It lacks of any
      * form of adaptation
-     *
+     * @param {Number}distanceToVertex the distance to the next corner
+     * @param {String}segmentType either 'stop' , 'corner', or 'light'
      * @return
      */
     simpleCC(distanceToVertex, segmentType) {
