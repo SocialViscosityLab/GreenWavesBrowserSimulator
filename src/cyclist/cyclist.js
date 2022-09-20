@@ -63,7 +63,9 @@ class Cyclist {
         this.designKSimple = 0.35; // the lower the value, the slower the
         this.designKAdaptive = 0.1;
 
-        // this.ciclistStarted = false;
+        //3. Route intersections parameters
+        this.breakingProximity = 20; //  meters to intersection
+
     }
 
     /** Unubscribe from this cyclist
@@ -185,9 +187,20 @@ class Cyclist {
      *
      * @return
      */
-    simpleCC() {
+    simpleCC(distanceToVertex, segmentType) {
         //console.log("k: " + this.designKSimple + ", target: " + this.targetSpeed);
-        const tmp = -this.designKSimple * (this.mySpeed - this.targetSpeed);
+        let tmp = -this.designKSimple * (this.mySpeed - this.targetSpeed);
+
+        //The cyclist slows down while the distanceToVertex is greater than a minimalProximity
+
+        if (distanceToVertex < this.breakingProximity) {
+
+            if (segmentType === 'stop' || segmentType === 'light') {
+                // slow down
+                tmp = (2 * -this.designKSimple) * (this.mySpeed - 1);
+            }
+        }
+
         return tmp;
     }
 

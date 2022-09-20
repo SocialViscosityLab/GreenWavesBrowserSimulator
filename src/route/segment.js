@@ -1,14 +1,18 @@
 /**
 * Utility class used to make distance operations on a route
-@param {Position} start The beginig of the segment
+@param {Position} start The begining of the segment
 @param {Position} end The end of the segment
 */
 class Segment {
-    constructor(startPosition, endPosition) {
+    constructor(startPosition, endPosition, startType, endType) {
         this.start = startPosition;
         this.end = endPosition;
         this.length = GeometryUtils.getDistance(this.start, this.end).toPrecision(4);
         this.bearing = GeometryUtils.getBearing(this.start, this.end); // in radians (bteween -pi and pi)
+        this.startType;
+        this.endType;
+        if (startType) this.startType = startType;
+        if (endType) this.endType = endType;
     }
 
     /**

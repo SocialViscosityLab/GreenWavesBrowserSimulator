@@ -19,13 +19,23 @@ class MapRoute {
 
             if (this.routeMarkers[i] == undefined) {
 
-                this.routeMarkers[i] = L.circleMarker([this.route.routePoints[i].lat, this.route.routePoints[i].lon], properties).addTo(theMap);
+                let tmpType = this.route.vertexTypes[i];
+
+                if (tmpType === 'corner') {
+                    properties = { color: '#237187', weight: 2, opacity: 0.6, fillOpacity: 1, fillColor: '#21CCFF' }
+                } else if (tmpType === 'stop') {
+                    properties = { color: '#75236E', weight: 2, opacity: 0.6, fillOpacity: 1, fillColor: '#E01DCE' }
+                } else if (tmpType === 'light') {
+                    properties = { color: 'red', weight: 2, fillOpacity: 1, fillColor: 'red' }
+                }
+
+                let marker = L.circleMarker([this.route.routePoints[i].lat, this.route.routePoints[i].lon], properties);
+
+                this.routeMarkers[i] = marker.addTo(theMap);
 
                 this.routeMarkers[i].setRadius(5);
 
-                let label = "point" + i;
-
-                //  this.routeMarkers[i].bindPopup(label).openPopup();
+                this.routeMarkers[i].bindPopup(tmpType).openPopup();
 
             } else {
 
@@ -40,7 +50,7 @@ class MapRoute {
      * Display a polyline on the map
      */
     plotPath(theMap) {
-        let properties = { color: 'lime', weight: 6, opacity: 0.3 };
+        let properties = { color: '#AA07B7', weight: 4, opacity: .5, dashArray: "7", dashOffset: "7" };
 
         if (this.pathPolyline == undefined) {
             this.pathPolyline = L.polyline(this.route.getRouteLatLongs(), properties).addTo(theMap);

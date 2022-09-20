@@ -125,6 +125,7 @@ function createRouteAndJourneys(downloadedJourney) {
     routeM.setupSingleRoute(
         downloadedJourney.ref_route.name,
         downloadedJourney.ref_route.position_points,
+        downloadedJourney.ref_route.vertex_types,
         currentMap);
     // Updates the current route
     currentRoute = routeM.routes[routeM.routes.length - 1];

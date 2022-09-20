@@ -1,5 +1,5 @@
 /**
- * This class is used for actual flesh and bone cyclists. For simulated cyclists use the class ActualCyclist.
+ * This class is used for actual flesh and bone cyclists. For simulated cyclists use the class SimulatedCyclist.
  *
  * Initial version developed in JAVA / Processing 3 by jsalam
  * @param {Object} id cyclist ID. Attributes: id (String) journey (String), route (String)

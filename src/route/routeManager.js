@@ -60,7 +60,7 @@ class RouteManager {
      * @param {Array} cornerPoints Array of lat lon points
      * @param {Cartography} currentMap An instance of Cartography currently displayed on canvas
      */
-    setupSingleRoute(name, cornerPoints, currentMap) {
+    setupSingleRoute(name, cornerPoints, vertexTypes, currentMap) {
         let routeTmp;
         if (cornerPoints.length > 0) {
             // Instantiate objects
@@ -69,7 +69,7 @@ class RouteManager {
             } else {
                 routeTmp = new Route('reference route');
             }
-            routeTmp.initiateRouteFromJourneyJSON(cornerPoints);
+            routeTmp.initiateRouteFromJourneyJSON(cornerPoints, vertexTypes);
             // add route to map
             currentMap.setupRoute(routeTmp);
             // store route

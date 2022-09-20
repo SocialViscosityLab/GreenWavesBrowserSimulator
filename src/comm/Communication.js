@@ -42,13 +42,12 @@ class Communication {
         return lastJourney;
     }
 
-    /** DEPRECATED
+    /**
      * Returns the json object from a specific session 
      * on a specific journey
      * @param {String} id_journey 
      * @param {String} id_session 
      * @returns {Promise,JSON} Session_json
-     * @deprecated
      */
     getSession(id_journey, id_session) {
         console.log("getting session " + id_session);
@@ -57,17 +56,13 @@ class Communication {
         let doc_ref = this.journeys.doc(id_journey).collection('sessions').doc(id_session);
 
         return doc_ref.get().then(doc => {
-                let session_data = doc.data()
-                let user_id = session_data.id_user
-                let start_time = session_data.start_time
-                let dp_array = session_data.data_points
-                console.log(session_data)
+                let session_data = doc.data();
                 session_json = {
-                    'user_id': user_id,
-                    'start_time': start_time,
-                    'data_points': dp_array
-                }
-                return doc_ref.collection('data_points').get()
+                    'user_id': session_data.id_user,
+                    'start_time': session_data.start_time,
+                    'data_points': session_data.data_points
+                };
+                return doc_ref.collection('data_points').get();
             })
             .then(snapshot => {
                 snapshot.forEach(dp => {
@@ -81,19 +76,18 @@ class Communication {
                         'suggestion': dp.data().suggestion,
                         'time': dp.data().time
                     }
-                })
+                });
                 session_json.data_points = data_points_array
                 return session_json
             });
     }
 
 
-    /** DEPRECATED
+    /**
      * Returns the json object from the ghost's session 
      * on a specific journey
      * @param {String} id_journey 
      * @returns {Promise,JSON} Session_json
-     * @deprecated
      */
     getGhostSession(id_journey) {
         let session_json
@@ -101,17 +95,13 @@ class Communication {
         let doc_ref = this.journeys.doc(id_journey).collection('sessions').doc('00000');
 
         return doc_ref.get().then(doc => {
-                let session_data = doc.data()
-                let user_id = session_data.id_user
-                let start_time = session_data.start_time
-                let dp_array = session_data.data_points
-
+                let session_data = doc.data();
                 session_json = {
-                    'user_id': user_id,
-                    'start_time': start_time,
-                    'data_points': dp_array
-                }
-                return doc_ref.collection('data_points').get()
+                    'user_id': session_data.id_user,
+                    'start_time': session_data.start_time,
+                    'data_points': session_data.data_points
+                };
+                return doc_ref.collection('data_points').get();
             })
             .then(snapshot => {
                 snapshot.forEach(dp => {
@@ -123,44 +113,77 @@ class Communication {
                         'suggestion': dp.data().suggestion,
                         'time': dp.data().time
                     }
-                })
+                });
                 session_json.data_points = data_points_array
                 return session_json
             });
     }
 
 
-    /** DEPRECATED
+    /**
      * Looks for all the information of a specific journey
-     * and return an object with all its information
+     * and returns an object with all its information
      * @returns {Promise,Object} journey
-     * @deprecated
      */
     getJourney(journeyId) {
-        console.log('comming here getJourney');
-        let journey
-        let routeRef
-        let journeyRef = this.journeys.doc(journeyId)
+        // a placeholder route
+        let routeRef = { name: undefined, 'position_points': [], 'vertex_types': [] };
 
-        return journeyRef.get().then(doc => {
-                routeRef = doc.data().reference_route.id
-                console.log(routeRef)
-                return doc.data().reference_route.collection('position_points').get()
+        // a placeholder journey
+        let journey = { ref_route: {}, sessions: [] };
 
+        // the record from the DB labeled with the journeyId
+        let journeyRef = this.journeys.doc(journeyId);
+
+        // A placeholder for the retrieved journey
+        let journeyRoute;
+
+        // Get the journey from the DB
+        return journeyRef.get().then(querySnapshot => {
+                // The journey with a reference to the route on the DB
+                journeyRoute = querySnapshot.data().reference_route;
+                // Get the route ID from the DB
+                routeRef.name = journeyRoute.id;
+                // Return a promisse to keep the thread
+                return journeyRoute.collection('position_points').get();
             })
             .then(snapshot => {
-                let position_points = []
+                let temp = [];
+                // once the promise is solved, go over whatever is retreived...
                 snapshot.forEach(doc => {
-                    let coord = doc.data()
-                    position_points.push({ lat: coord.latitude, lon: coord.longitude })
+                    // extract the data...
+                    let data = doc.data();
+                    // store the data ...
+                    temp.push({ lat: data.latitude, lon: data.longitude })
                 });
-                journey = { ref_route: { name: routeRef, 'position_points': position_points }, sessions: [] }
+                // and add the data to the temporary route object
+                routeRef.position_points = temp;
+                // return the next promise to continue the thread
+                return journeyRoute.collection('vertex_types').get();
+            })
+            .then(snapshot => {
+                let temp = [];
+                // once the promise is solved, go over whatever is retreived...
+                snapshot.forEach(doc => {
+                    // extract the data...
+                    let data = doc.data();
+                    // store the data ...
+                    temp.push({ type: data.type })
+                });
+                // and add the data to the temporary route object
+                routeRef.vertex_types = temp;
+                // The route data are added to the journey
+                journey.ref_route = routeRef;
+                // return the next promise to continue the thread
                 return journeyRef.collection('sessions').get()
             })
             .then(snapshot => {
                 let sessions_promises = []
+                    // once the promise is solved, go over whatever is retreived...
                 snapshot.forEach(doc => {
+                    // extract the data...
                     let temp_sID = doc.id
+                        // store the data ...
                     if (temp_sID != '00000') {
                         sessions_promises.push(
                             this.getSession(journeyId, temp_sID)
@@ -171,12 +194,13 @@ class Communication {
                         )
                     }
                 });
-                console.log(sessions_promises);
+                // return the next promise to continue the thread
                 return Promise.all(sessions_promises)
             })
             .then(sessions_docs => {
-                console.log(sessions_docs);
-                journey.sessions = sessions_docs
+                // The sessions data are added to the journey
+                journey.sessions = sessions_docs;
+                // return the completed journey
                 return journey
             });
     }
@@ -232,12 +256,13 @@ class Communication {
 
 
     /** REVISED
-     * Sends a new rout with a specific Id to defined
-     * positionPoints to the database
+     * Sends a new route with a specific ID to defined
+     * positionPoints and vertexTypes to the database
      * @param {String} id 
      * @param {JSON} positionPoints 
+     * @param {Array} vertexTypes 
      */
-    async addNewRoute(id, positionPoints) {
+    async addNewRoute(id, positionPoints, vertexTypes) {
         // get the routes on firebase
         let routesOnFirebase = await this.getAvailableRoutes();
         // once retrieved
@@ -251,6 +276,14 @@ class Communication {
                     let zeros = "000";
                     let ppId = (zeros + i).slice(-zeros.length);
                     await this.routes.doc(id).collection('position_points').doc(ppId).set(positionPoints[i]);
+                }
+            }
+            // add it to firebase if the name does not exist
+            for (var i = 0; i <= vertexTypes.length; i++) {
+                if (vertexTypes[i] != undefined) {
+                    let zeros = "000";
+                    let ppId = (zeros + i).slice(-zeros.length);
+                    await this.routes.doc(id).collection('vertex_types').doc(ppId).set({ 'type': vertexTypes[i] });
                 }
             }
             await this.routes.doc(id).set({ name: id, loop: false, date: new Date() });

@@ -45,7 +45,6 @@ class Cartography {
     Sets the first journey to the map
     */
     setupJourney(journey, greenWave) {
-        console.log(journey);
         this.mapJourneys.push(new MapJourney(journey, greenWave));
     }
 

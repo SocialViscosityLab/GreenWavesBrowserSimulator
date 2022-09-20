@@ -4,7 +4,7 @@ that could be a closed loop. By default routes are not loops. The route is label
 is can be used by a journey and its sessions.
 
 The distance operations on the route are based on its segments. A segment is a portion of the route defined by two route points,
-often named as cornerPoints.
+often named as vertex. Each vertex is of one of these kinds: 'corner', 'stop' and 'light' (traffic light) 
 
 There are two types of distances on a route: absolute and relative-to-segment. To calculate an absolute distance, the process
 followed is to accumulate relative-to-segment distances sequentially up to the end position of the distance. A central part of the process
@@ -19,6 +19,8 @@ class Route {
         this.id = id;
         /** The corner points of the route */
         this.routePoints = [];
+        /** The vertex types of the route */
+        this.vertexTypes = [];
         /** True if the route is active */
         this.status = false;
         /** The segments of the route*/
@@ -64,7 +66,6 @@ class Route {
         if (this.validatePosition(position)) {
             // get the index of the closest segment to position
             let index = this.getIndexAndProximityToClosestSegmentTo(position).index;
-            //console.log("index: " + index);
             // retrieve the segment for that index
             let currentSegment = this.segments[index];
             // The traveled distance on the segment
@@ -263,20 +264,14 @@ class Route {
     */
     getIndexAndProximityToClosestSegmentTo(position) {
         if (position instanceof Position) {
-            // get all segments
             // store the distance to the first segment
             let currentD = GeometryUtils.distToSegment(position, this.segments[0].start, this.segments[0].end);
-            //console.log("current "+ currentD);
             // set return value
             let rtn = 0;
             // Go over all other the segments
             for (var i = 1; i < this.segments.length; i++) {
                 // Calculate the distance to each one of them
                 let nextD = GeometryUtils.distToSegment(position, this.segments[i].start, this.segments[i].end);
-                // console.log("segment id "+ i + ", of " +(this.segments.length-1));
-                // console.log("currentD "+ currentD);
-                // console.log("nextD "+ nextD);
-                // console.log(currentD > nextD);
                 // Store the segment position of the shortest distances
                 if (currentD > nextD) {
                     currentD = nextD;
@@ -360,6 +355,7 @@ class Route {
     initiateRouteFromGeoJSON(object) {
         let positions = object.geometry.coordinates;
         this.id = object.properties.name;
+        this.vertexTypes = object.properties.vertexTypes;
         // iterate over the objects
         for (var i = 0; i < positions.length; i++) {
             // create the positions
@@ -377,8 +373,9 @@ class Route {
     /**
      * Creates the list of corner points in a route from the downloaded JSON values
      * @param {Array} totalRoutePoints
+     * @param {Array} totalVertexTypes
      */
-    initiateRouteFromJourneyJSON(totalRoutePoints) {
+    initiateRouteFromJourneyJSON(totalRoutePoints, totalVertexTypes) {
         let positions = totalRoutePoints;
         // iterate over the objects
         for (var i = 0; i < positions.length; i++) {
@@ -386,6 +383,8 @@ class Route {
             let tmpPos = new Position(Number(positions[i].lat), Number(positions[i].lon));
             // add them to the collection
             this.routePoints.push(tmpPos);
+            // check there are vertex types before pushing them
+            if (totalVertexTypes.length > 0) this.vertexTypes.push(totalVertexTypes[i].type);
         }
         // create the segments
         this.segments = this.makeSegments();
@@ -437,7 +436,7 @@ class Route {
 
         for (var i = 0; i < this.routePoints.length - 1; i++) {
 
-            segments.push(new Segment(this.routePoints[i], this.routePoints[i + 1]));
+            segments.push(new Segment(this.routePoints[i], this.routePoints[i + 1], this.vertexTypes[i], this.vertexTypes[i + 1]));
 
         }
         if (this.loop) {
@@ -463,6 +462,7 @@ class Route {
             return this.segments[index];
         } else {
             console.log("ERROR. index larger than collection of segments");
+            return undefined;
         }
     }
 
@@ -481,6 +481,10 @@ class Route {
         return positionPoints;
     }
 
+    getAllVertexTypes() {
+        return this.vertexTypes;
+    }
+
     /**
      * Get the duration of a ghost on this route at a given speed
      * @param {Number} speedMS the ghost speed in meters/second
@@ -494,5 +498,11 @@ class Route {
         if (units == "hour") rtn = (this.getTotalLength() / speedMS) / 3600;
         if (!rtn) rtn = this.getTotalLength() / speedMS;
         return rtn;
+    }
+
+    getNextCornerType(segmentIndex) {
+        let segment = this.getSegment(segmentIndex);
+        if (segment) return segment.endType;
+        return undefined
     }
 }

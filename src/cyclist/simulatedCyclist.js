@@ -104,13 +104,22 @@ class SimulatedCyclist extends Cyclist {
     getStep(sampleRate) {
         // If leader, accelerate with simpleCruiseControl
         if (this.isLeader) {
+
+            //The cyclist check if the upcoming vertex is a stop of a light
+            //Then it determines whether the vertex is close enough to start slowing down. 
+            //It does so by keeping a record of the distanceToVertex 
+            let segmentIndex = this.myRoute.getIndexAndProximityToClosestSegmentTo(this.position).index;
+            let segment = this.myRoute.getSegment(segmentIndex);
+
+            //Then it determines whether the vertex is close enough to start slowing down. 
+            let distanceToVertex = GeometryUtils.getDistance(this.position, segment.end);
             // simple acceleration
-            const tmp = this.simpleCC();
+            const tmp = this.simpleCC(distanceToVertex, segment.endType);
             this.latestSuggestion = this.getSuggestion(this.myAcceleration, tmp);
             this.myAcceleration = tmp;
             // for all other cyclsist
         } else {
-            // THIS DISABLES THE CONVOY FUNCTIONALITY BECAUSE EVERYONE IS FOLLOWING THE LEADER
+            // THIS DISABLES THE CONVOY FUNCTIONALITY BECAUSE EVERYONE IS FOLLOWING THE SAME LEADER
             this.nearestFrontNode = this.leaderCyclist;
             // get the gap to the preceding cyclsist
             let gap = this.myRoute.getAtoBDistance(this.nearestFrontNode.position, this.position);
