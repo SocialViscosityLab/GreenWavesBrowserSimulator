@@ -60,6 +60,34 @@ function setupRoutes() {
     if (connect) {
         // adds route to firebase
         comm.addNewRoute(currentRoute.id, currentRoute.getPositionPoints(), currentRoute.getAllVertexTypes());
+
+        // NEW CODE
+        // activate all the journeys
+        let ghostSpeed = 0;
+        // Set the sample rate
+        sampleRate = Number(GUI.sampleRate.value);
+        // As long as there are routes in the route manager
+        if (routeM.routes.length > 0) {
+            // Set a fresh journey ID in the Journey Manager 
+            journeyM.setCurrentJourneyId(Communication.newJourneyId);
+            // Activate all journeys and connect them to Firebase
+            journeyM.activate(routeM.routes, ghostSpeed, sampleRate, currentMap);
+            // Execute the run function at the frequency of the sampleRate
+            // clicker = setInterval(run, (1000 * sampleRate));
+
+
+            //Consult the journey's id on the database and generate the next
+            comm.getNewJourneyId2().then(GUI.updateRouteComputations(journeyM.journeys[0]));
+
+            // Update GUI with route computations
+            // for (const journey of journeyM.journeys) {
+            //     GUI.updateRouteComputations(journey);
+            //     console.log("updated");
+            // }
+
+        } else {
+            alert("Setup routes first")
+        }
     }
 }
 
@@ -71,11 +99,11 @@ function activateJourneyDelayed() {
     GUI.timer(GUI.countdown, GUI.ghostDelay.value);
 
     window.setTimeout(function createAndActivateJourney() {
-        if (connect) {
-            comm.getNewJourneyId2().then(activateJourneys);
-        } else {
-            activateJourneys();
-        }
+        // if (connect) {
+        //     comm.getNewJourneyId2().then(activateJourneys);
+        // } else {
+        activateJourneys();
+        // }
     }, GUI.ghostDelay.value * 1000);
 }
 
@@ -83,17 +111,17 @@ function activateJourneyDelayed() {
  * On HTML button click event it  activates journeys in the Journey Manager
  */
 function activateJourneys() {
-    // activate all the journeys
-    let ghostSpeed = 0;
-    // Set the sample rate
-    sampleRate = Number(GUI.sampleRate.value);
-    // As long as there are routes in the route manager
+    // // activate all the journeys
+    // let ghostSpeed = 0;
+    // // Set the sample rate
+    // sampleRate = Number(GUI.sampleRate.value);
+    // // As long as there are routes in the route manager
     if (routeM.routes.length > 0) {
-        // Set a fresh journey ID in the Journey Manager 
-        journeyM.setCurrentJourneyId(Communication.newJourneyId);
-        // Activate all journeys and connect them to Firebase
-        journeyM.activate(routeM.routes, ghostSpeed, sampleRate, currentMap);
-        // Execute the run function at the frequency of the sampleRate
+        // // Set a fresh journey ID in the Journey Manager 
+        // journeyM.setCurrentJourneyId(Communication.newJourneyId);
+        // // Activate all journeys and connect them to Firebase
+        // journeyM.activate(routeM.routes, ghostSpeed, sampleRate, currentMap);
+        // // Execute the run function at the frequency of the sampleRate
         clicker = setInterval(run, (1000 * sampleRate));
         // Update GUI with route computations
         for (const journey of journeyM.journeys) {
