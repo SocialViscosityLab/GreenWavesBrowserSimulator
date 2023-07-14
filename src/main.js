@@ -16,7 +16,7 @@ let comm;
 let currentRoute;
 
 // Boolean to set if the database should be connected
-let connect;
+let connect, released, activated;
 
 
 /**
@@ -25,6 +25,8 @@ Setup. It setups variables and initializes instances
 function setup() {
     //Set up to connect or not connect to the database
     connect = false;
+    released = false;
+    activated = false;
 
     // GUI elements
     GUI.routeButton.onclick = setupRoutes;
@@ -57,6 +59,9 @@ function setupRoutes() {
     currentMap.plotRoutesCornerPoints();
     // Updates the current route with the last uploaded route
     currentRoute = routeM.routes[routeM.routes.length - 1];
+
+    GUI.switchStatus(GUI.routeButton, routeM.routes.length > 0, { t: "Route ready", f: "Route ready" });
+
     if (connect) {
         // adds route to firebase
         comm.addNewRoute(currentRoute.id, currentRoute.getPositionPoints(), currentRoute.getAllVertexTypes());
@@ -99,6 +104,8 @@ function activateJourneys() {
         for (const journey of journeyM.journeys) {
             GUI.updateRouteComputations(journey);
         }
+        activated = !activated;
+        GUI.switchStatus(GUI.activateJourney, activated, { t: "Activated", f: "Journey dissabled" });
     } else {
         alert("Setup routes first")
     }
@@ -108,6 +115,8 @@ function activateJourneys() {
 function releaseAttractor() {
     if (journeyM.journeys.length > 0) {
         clicker = setInterval(run, (1000 * sampleRate));
+        released = !released;
+        GUI.switchStatus(GUI.releaseAttractor, released, { t: "Released", f: "Attractor dissabled" });
     } else {
         alert("Activate a journey first")
     }
