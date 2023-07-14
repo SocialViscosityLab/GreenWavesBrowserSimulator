@@ -61,7 +61,8 @@ class GUI {
     }
 }
 GUI.routeButton = document.getElementById("routeButton");
-GUI.loopButton = document.getElementById("loopButton");
+//GUI.loopButton = document.getElementById("loopButton");
+GUI.releaseAttractor = document.getElementById("releaseAttractor");
 GUI.activateJourney = document.getElementById("activateJourney");
 GUI.connectFirebase = document.getElementById("connectFirebase");
 

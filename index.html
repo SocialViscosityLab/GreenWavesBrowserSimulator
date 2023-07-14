@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Tracker map demo</title>
+    <title>Attractor tracker </title>
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
 
     <!-- Bootsatrap -->
@@ -82,8 +82,7 @@
         <div class="row">
             <br>
             <p style="font-size:12px"> <img class="img-responsive" src="images/D4SV.png" width="160"> Design for social viscosity lab &nbsp | &nbsp University of Illinois at Urbana-Champaign</p>
-            <h2>Smart bicycles | Ghost tracker </h2>
-            <button id="connectFirebase" type="button">Connect</button> to firebase
+            <h2>Smart bicycles | Attractor tracker </h2>
             <hr>
         </div>
 
@@ -112,6 +111,9 @@
 
                 <div class="col-sm-4">
                     <h4> 1. Set up one or more routes</h4>
+                    <button id="connectFirebase" type="button">Connect to server</button>
+                    <h6> Connect this route to the cloud server.</h6>
+                    <hr>
                     <h6>If no route chosen, a route around the lab is setup by default</h6>
 
                     <!--- reading the directory for routes -->
@@ -127,6 +129,7 @@
                     <button id="routeButton" type="button">Setup routes</button>
                     <h6> If no route file chosen, one around the D4SV Lab is loaded.</h6>
                     <output id="list"></output>
+
 
                 </div>
                 <!-- Close column -->
@@ -155,10 +158,12 @@
                     <h6>Ghost release delay</h6>
                     <br>
                     <button id="activateJourney" type="submit"> Activate Journey</button>
-                    <button id="loopButton" type="button">Enable loop</button>
+                    <!-- <button id="loopButton" type="button">Enable loop</button> -->
+                    <button id="releaseAttractor" type="button">Release Attactor</button>
                     <br>
-                    <h6>The journey starts with a default leader named 'the ghost'. If the route is a closed circuit enable the loop once the route is activated.</h6>
-                    <h6>Click on the route behind the ghost to add a new cyclist to the journey. New cyclists will try to adaptively match the leader's speed. </h6>
+                    <h6>The journey starts with a default leader named 'the attractor'. If the route is a closed circuit enable the loop once the route is activated.</h6>
+                    <h6>Cyclist connected to the journey show up on the map with color-coded flags:. </h6>
+                    <h6>To <b>simulate cyclists behavior</b>, click on the route behind the attractor to add a new simulated cyclist to the journey. Simulated cyclists will try to adaptively match the leader's speed. </h6>
                     <!-- <button id = "exportJSON" type = "button">Export to JSON</button>-->
                     <hr>
                     <h4>Output list</h4>

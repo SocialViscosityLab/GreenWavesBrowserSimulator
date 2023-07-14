@@ -57,8 +57,10 @@ class MapCyclist {
                     // change the color of markers according to acceleration direction
                     if (this.cyclist.myAcceleration > 0) {
                         this.changeIcon(this.greenIcon);
-                    } else {
+                    } else if (this.cyclist.myAcceleration < 0) {
                         this.changeIcon(this.redIcon);
+                    } else {
+                        this.changeIcon(this.blueIcon);
                     }
                 }
             }

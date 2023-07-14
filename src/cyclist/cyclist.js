@@ -42,27 +42,29 @@ class Cyclist {
         this.timeCounter = 0;
 
         // variables for CACC
-        // 1 . acceleration variables
-        this.topSpeed = 5;
-        this.lastAccelerationPlatoon = 0; // Last acceleration calculated with CACC
-        this.isLeader = true;
-        this.greenWave = false;
-        this.nearestFrontCyclist; // nearest Cyclist ahead
-        this.leaderCyclist; // leader  Cyclist
 
-        // 2 . Platooning parameters (CACC)
-        this.alpha1 = 0.5;
-        this.alpha2 = 0.5;
-        this.alpha3 = 0.3;
-        this.alpha4 = 0.1;
-        this.alpha5 = 0.02;
-        this.alphaLag = 0.8;
-        this.length_vehicle_front = 2;
-        this.desiredSpacing = 15;
-        this.desiredIVSpacing = this.length_vehicle_front + this.desiredSpacing;
-        this.designKSimple = 0.35; // the lower the value, the slower the
-        this.designKAdaptive = 0.1;
+        if (isSimulated) {
+            // 1 . acceleration variables
+            this.topSpeed = 5;
+            this.lastAccelerationPlatoon = 0; // Last acceleration calculated with CACC
+            this.isLeader = true;
+            this.greenWave = false;
+            this.nearestFrontCyclist; // nearest Cyclist ahead
+            this.leaderCyclist; // leader  Cyclist
 
+            // 2 . Platooning parameters (CACC)
+            this.alpha1 = 0.5;
+            this.alpha2 = 0.5;
+            this.alpha3 = 0.3;
+            this.alpha4 = 0.1;
+            this.alpha5 = 0.02;
+            this.alphaLag = 0.8;
+            this.length_vehicle_front = 2;
+            this.desiredSpacing = 15;
+            this.desiredIVSpacing = this.length_vehicle_front + this.desiredSpacing;
+            this.designKSimple = 0.35; // the lower the value, the slower the
+            this.designKAdaptive = 0.1;
+        }
         //3. Route intersections parameters
         this.breakingProximity = 20; //  meters to intersection
 

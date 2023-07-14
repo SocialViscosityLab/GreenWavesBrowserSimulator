@@ -192,27 +192,29 @@ class JourneyManager {
      * Adds a remote cyclist to the latest active journey and creates a local session for her
      * @param {Event} event The communication document retrieved from the database when the remote cyclcist joins the db session. see comm.listenToJourneysSessions()
      */
-    addRemoteCyclist(sessionId, event) {
+    addRemoteCyclist(sessionData, event) {
+        let sessionId = sessionData.index;
+        let id_user = sessionData.id_user;
         // retrive the latest journey
         let journeyTmp = this.getCurrentJourney();
-
         let updatedSession;
         for (let tempS of journeyTmp.sessions) {
             if (tempS.id_session.id == sessionId) {
                 updatedSession = tempS
             }
         }
+
         if (updatedSession) {
             //console.log("Getting position of the session number: "+updatedSession.id_session.id)
             for (let cyclist of this.followers) {
-                //console.log("follower id: "+cyclist.id.id)
-                //console.log(updatedSession.id_session.cyclistId.id)
+                // console.log("follower id: " + cyclist.id.id)
+                // console.log(updatedSession.id_session.cyclistId.id)
 
                 if (cyclist.id.id == updatedSession.id_session.cyclistId.id) {
-                    let eventLocation = new Position(event.current_position.latitude, event.current_position.longitude);
-                    let speed = event.current_position.speed;
-                    let acc = event.current_position.acceleration;
-                    let time = event.current_position.time;
+                    let eventLocation = new Position(event.latitude, event.longitude);
+                    let speed = event.speed;
+                    let acc = event.suggestion;
+                    let time = event.time;
 
                     cyclist.setDataPoint(acc, eventLocation, speed, time);
                     //console.log("Did enter to update the cyclist position")
@@ -231,6 +233,26 @@ class JourneyManager {
                 let cyclistTmp = new ActualCyclist(idTmp, journeyTmp.referenceRoute, eventLocation, event.current_position.speed, false);
                 // set leader
                 cyclistTmp.setLeader(this.getLeaderForJourney(journeyTmp));
+                // Create a local session for this cyclist
+                let tmpS = new Session(sessionId, cyclistTmp.id);
+                // Insert the session at the begining of journey sessions
+                journeyTmp.sessions.push(tmpS);
+                // Subscribe the session as observer to the cyclists
+                cyclistTmp.subscribe(tmpS);
+                // add cyclist to cyclist collection
+                this.followers.push(cyclistTmp);
+
+                /**** Visualization of cyclist on map *****/
+                if (currentMap) currentMap.addCyclist(cyclistTmp);
+            } else {
+                // add cyclist to the begining of the route
+                let eventLocation = routeM.routes[0].routePoints[0];
+                // temp id
+                let idTmp = { id: id_user, journey: journeyTmp.id, route: journeyTmp.referenceRoute.id };
+                // create a cyclists
+                let cyclistTmp = new ActualCyclist(idTmp, journeyTmp.referenceRoute, eventLocation, 0, false);
+                // set leader
+                // cyclistTmp.setLeader(this.getLeaderForJourney(journeyTmp));
                 // Create a local session for this cyclist
                 let tmpS = new Session(sessionId, cyclistTmp.id);
                 // Insert the session at the begining of journey sessions
@@ -375,7 +397,7 @@ class JourneyManager {
 
         // for followers
         for (let cyclist of this.followers) {
-            if (cyclist.status == "enabled") {
+            if (cyclist.status == "enabled" && cyclist.isSimmulated) {
 
                 const journeyId = cyclist.getJourney().id;
                 const dataPointDoc = cyclist.getSession().getLastDataPoint().getDoc()

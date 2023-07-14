@@ -241,15 +241,43 @@ class Communication {
                     //console.log(change);
                     if (change.type == 'added') {
                         let changingSession = change.doc.data();
+                        //console.log(changingSession);
+
                         /**
-                         * Add a remote Cycilst to the journey Manager only if it is not simulated because
+                         * Add a remote Cyclist to the journey Manager only if it is not simulated because
                          * simulated cyclists have been added already in the click event on Main.
                          */
                         if (!changingSession.isSimulated) {
-                            journeyM.addRemoteCyclist(change.doc.id, changingSession);
+                            comm.listenToSessionDataPoints(journeyId, changingSession)
+
                         }
                     }
                 });
+            });
+        return sessions;
+    }
+
+    /** REVISED
+     * Listen to a specific journey and returns any session that 
+     * presents a change in it
+     * @param {String} journeyId 
+     *      * @param {String} session 
+     * @return {Promise}
+     */
+    async listenToSessionDataPoints(journeyId, sessionData) {
+
+        var sessions = await this.journeys.doc(journeyId).collection("sessions").doc(sessionData.index).collection("data_points").orderBy("time", "desc").limit(1)
+            .onSnapshot(function(snapshot) {
+                snapshot.docChanges().forEach(function(change) {
+                    if (change.type === "added") {
+                        let newDataPoint = change.doc.data();
+                        //console.log(newDataPoint);
+                        journeyM.addRemoteCyclist(sessionData, newDataPoint);
+                        // Plot cyclists
+                        currentMap.plotCyclists(sessionData.id_user);
+
+                    }
+                })
             });
         return sessions;
     }
@@ -455,7 +483,6 @@ class Communication {
             .then(doc => {
                 let session_json
                 let session_data = doc.data()
-                    //console.log(session_data)
                 let user_id = session_data.id_user
                 let start_time = session_data.start_time
                 let dp_array = session_data.data_points

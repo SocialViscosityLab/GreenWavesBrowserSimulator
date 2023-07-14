@@ -200,12 +200,21 @@ class Cartography {
     /**
      * Displays all the cyclists on the map
      */
-    plotCyclists() {
+    plotCyclists(user_id) {
         for (let c of this.mapCyclists) {
-            if (c.cyclist.id.id == "0_ghost" || c.cyclist.id.id == "ghost") {
-                c.plotGhost(this.map);
+            // show only the one with the user id
+            if (user_id) {
+                if (c.cyclist.id.id == user_id) {
+                    c.plotMarker(this.map);
+                }
+                // show everyone
             } else {
-                c.plotMarker(this.map);
+                // change icon for attractor 
+                if (c.cyclist.id.id == "0_ghost" || c.cyclist.id.id == "ghost") {
+                    c.plotGhost(this.map);
+                } else {
+                    c.plotMarker(this.map);
+                }
             }
         }
     }
