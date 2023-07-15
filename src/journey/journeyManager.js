@@ -224,7 +224,7 @@ class JourneyManager {
 
         } else {
             //Creates a session if it doesn't exist
-            console.log(event)
+            console.log('Remote Cyclists added')
             if (event.current_position) {
                 let eventLocation = new Position(event.current_position.latitude, event.current_position.longitude);
                 // temp id

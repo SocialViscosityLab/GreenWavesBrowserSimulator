@@ -118,6 +118,13 @@ function releaseAttractor() {
         clicker = setInterval(run, (1000 * sampleRate));
         released = true;
         GUI.switchStatus(GUI.releaseAttractor, released, { t: "Released", f: "Attractor dissabled" });
+
+        // Update Metadata in server
+        for (let i = 0; i < journeyM.journeys.length; i++) {
+            const journeyID = journeyM.journeys[i].id;
+            comm.updateSessionMetadata(journeyID, '00000', { 'released': released })
+        }
+
     } else {
         alert("Activate a journey first")
     }

@@ -355,9 +355,22 @@ class Communication {
             index: "00000",
             id_user: ghost.id.id,
             start_time: startTime,
-            isSimulated: ghost.isSimulated
+            isSimulated: ghost.isSimulated,
+            released: false
         };
         return this.journeys.doc(journeyId).collection('sessions').doc("00000").set(metaData);
+    }
+
+    updateSessionMetadata(journeyId, session, keyValues) {
+        // get the session
+        this.journeys.doc(journeyId).collection('sessions').doc(session).get().then((a) => {
+            let metadata = a.data();
+            let keys = Object.keys(keyValues)
+            for (let i = 0; i < keys.length; i++) {
+                metadata[keys[i]] = keyValues[keys[i]]
+            };
+            this.journeys.doc(journeyId).collection('sessions').doc("00000").set(metadata)
+        });
     }
 
 
