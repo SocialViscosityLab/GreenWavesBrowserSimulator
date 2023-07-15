@@ -272,7 +272,7 @@ class Communication {
                     if (change.type === "added") {
                         let newDataPoint = change.doc.data();
                         //console.log(newDataPoint);
-                        journeyM.addRemoteCyclist(sessionData, newDataPoint);
+                        journeyM.addRemoteCyclist(journeyId, sessionData, newDataPoint);
                         // Plot cyclists
                         currentMap.plotCyclists(sessionData.id_user);
 

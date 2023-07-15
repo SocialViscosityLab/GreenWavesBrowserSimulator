@@ -192,11 +192,11 @@ class JourneyManager {
      * Adds a remote cyclist to the latest active journey and creates a local session for her
      * @param {Event} event The communication document retrieved from the database when the remote cyclcist joins the db session. see comm.listenToJourneysSessions()
      */
-    addRemoteCyclist(sessionData, event) {
+    addRemoteCyclist(journeyID, sessionData, event) {
         let sessionId = sessionData.index;
         let id_user = sessionData.id_user;
-        // retrive the latest journey
-        let journeyTmp = this.getCurrentJourney();
+        // retrive the Cyclist's journey
+        let journeyTmp = this.getJourney(journeyID)
         let updatedSession;
         for (let tempS of journeyTmp.sessions) {
             if (tempS.id_session.id == sessionId) {
@@ -467,6 +467,11 @@ class JourneyManager {
                 return journeyTmp;
             }
         }
+    }
+
+    getJourney(ID) {
+        let tmp = this.journeys.filter((journey) => journey.id == ID);
+        return tmp[0]
     }
 
     setCurrentJourneyId(id) {

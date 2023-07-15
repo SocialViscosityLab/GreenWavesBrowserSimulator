@@ -5,6 +5,12 @@ class GUI {
         element.appendChild(node);
     }
 
+    static removeChildren(parent) {
+        while (parent.firstChild) {
+            parent.removeChild(parent.firstChild);
+        }
+    }
+
     static makeNode(type, content, id) {
         let node = document.createElement(type);
         node.innerHTML = content;
@@ -15,7 +21,6 @@ class GUI {
     }
 
     static updateRouteComputations(journey) {
-        console.log(journey);
         let node = GUI.makeNode('p', "<b>Route Name: </b>" + journey.referenceRoute.id + ', <b>Journey ID: </b>' + journey.id)
         let node2 = GUI.makeNode('li', "<b>Total length: </b>" + journey.referenceRoute.getTotalLength().toFixed(1) +
             " m, <b>Anticipated duration: </b>" + journey.referenceRoute.getDuration(GUI.speed.value, 'min').toFixed(2) +
@@ -23,6 +28,7 @@ class GUI {
         let node3 = GUI.makeNode('span', "<b>, Ellapsed time: </b>", journey.referenceRoute.id)
         GUI.appendChild(node2, node3);
         GUI.appendChild(node, node2);
+        //        GUI.removeChildren(GUI.routeInfo);
         GUI.appendChild(GUI.routeInfo, node);
     }
 
@@ -35,10 +41,12 @@ class GUI {
     static switchStatus(element, booleanValue, wording) {
         if (booleanValue == true) {
             if (wording) element.textContent = wording.t;
-            element.style.color = "red";
+            element.style.background = "red";
+            element.style.color = "white";
         } else {
             if (wording) element.textContent = wording.f;
-            element.style.color = "black";
+            element.style.background = "grey";
+            element.style.color = "lightGrey";
         }
     }
 

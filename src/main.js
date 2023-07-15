@@ -73,15 +73,15 @@ function setupRoutes() {
  */
 function activateJourneyDelayed() {
 
-    GUI.timer(GUI.countdown, GUI.ghostDelay.value);
+    // GUI.timer(GUI.countdown, GUI.ghostDelay.value);
 
-    window.setTimeout(function createAndActivateJourney() {
-        if (connect) {
-            comm.getNewJourneyId2().then(activateJourneys);
-        } else {
-            activateJourneys();
-        }
-    }, GUI.ghostDelay.value * 1000);
+    // window.setTimeout(function() {
+    if (connect) {
+        comm.getNewJourneyId2().then(activateJourneys);
+    } else {
+        activateJourneys();
+    }
+    // }, GUI.ghostDelay.value * 1000);
 }
 
 /**
@@ -101,11 +101,12 @@ function activateJourneys() {
         // Execute the run function at the frequency of the sampleRate
         //clicker = setInterval(run, (1000 * sampleRate));
         // Update GUI with route computations
+        GUI.removeChildren(GUI.routeInfo);
         for (const journey of journeyM.journeys) {
             GUI.updateRouteComputations(journey);
         }
-        activated = !activated;
-        GUI.switchStatus(GUI.activateJourney, activated, { t: "Activated", f: "Journey dissabled" });
+        activated = true;
+        GUI.switchStatus(GUI.activateJourney, activated, { t: journeyM.journeys.length + " journeys activated" });
     } else {
         alert("Setup routes first")
     }
@@ -115,7 +116,7 @@ function activateJourneys() {
 function releaseAttractor() {
     if (journeyM.journeys.length > 0) {
         clicker = setInterval(run, (1000 * sampleRate));
-        released = !released;
+        released = true;
         GUI.switchStatus(GUI.releaseAttractor, released, { t: "Released", f: "Attractor dissabled" });
     } else {
         alert("Activate a journey first")
@@ -151,8 +152,8 @@ function connectFirebase() {
 function run() {
 
 
-    // Record cyclists' data in the database while there are active journeys
-    if (connect) {
+    // Record cyclists' data in the database while there are active journeys and the attarctors are released
+    if (connect && released) {
         //This is for leaders
         journeyM.recordLeadersDataOnDataBase();
         //This is for simulated followers
