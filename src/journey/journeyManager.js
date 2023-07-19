@@ -71,9 +71,7 @@ class JourneyManager {
                             //  Listen when the database journey has new sessions added
                             comm.listenToJourneySessions(journeyTmp.id)
                         })
-
                     });
-
                 }
 
                 // add to collection
@@ -224,8 +222,8 @@ class JourneyManager {
 
         } else {
             //Creates a session if it doesn't exist
-            console.log('Remote Cyclists added')
-            if (event.current_position) {
+
+            if (event) {
                 let eventLocation = new Position(event.current_position.latitude, event.current_position.longitude);
                 // temp id
                 let idTmp = { id: event.id_user, journey: journeyTmp.id, route: journeyTmp.referenceRoute.id };
@@ -241,6 +239,7 @@ class JourneyManager {
                 cyclistTmp.subscribe(tmpS);
                 // add cyclist to cyclist collection
                 this.followers.push(cyclistTmp);
+                console.log('Remote Cyclists added')
 
                 /**** Visualization of cyclist on map *****/
                 if (currentMap) currentMap.addCyclist(cyclistTmp);
@@ -261,6 +260,7 @@ class JourneyManager {
                 cyclistTmp.subscribe(tmpS);
                 // add cyclist to cyclist collection
                 this.followers.push(cyclistTmp);
+                console.log('Remote Cyclists added')
 
                 /**** Visualization of cyclist on map *****/
                 if (currentMap) currentMap.addCyclist(cyclistTmp);

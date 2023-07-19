@@ -241,7 +241,7 @@ class Communication {
                     //console.log(change);
                     if (change.type == 'added') {
                         let changingSession = change.doc.data();
-                        //console.log(changingSession);
+                        console.log(changingSession);
 
                         /**
                          * Add a remote Cyclist to the journey Manager only if it is not simulated because
@@ -249,6 +249,14 @@ class Communication {
                          */
                         if (!changingSession.isSimulated) {
                             comm.listenToSessionDataPoints(journeyId, changingSession)
+                                // added to the beginign of the map because we do not have gps location yet
+                            journeyM.addRemoteCyclist(journeyId, changingSession);
+
+                            let node = GUI.makeNode('li', changingSession.id_user);
+                            GUI.appendChild(GUI.cyclists, node);
+
+                            // Plot cyclists
+                            currentMap.plotCyclists(changingSession.id_user);
 
                         }
                     }
@@ -273,9 +281,9 @@ class Communication {
                         let newDataPoint = change.doc.data();
                         //console.log(newDataPoint);
                         journeyM.addRemoteCyclist(journeyId, sessionData, newDataPoint);
-                        // Plot cyclists
-                        currentMap.plotCyclists(sessionData.id_user);
 
+                        // Plot cyclists
+                        // currentMap.plotCyclists(sessionData.id_user);
                     }
                 })
             });

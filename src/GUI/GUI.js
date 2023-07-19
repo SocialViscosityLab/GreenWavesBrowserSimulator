@@ -73,6 +73,7 @@ GUI.routeButton = document.getElementById("routeButton");
 GUI.releaseAttractor = document.getElementById("releaseAttractor");
 GUI.activateJourney = document.getElementById("activateJourney");
 GUI.connectFirebase = document.getElementById("connectFirebase");
+GUI.cyclists = document.getElementById("cyclistsID");
 
 //*** Input values */
 GUI.speed = document.getElementById("speed");

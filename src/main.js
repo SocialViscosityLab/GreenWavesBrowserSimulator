@@ -16,7 +16,7 @@ let comm;
 let currentRoute;
 
 // Boolean to set if the database should be connected
-let connect, released, activated;
+let connect, attractorReleased, activated;
 
 
 /**
@@ -25,7 +25,7 @@ Setup. It setups variables and initializes instances
 function setup() {
     //Set up to connect or not connect to the database
     connect = false;
-    released = false;
+    attractorReleased = false;
     activated = false;
 
     // GUI elements
@@ -116,13 +116,13 @@ function activateJourneys() {
 function releaseAttractor() {
     if (journeyM.journeys.length > 0) {
         clicker = setInterval(run, (1000 * sampleRate));
-        released = true;
-        GUI.switchStatus(GUI.releaseAttractor, released, { t: "Released", f: "Attractor dissabled" });
+        attractorReleased = true;
+        GUI.switchStatus(GUI.releaseAttractor, attractorReleased, { t: "Released", f: "Attractor dissabled" });
 
         // Update Metadata in server
         for (let i = 0; i < journeyM.journeys.length; i++) {
             const journeyID = journeyM.journeys[i].id;
-            comm.updateSessionMetadata(journeyID, '00000', { 'released': released })
+            comm.updateSessionMetadata(journeyID, '00000', { 'released': attractorReleased })
         }
 
     } else {
@@ -160,7 +160,7 @@ function run() {
 
 
     // Record cyclists' data in the database while there are active journeys and the attarctors are released
-    if (connect && released) {
+    if (connect && attractorReleased) {
         //This is for leaders
         journeyM.recordLeadersDataOnDataBase();
         //This is for simulated followers
