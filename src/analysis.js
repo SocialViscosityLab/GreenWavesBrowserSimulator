@@ -20,25 +20,28 @@ let currentRoute;
 var myOsc;
 // Boolean to set if the database should be connected
 let connect;
+
+// statistical values
+let analysis;
+let dataLoaded = false;
+
+// visualization
+let barChart;
+
 /**
 Setup. It setups variables and initializes instances
 */
 function setup() {
 
+    createCanvas(1200, 800, SVG)
+
     //Set up to connect or not connect to the database
     connect = false;
-    //osc. This is currently used in the cyclcist's run() function.
-    //myOsc = new OSCSender();
-    //myOsc.enable(false);
+
     // GUI elements
     GUIAnalysis.onClick("connectFirebase", connectFirebase);
     GUIAnalysis.onClick("getJourneyData", getFirebaseData);
     GUIAnalysis.onClick("showJourney", createAndActivateJourney);
-    /**
-     * @todo: 
-     * 1. with the route reference we should create a query to get the route and create a route object with it
-     * 2. With the journeyManager, we will import the journey data
-     */
 
     // Instantiate and initialize the map
     currentMap = new Cartography();
@@ -50,6 +53,20 @@ function setup() {
     directory = new DirectoryReader();
     // activate cyclist addition listener
     // this.addCyclistListener();
+
+}
+
+function analyzeData() {
+    let result = AnalysisUtils.getDistanceToAttractorAtTimeSteps();
+
+    for (let i = 0; i < result.length; i++) {
+        const element = result[i];
+        element.meanDistance = ss.mean(element.distance);
+        element.sdDistance = ss.sampleStandardDeviation(element.distance);
+    }
+    analysis = result;
+
+    return result;
 }
 
 function createAndActivateJourney() {
@@ -69,6 +86,7 @@ function activateJourneys() {
     // activate all the journeys
     if (routeM.routes.length > 0) {
         GUIAnalysis.updateRouteName(routeM.routes[0].id);
+        GUIAnalysis.updateRouteLength(routeM.routes[0].getTotalLength().toFixed(2));
         // Display journey
         displayJourney()
     } else {
@@ -139,19 +157,50 @@ function createRouteAndJourneys(downloadedJourney) {
 function displayJourney() {
     // ALWAYS invoke this methods to display the latest condition of each journey and its sessions
     currentMap.updateJourney();
+
     //**Run cyclists
     //journeyM.runCyclists(sampleRate);
-    //**plot all journeys
+
+    //**Plot all journeys
     currentMap.plotJourneys();
-    //**plot routes
-    currentMap.plotRoutes();
+
+    //**Plot routes
+    //currentMap.plotRoutes();
     currentMap.plotRoutesCornerPoints();
-    //**plot dataPoints
+
+    //**Plot dataPoints
     //currentMap.displaySessionMarker[0, 0];
-    //** plot green waves
+
+    //**Plot green waves
     //currentMap.plotGreenWaves();
-    //**plot cyclists
+
+    //**Plot cyclists
     currentMap.plotCyclists();
-    //**plot markers on top of datapoints
-    currentMap.displaySessionMarkers(30000);
+
+    //**Plot markers on top of datapoints
+    //currentMap.displaySessionMarkers(30000);
+
+    //**Analyze data
+    let tmpdata = analyzeData();
+
+
+    for (let i = 0; i < tmpdata.length; i++) {
+        //**Instantiate the bar chart
+        let barChart = new BarChart(100, 200 + (i * 350), 900, 300) // x,y,w,h
+
+        //**Assign to chart
+        barChart.setData(tmpdata[i].time, tmpdata[i].distance, tmpdata[i].id);
+
+        // barChart.setData([-10, -5, 0, 5, 10], [-10, -5, 0, 5, 10]);
+
+        barChart.setLabelGap(60, 20);
+
+        //**Plot the results
+        if (i == 0) {
+            barChart.plot(this, { xAxis: "Seconds", yAxis: "Proximity  in meters", title: "Proximity between bicycle and attractor", subTitle: "Case: " + tmpdata[i].id });
+        } else {
+            barChart.plot(this, { xAxis: "Seconds", yAxis: "Proximity  in meters", title: "", subTitle: "Case: " + tmpdata[i].id });
+        }
+
+    }
 }

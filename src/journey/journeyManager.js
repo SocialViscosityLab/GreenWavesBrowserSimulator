@@ -215,9 +215,9 @@ class JourneyManager {
                     let time = event.time;
 
                     cyclist.setDataPoint(acc, eventLocation, speed, time);
-                    //console.log("Did enter to update the cyclist position")
+                   // console.log("Did enter to update the cyclist position " + sessionId)
                 }
-                break;
+               // break;
             }
 
         } else {

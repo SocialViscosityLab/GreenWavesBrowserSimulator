@@ -9,6 +9,11 @@ class GUIAnalysis {
         GUIAnalysis.routeName1.innerHTML = name;
         GUIAnalysis.routeName2.innerHTML = name;
     }
+
+    static updateRouteLength(x) {
+        GUIAnalysis.routeLength.innerHTML = x;
+
+    }
 }
 // ***** Buttons ****
 GUIAnalysis.connectFirebase = document.getElementById("connectFirebase");
@@ -18,6 +23,7 @@ GUIAnalysis.showJourney = document.getElementById("showJourney");
 // ***** Labels ****
 GUIAnalysis.routeName1 = document.getElementById("routeName1");
 GUIAnalysis.routeName2 = document.getElementById("routeName2");
+GUIAnalysis.routeLength = document.getElementById("routeLength");
 
 
 // ****** Inputs ****

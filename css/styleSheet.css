@@ -11,6 +11,11 @@ section {
 }
 
 .itemLabel {
-    font-family: 'Gill Sans', 'Gill Sans MT';
+    font-family: "Gill Sans", "Gill Sans MT";
     font-size: small;
+}
+
+#defaultCanvas0 {
+    margin-left: 20%;
+    margin-right: 20%;
 }

@@ -269,7 +269,7 @@ class Communication {
      * Listen to a specific journey and returns any session that 
      * presents a change in it
      * @param {String} journeyId 
-     *      * @param {String} session 
+     * @param {String} session 
      * @return {Promise}
      */
     async listenToSessionDataPoints(journeyId, sessionData) {
@@ -277,6 +277,9 @@ class Communication {
         var sessions = await this.journeys.doc(journeyId).collection("sessions").doc(sessionData.index).collection("data_points").orderBy("time", "desc").limit(1)
             .onSnapshot(function(snapshot) {
                 snapshot.docChanges().forEach(function(change) {
+                    
+                  //  if (sessionData.index == "00002") console.log(change.doc.data())
+             
                     if (change.type === "added") {
                         let newDataPoint = change.doc.data();
                         //console.log(newDataPoint);

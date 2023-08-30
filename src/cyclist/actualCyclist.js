@@ -36,7 +36,6 @@ class ActualCyclist extends Cyclist {
 
     run() {
         if (this.status == "enabled") {
-            //console.log("weird ****** " + this.currentDataPoint);
             if (this.currentDataPoint != undefined) {
                 this.notifyObservers(this.currentDataPoint);
             }
