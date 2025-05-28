@@ -84,7 +84,7 @@ class Cyclist {
     https://pawelgrzybek.com/the-observer-pattern-in-javascript-explained/
     **/
     notifyObservers(data) {
-        this.observers.forEach(function(element) {
+        this.observers.forEach(function (element) {
             element.notify(data);
         });
     }
@@ -195,10 +195,19 @@ class Cyclist {
         //The cyclist slows down while the distanceToVertex is greater than a minimalProximity
 
         if (distanceToVertex < this.breakingProximity) {
-
-            if (segmentType === 'stop' || segmentType === 'light') {
+            //NOTE: For simplicity, the traffic light and the stop have the same behavior. The
+            // ideal development is to have a cyclist that responds to the traffic light color.
+            if (segmentType === 'stop') {
                 // slow down
                 tmp = (2 * -this.designKSimple) * (this.mySpeed - 1);
+            } else if (segmentType === 'light'){
+                // slow down
+                tmp = (2 * -this.designKSimple) * (this.mySpeed - 1);
+                // MAY 2025. 
+                // verify the light is enabled. This is to preserve functionality with Attractor Hub versions with no access to traffic lights 
+                // if enabled, check the current status of the traffic light
+                // if red or yelllow -> slow down
+                // if green, do not change tmp
             }
         }
 
